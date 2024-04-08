@@ -71,7 +71,10 @@ function App() {
                         attestationData: [{}],
                     },
                     [],
+                    false,
+                    100000000000000n,
                 );
+
                 if (receipt.transactionHash) {
                     setTxHash(receipt.transactionHash)
                     receipt = await waitForTransactionReceipt(wagmiConfig.getClient(), {
@@ -100,7 +103,7 @@ function App() {
             <div className={'main-container'}>
                 <ConnectButton/>
                 <form onSubmit={handleSubmit}>
-                    <div className={'message'}>You own {tokensOwned} eFrogs NFT(s)</div>
+                    <div className={'tokens-owned'}>You own {tokensOwned} eFrogs NFT(s)</div>
                     <button type="submit" disabled={!address || !veraxSdk || tokensOwned < 1}>Issue attestation</button>
                 </form>
                 {txHash && <div className={'message'}>Transaction Hash: <a

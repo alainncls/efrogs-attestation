@@ -22,6 +22,11 @@ body {
     padding: 20px;
 }
 
+.tokens-owned {
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
 form {
     width: 50%;
     padding: 20px;
@@ -37,17 +42,6 @@ form {
     form {
         width: 80%;
     }
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    background-color: #f4f4f4;
-    color: #000000;
-    border-radius: 4px;
-    box-sizing: border-box;
 }
 
 button[type="submit"] {
