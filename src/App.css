@@ -19,21 +19,25 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /*width: 100vw;*/
     box-sizing: border-box;
     flex-grow: 1;
 }
 
 .grooving-frog {
     position: absolute;
-    /*top: 810px;*/
-    /*left: 1160px;*/
-    top: 86%;
-    left: 60%;
+    background-image: url(/grooving_frog.gif);
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    top: 50%;
+    left: 50%;
+    transform: translate(180px, 230px);
     width: 100px;
     height: 100px;
-    background-image: url(/grooving_frog.gif);
-    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
 }
 
 .tokens-owned {
@@ -56,26 +60,6 @@ form {
     form {
         width: 80%;
     }
-}
-
-button[type="submit"] {
-    padding: 10px 20px;
-    border: none;
-    background-color: #007BFF;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-    align-self: center;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-button[type="submit"]:disabled {
-    background-color: dimgrey;
-    color: linen;
-    opacity: 1;
 }
 
 .error {

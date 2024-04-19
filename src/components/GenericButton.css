@@ -29,6 +29,6 @@
 }
 
 .generic-button-label {
-    font-size: 40px;
+    font-size: clamp(24px, 5vh, 40px);
 }
 
