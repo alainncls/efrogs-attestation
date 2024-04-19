@@ -40,6 +40,23 @@ export default function ConnectButton() {
             }
 
             button.style.border = 'none';
+
+            const wuiButton = button.querySelector('wui-text');
+            if (!wuiButton) {
+                return;
+            }
+
+            const shadowRoot4 = wuiButton.shadowRoot;
+            if (!shadowRoot4) {
+                return;
+            }
+
+            const text = shadowRoot4.querySelector('slot');
+            if (!text) {
+                return;
+            }
+
+            text.style.fontSize = '50px';
         };
 
         updateButtonStyle();

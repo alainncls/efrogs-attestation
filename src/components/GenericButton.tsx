@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, useEffect, useState} from 'react';
 import './GenericButton.css';
 
 interface GenericButtonProps {
@@ -9,8 +9,20 @@ interface GenericButtonProps {
 }
 
 export default function GenericButton({children, disabled, label, onClick}: GenericButtonProps) {
-    return <div className={`generic-button ${disabled ? 'disabled' : ''}`}>
-        {label && <div className={'generic-button-label'} onClick={onClick}>{label}</div>}
-        <div>{children}</div>
+    const [buttonHeight, setButtonHeight] = useState('auto');
+
+    useEffect(() => {
+        const img = new Image();
+        img.onload = () => {
+            setButtonHeight(`${img.height}px`);
+        }
+        img.src = disabled ? 'button_disabled.png' : '/button_enabled.png';
+    }, [disabled]);
+
+    return <div className={`generic-button${disabled ? ' disabled' : ''}${label ? ' with-label' : ''}`}
+                onClick={onClick}
+                style={{height: buttonHeight}}>
+        {label ? <div className={`generic-button-label${disabled ? ' disabled' : ''}`}>{label}</div> :
+            <div>{children}</div>}
     </div>
 }

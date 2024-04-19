@@ -53,6 +53,9 @@ function App() {
     }, [chainId, address]);
 
     const handleSubmit = async () => {
+        if (disabled) {
+            return;
+        }
         setTxHash(undefined);
         setAttestationId(undefined);
         await issueAttestation();
@@ -98,7 +101,7 @@ function App() {
 
     const title = () => {
         if (!address) {
-            return 'Check your eFrogs';
+            return 'Attest your eFrogs';
         } else {
             if (tokensOwned === 0) {
                 return 'You have 0 eFrog';
@@ -111,7 +114,7 @@ function App() {
     }
 
     const disabled = useMemo(() => Boolean(address) && (!veraxSdk || tokensOwned < 1), [address, veraxSdk, tokensOwned]);
-    const label = useMemo(() => !address || disabled ? undefined : 'Issue attestation', [address, disabled]);
+    const label = useMemo(() => !address ? undefined : 'Issue attestation', [address, disabled]);
 
     return (
         <>

@@ -22,10 +22,10 @@ createWeb3Modal({
     },
     themeVariables: {
         '--w3m-font-family': '"Jersey 10", sans-serif',
-        '--w3m-accent': 'rgba(255,255,255,0)',
+        '--w3m-accent': 'rgba(0,0,0,0)',
         '--w3m-color-mix': '#f1d098',
         '--w3m-color-mix-strength': 50,
-        '--w3m-font-size-master': '30px',
+        '--w3m-font-size-master': '20px',
         '--w3m-border-radius-master': '0px',
     }
 })
