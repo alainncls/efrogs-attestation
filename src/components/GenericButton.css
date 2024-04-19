@@ -1,0 +1,26 @@
+.generic-button {
+    position: absolute;
+    background-image: url(/generic_button.png);
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    min-width: 20%;
+    height: 15vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.generic-button & .disabled {
+    background-image: url(/button_disabled.png);
+}
+
+.generic-button-label {
+    font-size: 50px;
+    color: #ffffff;
+    cursor: pointer;
+}
+

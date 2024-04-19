@@ -1,8 +1,9 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Jersey 10', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-image: url(/background.jpg);
+    background-size: cover;
 }
 
 #root {
@@ -16,10 +17,21 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100vw;
+    /*width: 100vw;*/
     box-sizing: border-box;
     flex-grow: 1;
-    padding: 20px;
+}
+
+.grooving-frog {
+    position: absolute;
+    /*top: 810px;*/
+    /*left: 1160px;*/
+    top: 86%;
+    left: 60%;
+    width: 100px;
+    height: 100px;
+    background-image: url(/grooving_frog.gif);
+    background-size: cover;
 }
 
 .tokens-owned {

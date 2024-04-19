@@ -15,12 +15,19 @@ createWeb3Modal({
     wagmiConfig,
     projectId: walletConnectProjectId,
     enableAnalytics: true,
-    themeMode: 'light',
     defaultChain: lineaTestnet,
     chainImages: {
         59144: LineaMainnetIcon,
         59140: LineaTestnetIcon,
     },
+    themeVariables: {
+        '--w3m-font-family': '"Jersey 10", sans-serif',
+        '--w3m-accent': 'rgba(255,255,255,0)',
+        '--w3m-color-mix': '#f1d098',
+        '--w3m-color-mix-strength': 50,
+        '--w3m-font-size-master': '30px',
+        '--w3m-border-radius-master': '0px',
+    }
 })
 
 interface Web3ModalProviderProps {

@@ -1,0 +1,18 @@
+.generic-panel {
+    width: 20vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    text-align: center;
+}
+
+.generic-panel-title {
+    font-size: 80px;
+    color: #ffffff;
+}
+
+.generic-panel-subtitle {
+    font-size: 30px;
+    color: #ffffff;
+}

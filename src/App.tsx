@@ -1,13 +1,13 @@
-import {FormEvent, useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import './App.css'
 import {VeraxSdk} from "@verax-attestation-registry/verax-sdk";
 import {useAccount, useReadContract} from "wagmi";
-import ConnectButton from "./components/ConnectButton.tsx";
-import Header from "./components/Header.tsx";
-import Footer from "./components/Footer.tsx";
 import {waitForTransactionReceipt} from "viem/actions";
 import {Hex} from "viem";
 import {wagmiConfig} from "./wagmiConfig.ts";
+import GenericButton from "./components/GenericButton.tsx";
+import ConnectButton from "./components/ConnectButton.tsx";
+import GenericPanel from "./components/GenericPanel.tsx";
 
 function App() {
     const [veraxSdk, setVeraxSdk] = useState<VeraxSdk>();
@@ -52,8 +52,7 @@ function App() {
         }
     }, [chainId, address]);
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         setTxHash(undefined);
         setAttestationId(undefined);
         await issueAttestation();
@@ -97,15 +96,37 @@ function App() {
         return `${hexString.slice(0, 7)}...${hexString.slice(hexString.length - 5, hexString.length)}`
     }
 
+    const title = () => {
+        if (!address) {
+            return 'Check your eFrogs';
+        } else {
+            if (tokensOwned === 0) {
+                return 'You have 0 eFrog';
+            }
+            if (tokensOwned === 1) {
+                return 'You have 1 eFrog';
+            }
+            return `You have ${tokensOwned} eFrogs`;
+        }
+    }
+
+    const disabled = useMemo(() => Boolean(address) && (!veraxSdk || tokensOwned < 1), [address, veraxSdk, tokensOwned]);
+    const label = useMemo(() => !address || disabled ? undefined : 'Issue attestation', [address, disabled]);
+
     return (
         <>
-            <Header/>
             <div className={'main-container'}>
-                <ConnectButton/>
-                <form onSubmit={handleSubmit}>
-                    <div className={'tokens-owned'}>You own {tokensOwned} eFrogs NFT(s)</div>
-                    <button type="submit" disabled={!address || !veraxSdk || tokensOwned < 1}>Issue attestation</button>
-                </form>
+                <a href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
+                   target="_blank" rel="noopener noreferrer"
+                   className="link">
+                    <div className="grooving-frog"></div>
+                </a>
+                <GenericPanel title={title()}/>
+                <GenericButton disabled={disabled}
+                               label={label}
+                               onClick={handleSubmit}>
+                    <ConnectButton/>
+                </GenericButton>
                 {txHash && <div className={'message'}>Transaction Hash: <a
                   href={`${chainId === 59144 ? 'https://lineascan.build/tx/' : 'https://goerli.lineascan.build/tx/'}${txHash}`}
                   target="_blank" rel="noopener noreferrer">{truncateHexString(txHash)}</a></div>}
@@ -114,7 +135,6 @@ function App() {
                   href={`${chainId === 59144 ? 'https://explorer.ver.ax/linea/attestations/' : 'https://explorer.ver.ax/linea-testnet/attestations/'}${attestationId}`}
                   target="_blank" rel="noopener noreferrer">{truncateHexString(attestationId)}</a></div>}
             </div>
-            <Footer/>
         </>
     );
 }
