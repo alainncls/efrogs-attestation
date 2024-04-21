@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Contracts
+.env
+artifacts
+cache
+typechain-types
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
