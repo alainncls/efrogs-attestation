@@ -1,18 +1,45 @@
 .generic-panel {
-    width: 20vw;
-    position: absolute;
-    top: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.signage-image {
+    position: fixed;
+    top: 20%;
     left: 50%;
-    transform: translate(-50%, -70%);
-    text-align: center;
+    transform: translate(-50%, -50%);
+    content: url(/signage-phone.png);
 }
 
 .generic-panel-title {
-    font-size: clamp(24px, 10vh, 80px);
+    position: fixed;
+    z-index: 1;
     color: #ffffff;
+    text-align: center;
+    font-size: clamp(24px, 5vh, 80px);
+    /* width: 20%; */
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.generic-panel-subtitle {
-    font-size: clamp(16px, 6vh, 60px);
-    color: #ffffff;
+@media (min-width: 992px) {
+    .signage-image {
+        content: url(/signage.png);
+    }
+
+    .generic-panel-title {
+        position: fixed;
+        z-index: 1;
+        color: #ffffff;
+        text-align: center;
+        font-size: clamp(24px, 10vh, 80px);
+        width: 20%;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }

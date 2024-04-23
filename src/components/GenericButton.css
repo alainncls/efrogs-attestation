@@ -3,15 +3,8 @@
     background-image: url(/button_enabled.png);
     background-size: 100% auto;
     background-repeat: no-repeat;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 140px);
-    min-width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
     cursor: pointer;
+    width: 50%;
 }
 
 .generic-button.disabled {
@@ -32,3 +25,16 @@
     font-size: clamp(24px, 5vh, 40px);
 }
 
+@media (min-width: 992px) {
+    .generic-button {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 140px);
+        min-width: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: auto;
+    }
+}

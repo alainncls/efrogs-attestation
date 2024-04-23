@@ -1,68 +1,73 @@
-import {useEffect} from "react";
+import { useEffect } from 'react';
 import './ConnectButton.css';
 
 export default function ConnectButton() {
-    useEffect(() => {
-        const updateButtonStyle = async () => {
-            const w3mButton = document.querySelector('w3m-button');
-            if (!w3mButton) {
-                return;
-            }
+  useEffect(() => {
+    const updateButtonStyle = async () => {
+      const w3mButton = document.querySelector('w3m-button');
+      if (!w3mButton) {
+        return;
+      }
 
-            const shadowRoot = w3mButton.shadowRoot;
-            if (!shadowRoot) {
-                return;
-            }
+      const shadowRoot = w3mButton.shadowRoot;
+      if (!shadowRoot) {
+        return;
+      }
 
-            const w3mConnectButton = shadowRoot.querySelector('w3m-connect-button');
-            if (!w3mConnectButton) {
-                return;
-            }
+      const w3mConnectButton = shadowRoot.querySelector('w3m-connect-button');
+      if (!w3mConnectButton) {
+        return;
+      }
 
-            const shadowRoot2 = w3mConnectButton.shadowRoot;
-            if (!shadowRoot2) {
-                return;
-            }
+      const shadowRoot2 = w3mConnectButton.shadowRoot;
+      if (!shadowRoot2) {
+        return;
+      }
 
-            const wuiConnectButton = shadowRoot2.querySelector('wui-connect-button');
-            if (!wuiConnectButton) {
-                return;
-            }
+      const wuiConnectButton = shadowRoot2.querySelector('wui-connect-button');
+      if (!wuiConnectButton) {
+        return;
+      }
 
-            const shadowRoot3 = wuiConnectButton.shadowRoot;
-            if (!shadowRoot3) {
-                return;
-            }
+      const shadowRoot3 = wuiConnectButton.shadowRoot;
+      if (!shadowRoot3) {
+        return;
+      }
 
-            const button = shadowRoot3.querySelector('button');
-            if (!button) {
-                return;
-            }
+      const button = shadowRoot3.querySelector('button');
+      if (!button) {
+        return;
+      }
 
-            button.style.border = 'none';
+      button.style.border = 'none';
 
-            const wuiButton = button.querySelector('wui-text');
-            if (!wuiButton) {
-                return;
-            }
+      const wuiButton = button.querySelector('wui-text');
+      if (!wuiButton) {
+        return;
+      }
 
-            const shadowRoot4 = wuiButton.shadowRoot;
-            if (!shadowRoot4) {
-                return;
-            }
+      const shadowRoot4 = wuiButton.shadowRoot;
+      if (!shadowRoot4) {
+        return;
+      }
 
-            const text = shadowRoot4.querySelector('slot');
-            if (!text) {
-                return;
-            }
+      const text = shadowRoot4.querySelector('slot');
+      if (!text) {
+        return;
+      }
 
-            text.style.fontSize = '50px';
-        };
+      if (window.matchMedia('(max-width: 992px)').matches) {
+        console.log('small screen');
+        text.style.fontSize = '32px!important';
+      } else {
+        text.style.fontSize = '50px';
+      }
+    };
 
-        updateButtonStyle();
-    }, []);
+    updateButtonStyle();
+  }, []);
 
-    return <div className={'connect-button-container'}>
-        <w3m-button/>
-    </div>
+  return <div className={'connect-button-container'}>
+    <w3m-button />
+  </div>;
 }
