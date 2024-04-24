@@ -20,7 +20,7 @@
     color: #ffffff;
     text-align: center;
     font-size: clamp(24px, 5vh, 80px);
-    /* width: 20%; */
+    line-height: normal;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
