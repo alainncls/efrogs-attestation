@@ -13,7 +13,7 @@ function App() {
   const [veraxSdk, setVeraxSdk] = useState<VeraxSdk>();
   const [txHash, setTxHash] = useState<Hex>();
   const [attestationId, setAttestationId] = useState<Hex>();
-  const { address, chainId } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
 
   const eFrogsContract = '0x35c134262605bc69B3383EA132A077d09d8df061';
   const { data: balance } = useReadContract({
@@ -74,7 +74,7 @@ function App() {
     }
   }, [address, veraxSdk, balance]);
 
-  const disabled = useMemo(() => !address || !veraxSdk || !balance, [address, veraxSdk, balance]);
+  const disabled = useMemo(() => isConnected && (!address || !veraxSdk || !balance), [isConnected, address, veraxSdk, balance]);
   const title = useMemo(() => {
     if (!address) return 'Attest your eFrogs';
     return `You have ${Number(balance) || 0} eFrog${Number(balance) === 1 ? '' : 's'}`;

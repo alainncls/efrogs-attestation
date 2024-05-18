@@ -23,7 +23,7 @@ const updateButtonStyle = () => {
   if (!slot) return;
 
   if (window.matchMedia('(max-width: 992px)').matches) {
-    slot.style.fontSize = '32px'; // Note: '!important' cannot be used with inline styles in JavaScript
+    slot.style.fontSize = '32px';
   } else {
     slot.style.fontSize = '50px';
   }

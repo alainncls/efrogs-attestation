@@ -16,7 +16,7 @@ export default function GenericButton({ children, disabled, label, onClick }: Ge
     img.onload = () => {
       setButtonHeight(`${img.height}px`);
     };
-    img.src = disabled ? 'button_disabled_source.png' : '/button_enabled.png';
+    img.src = disabled ? 'button_disabled.png' : '/button_enabled.png';
   }, [disabled]);
 
   return <div className={`generic-button${disabled ? ' disabled' : ''}${label ? ' with-label' : ''}`}
