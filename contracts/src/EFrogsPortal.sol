@@ -12,9 +12,11 @@ import {AttestationPayload} from "@verax-attestation-registry/verax-contracts/co
  * @notice This contract aims to attest of eFrogs ownership
  */
 contract EFrogsPortal is AbstractPortal, Ownable {
-    IERC721 public eFrogsContract = IERC721(0x0Cb56F201E7aFe02E542E2D2D42c34d4ce7203F7);
+    IERC721 public eFrogsContract;
 
     uint256 public fee;
+
+    mapping(bytes32 => bool) public authorizedSchemas;
 
     /// @dev Error thrown when the attestation subject is not the sender
     error SenderIsNotSubject();
@@ -24,9 +26,17 @@ contract EFrogsPortal is AbstractPortal, Ownable {
     error InsufficientFee();
     /// @dev Error thrown when the withdraw fails
     error WithdrawFail();
+    /// @dev Error thrown when the Schema is not authorized on this Portal
+    error SchemaNotAuthorized();
+    /// @dev Error thrown when the token contract is not the eFrogs contract
+    error NotEFrogsContract();
+    /// @dev Error thrown when the token balance is incorrect
+    error IncorrectBalance();
 
-    constructor(address[] memory modules, address router) AbstractPortal(modules, router) {
+    constructor(address[] memory modules, address router, address eFrogsAddress) AbstractPortal(modules, router) {
+        eFrogsContract = IERC721(eFrogsAddress);
         fee = 0.0001 ether;
+        authorizedSchemas[0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5] = true;
     }
 
     /**
@@ -48,8 +58,20 @@ contract EFrogsPortal is AbstractPortal, Ownable {
         if (attestationPayload.subject.length == 32) subject = abi.decode(attestationPayload.subject, (address));
         if (attestationPayload.subject.length == 20) subject = address(uint160(bytes20(attestationPayload.subject)));
         if (subject != msg.sender) revert SenderIsNotSubject();
-        if ((eFrogsContract.balanceOf(subject)) < 1) revert SenderIsNotOwner();
+
+        uint256 balance = eFrogsContract.balanceOf(subject);
+        if (balance < 1) revert SenderIsNotOwner();
         if (value < fee) revert InsufficientFee();
+
+        if (!authorizedSchemas[attestationPayload.schemaId]) revert SchemaNotAuthorized();
+        if (attestationPayload.schemaId == 0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5) {
+            (address tokenAddress, uint256 tokenBalance) = abi.decode(
+                attestationPayload.attestationData,
+                (address, uint256)
+            );
+            if (tokenAddress != address(eFrogsContract)) revert NotEFrogsContract();
+            if (tokenBalance != balance) revert IncorrectBalance();
+        }
     }
 
     /**
@@ -58,6 +80,22 @@ contract EFrogsPortal is AbstractPortal, Ownable {
      */
     function setFee(uint256 attestationFee) public onlyOwner {
         fee = attestationFee;
+    }
+
+    /**
+     * @notice Add a schema to the authorized schemas
+     * @param schemaId The schema to authorize
+     */
+    function addAuthorizedSchema(bytes32 schemaId) public onlyOwner {
+        authorizedSchemas[schemaId] = true;
+    }
+
+    /**
+     * @notice Remove a schema from the authorized schemas
+     * @param schemaId The schema to remove
+     */
+    function removeAuthorizedSchema(bytes32 schemaId) public onlyOwner {
+        delete authorizedSchemas[schemaId];
     }
 
     /**

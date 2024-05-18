@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deployEFrogs.ts --network",
+    "deploy:nft": "npx hardhat run scripts/deployEFrogsNFT.ts --network",
+    "deploy:portal": "npx hardhat run scripts/deployEFrogsPortal.ts --network",
     "lint": "prettier --list-different '**/*.sol' '**/*.ts' '**/*.json' && npm run solhint",
     "lint:fix": "prettier --write '**/*.sol' '**/*.ts' '**/*.json'",
     "solhint": "solhint **/*.sol -c .solhint.json",
@@ -15,7 +16,7 @@
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@types/node": "^20.12.7",
     "@verax-attestation-registry/verax-contracts": "^0.0.3",
-    "@verax-attestation-registry/verax-sdk": "^1.3.0",
+    "@verax-attestation-registry/verax-sdk": "^1.6.0",
     "dotenv": "^16.4.5",
     "ethers": "^6.12.0",
     "hardhat": "^2.22.3",
