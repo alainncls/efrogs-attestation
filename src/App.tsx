@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
@@ -13,14 +13,9 @@ function App() {
   const [veraxSdk, setVeraxSdk] = useState<VeraxSdk>();
   const [txHash, setTxHash] = useState<Hex>();
   const [attestationId, setAttestationId] = useState<Hex>();
-  const [tokensOwned, setTokensOwned] = useState<number>(0);
-
   const { address, chainId } = useAccount();
 
-  const schemaId = '0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5';
-  const portalId = '0x0Cb56F201E7aFe02E542E2D2D42c34d4ce7203F7';
   const eFrogsContract = '0x35c134262605bc69B3383EA132A077d09d8df061';
-
   const { data: balance } = useReadContract({
     abi: [{
       type: 'function',
@@ -39,12 +34,6 @@ function App() {
   });
 
   useEffect(() => {
-    if (balance) {
-      setTokensOwned(Number(balance));
-    }
-  }, [balance]);
-
-  useEffect(() => {
     if (chainId && address) {
       const sdkConf =
         chainId === 59144 ? VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND : VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND;
@@ -53,22 +42,13 @@ function App() {
     }
   }, [chainId, address]);
 
-  const handleSubmit = async () => {
-    if (disabled) {
-      return;
-    }
-    setTxHash(undefined);
-    setAttestationId(undefined);
-    await issueAttestation();
-  };
-
-  const issueAttestation = async () => {
-    if (address && veraxSdk) {
+  const issueAttestation = useCallback(async () => {
+    if (address && veraxSdk && balance) {
       try {
         let receipt = await veraxSdk.portal.attest(
-          portalId,
+          '0x0Cb56F201E7aFe02E542E2D2D42c34d4ce7203F7',
           {
-            schemaId,
+            schemaId: '0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5',
             expirationDate: Math.floor(Date.now() / 1000) + 2592000,
             subject: address,
             attestationData: [{ contract: eFrogsContract, balance }],
@@ -88,34 +68,17 @@ function App() {
           alert(`Oops, something went wrong!`);
         }
       } catch (e) {
-        console.log(e);
-        if (e instanceof Error) {
-          alert(`Oops, something went wrong: ${e.message}`);
-        }
+        console.error(e);
+        alert(`Oops, something went wrong: ${e instanceof Error ? e.message : 'Unknown error'}`);
       }
     }
-  };
+  }, [address, veraxSdk, balance]);
 
-  const truncateHexString = (hexString: string) => {
-    return `${hexString.slice(0, 7)}...${hexString.slice(hexString.length - 5, hexString.length)}`;
-  };
-
-  const title = () => {
-    if (!address) {
-      return 'Attest your eFrogs';
-    } else {
-      if (tokensOwned === 0) {
-        return 'You have 0 eFrog';
-      }
-      if (tokensOwned === 1) {
-        return 'You have 1 eFrog';
-      }
-      return `You have ${tokensOwned} eFrogs`;
-    }
-  };
-
-  const disabled = useMemo(() => Boolean(address) && (!veraxSdk || tokensOwned < 1), [address, veraxSdk, tokensOwned]);
-  const label = useMemo(() => !address ? undefined : 'Issue attestation', [address, disabled]);
+  const disabled = useMemo(() => !address || !veraxSdk || !balance, [address, veraxSdk, balance]);
+  const title = useMemo(() => {
+    if (!address) return 'Attest your eFrogs';
+    return `You have ${Number(balance) || 0} eFrog${Number(balance) === 1 ? '' : 's'}`;
+  }, [address, balance]);
 
   return (
     <>
@@ -125,19 +88,18 @@ function App() {
            className="link">
           <div className="grooving-frog"></div>
         </a>
-        <GenericPanel title={title()} />
+        <GenericPanel title={title} />
         <GenericButton disabled={disabled}
-                       label={label}
-                       onClick={handleSubmit}>
+                       label={address ? 'Issue attestation' : undefined}
+                       onClick={issueAttestation}>
           <ConnectButton />
         </GenericButton>
         {txHash && <div className={'message'}>Transaction Hash: <a
           href={`${chainId === 59144 ? 'https://lineascan.build/tx/' : 'https://goerli.lineascan.build/tx/'}${txHash}`}
-          target="_blank" rel="noopener noreferrer">{truncateHexString(txHash)}</a></div>}
-        {txHash && !attestationId && <div className={'message pending'}>Transaction pending...</div>}
+          target="_blank" rel="noopener noreferrer">{txHash}</a></div>}
         {attestationId && <div className={'message success'}>Attestation ID: <a
           href={`${chainId === 59144 ? 'https://explorer.ver.ax/linea/attestations/' : 'https://explorer.ver.ax/linea-sepolia/attestations/'}${attestationId}`}
-          target="_blank" rel="noopener noreferrer">{truncateHexString(attestationId)}</a></div>}
+          target="_blank" rel="noopener noreferrer">{attestationId}</a></div>}
       </div>
     </>
   );

@@ -6,7 +6,7 @@ const metadata = {
   name: 'eFrogs Attestation',
   description: 'Issue attestation of eFrogs ownership',
   url: 'https://efrogs.alainnicolas.fr',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  icons: ['https://efrogs.alainnicolas.fr/favicon.jpg'],
 };
 const chains = [lineaSepolia, linea, mainnet] as const;
 export const wagmiConfig = defaultWagmiConfig({

@@ -1,11 +1,12 @@
+import React from 'react';
 import './GenericPanel.css';
 
 interface GenericPanelProps {
   title: string;
-  subtitle?: string | undefined;
+  subtitle?: string;
 }
 
-export default function GenericPanel({ title, subtitle }: GenericPanelProps) {
+const GenericPanel = React.memo(({ title, subtitle }: GenericPanelProps) => {
   return (
     <div className={'generic-panel'}>
       <div className="signage-image" />
@@ -13,4 +14,6 @@ export default function GenericPanel({ title, subtitle }: GenericPanelProps) {
       {subtitle && <div className={'generic-panel-subtitle'}>{subtitle}</div>}
     </div>
   );
-}
+});
+
+export default GenericPanel;
