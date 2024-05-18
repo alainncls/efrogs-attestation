@@ -1,6 +1,6 @@
 # eFrogs Attestation
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c888dd91-7201-4051-a7c9-193656295b9a/deploy-status)](https://app.netlify.com/sites/proof-of-audit/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1a846ac1-f1ed-436f-9c5d-ba59a7afe966/deploy-status)](https://app.netlify.com/sites/efrogs/deploys)
 
 This project aims to provide a way to issue attestations of eFrogs ownership, using
 the [Verax Attestation Registry](https://www.ver.ax/).
