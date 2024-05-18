@@ -17,6 +17,12 @@ npm i
 npm run dev
 ```
 
-## Portal on Linea Goerli
+## Linea Sepolia data
 
-[`0x95B852F4D6b7b10151646440107Af491514422E3`](https://explorer.ver.ax/linea-testnet/portals/0x95b852f4d6b7b10151646440107af491514422e3)
+### Portal
+
+[`0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7`](https://explorer.ver.ax/linea-sepolia/portals/0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7)
+
+### Schema
+
+[`0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
