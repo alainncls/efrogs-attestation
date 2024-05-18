@@ -22,7 +22,8 @@
 }
 
 .generic-button-label {
-    font-size: clamp(24px, 5vh, 40px);
+    font-size: 30px;
+    text-align: center;
 }
 
 @media (min-width: 992px) {
@@ -36,5 +37,9 @@
         align-items: center;
         flex-direction: column;
         width: auto;
+    }
+
+    .generic-button-label {
+        font-size: 40px;
     }
 }

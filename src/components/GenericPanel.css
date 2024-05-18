@@ -19,7 +19,7 @@
     z-index: 1;
     color: #ffffff;
     text-align: center;
-    font-size: clamp(24px, 5vh, 80px);
+    font-size: 40px;
     line-height: normal;
     top: 30%;
     left: 50%;
@@ -32,14 +32,9 @@
     }
 
     .generic-panel-title {
-        position: fixed;
-        z-index: 1;
-        color: #ffffff;
-        text-align: center;
-        font-size: clamp(24px, 10vh, 80px);
+        font-size: 80px;
         width: 20%;
         top: 40%;
         left: 50%;
-        transform: translate(-50%, -50%);
     }
 }
