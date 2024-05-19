@@ -9,6 +9,7 @@ import GenericButton from './components/GenericButton.tsx';
 import ConnectButton from './components/ConnectButton.tsx';
 import GenericPanel from './components/GenericPanel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
+import TestnetRibbon from './components/TestnetRibbon.tsx';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -19,7 +20,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>();
 
-  const { address, chainId, isConnected } = useAccount();
+  const { address, chainId, isConnected, chain } = useAccount();
 
   const eFrogsContract = '0x35c134262605bc69B3383EA132A077d09d8df061';
   const { data: balance } = useReadContract({
@@ -107,6 +108,7 @@ function App() {
   return (
     <>
       <div className={'main-container'}>
+        {chain?.testnet && <TestnetRibbon />}
         <a href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
            target="_blank" rel="noopener noreferrer"
            className="link">
