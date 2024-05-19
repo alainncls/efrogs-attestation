@@ -8,11 +8,17 @@ import { wagmiConfig } from './wagmiConfig.ts';
 import GenericButton from './components/GenericButton.tsx';
 import ConnectButton from './components/ConnectButton.tsx';
 import GenericPanel from './components/GenericPanel.tsx';
+import DetailsModal from './components/DetailsModal.tsx';
+
+const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
 function App() {
   const [veraxSdk, setVeraxSdk] = useState<VeraxSdk>();
   const [txHash, setTxHash] = useState<Hex>();
   const [attestationId, setAttestationId] = useState<Hex>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>();
+
   const { address, chainId, isConnected } = useAccount();
 
   const eFrogsContract = '0x35c134262605bc69B3383EA132A077d09d8df061';
@@ -44,6 +50,11 @@ function App() {
 
   const issueAttestation = useCallback(async () => {
     if (address && veraxSdk && balance) {
+      setTxHash(undefined);
+      setAttestationId(undefined);
+      setMessage(undefined);
+      setIsModalOpen(true);
+
       try {
         let receipt = await veraxSdk.portal.attest(
           '0x0Cb56F201E7aFe02E542E2D2D42c34d4ce7203F7',
@@ -65,20 +76,33 @@ function App() {
           });
           setAttestationId(receipt.logs?.[0].topics[1]);
         } else {
-          alert(`Oops, something went wrong!`);
+          setMessage(DEFAULT_ERROR_MESSAGE);
         }
       } catch (e) {
         console.error(e);
-        alert(`Oops, something went wrong: ${e instanceof Error ? e.message : 'Unknown error'}`);
+        if (e instanceof Error) {
+          if (e.message.includes('User rejected the request')) {
+            setMessage('User denied transaction signature');
+          } else {
+            setMessage(`${DEFAULT_ERROR_MESSAGE} - ${e.message}`);
+          }
+        } else {
+          setMessage(DEFAULT_ERROR_MESSAGE);
+        }
       }
     }
   }, [address, veraxSdk, balance]);
 
   const disabled = useMemo(() => isConnected && (!address || !veraxSdk || !balance), [isConnected, address, veraxSdk, balance]);
+
   const title = useMemo(() => {
     if (!address) return 'Attest your eFrogs';
     return `You have ${Number(balance) || 0} eFrog${Number(balance) === 1 ? '' : 's'}`;
   }, [address, balance]);
+
+  const toggleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
 
   return (
     <>
@@ -94,12 +118,8 @@ function App() {
                        onClick={issueAttestation}>
           <ConnectButton />
         </GenericButton>
-        {txHash && <div className={'message'}>Transaction Hash: <a
-          href={`${chainId === 59144 ? 'https://lineascan.build/tx/' : 'https://goerli.lineascan.build/tx/'}${txHash}`}
-          target="_blank" rel="noopener noreferrer">{txHash}</a></div>}
-        {attestationId && <div className={'message success'}>Attestation ID: <a
-          href={`${chainId === 59144 ? 'https://explorer.ver.ax/linea/attestations/' : 'https://explorer.ver.ax/linea-sepolia/attestations/'}${attestationId}`}
-          target="_blank" rel="noopener noreferrer">{attestationId}</a></div>}
+        <DetailsModal attestationId={attestationId} txHash={txHash} isOpen={isModalOpen} onClose={toggleModal}
+                      message={message} />
       </div>
     </>
   );

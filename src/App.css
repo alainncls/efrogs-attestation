@@ -16,6 +16,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    --link-color: #007bff;
+    --success-color: #28a745;
+    --pending-color: #ffc107;
+    --error-color: #dc3545;
+    --message-text-color: #000000;
 }
 
 .main-container {
@@ -25,28 +30,6 @@ body {
     align-items: center;
     box-sizing: border-box;
     flex-grow: 1;
-}
-
-.error {
-    color: red;
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: center;
-}
-
-.message {
-    color: #000000;
-    padding-top: 20px;
-    text-align: center;
-}
-
-.success {
-    color: #008000;
-    font-weight: bold;
-}
-
-.pending {
-    color: #FF8C00;
 }
 
 @media (min-width: 992px) {
