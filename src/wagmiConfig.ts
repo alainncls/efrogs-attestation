@@ -1,17 +1,16 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { linea, lineaSepolia, mainnet } from 'wagmi/chains';
+import { getDefaultConfig } from 'connectkit';
+import { createConfig } from 'wagmi';
 
 export const walletConnectProjectId = 'b90f66826134d75b644e3311789615da';
-const metadata = {
-  name: 'eFrogs Attestation',
-  description: 'Issue attestation of eFrogs ownership',
-  url: 'https://efrogs.alainnicolas.fr',
-  icons: ['https://efrogs.alainnicolas.fr/favicon.jpg'],
-};
 const chains = [lineaSepolia, linea, mainnet] as const;
-export const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId: walletConnectProjectId,
-  metadata,
-  enableCoinbase: false,
-});
+export const wagmiConfig = createConfig(
+  getDefaultConfig({
+    chains,
+    walletConnectProjectId,
+    appName: 'Your App Name',
+    appDescription: 'Issue attestation of eFrogs ownership',
+    appUrl: 'https://efrogs.alainnicolas.fr',
+    appIcon: 'https://efrogs.alainnicolas.fr/favicon.jpg',
+  }),
+);

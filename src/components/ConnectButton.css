@@ -1,12 +1,12 @@
 .connect-button-container {
     position: absolute;
-    transform: translate(-50%, -110%);
+    transform: translate(-50%, -125%);
     top: 50%;
     left: 50%;
 }
 
 @media (min-width: 992px) {
     .connect-button-container {
-        transform: translate(-50%, -100%);
+        transform: translate(-50%, -110%);
     }
 }
