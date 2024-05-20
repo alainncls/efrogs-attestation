@@ -39,4 +39,8 @@
         flex-direction: column;
         width: auto;
     }
+
+    .generic-button-label {
+        transform: none;
+    }
 }
