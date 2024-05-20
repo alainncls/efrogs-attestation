@@ -1,18 +1,12 @@
-@media (max-width: 500px) {
-    button[data-size='md'] > wui-text > slot {
-        font-size: 32px !important;
-    }
-}
-
 .connect-button-container {
     position: absolute;
-    transform: translate(-50%, -160%);
+    transform: translate(-50%, -110%);
     top: 50%;
     left: 50%;
 }
 
 @media (min-width: 992px) {
     .connect-button-container {
-        transform: translate(-50%, -80%);
+        transform: translate(-50%, -100%);
     }
 }

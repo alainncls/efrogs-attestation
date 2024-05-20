@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import './ConnectButton.css';
 
-const updateButtonStyle = () => {
+const updateButtonStyle = async () => {
   const w3mButton = document.querySelector('w3m-button');
   if (!w3mButton) return;
 
@@ -11,22 +11,21 @@ const updateButtonStyle = () => {
   const wuiConnectButton = w3mConnectButton.shadowRoot?.querySelector('wui-connect-button');
   if (!wuiConnectButton) return;
 
-  const button = wuiConnectButton.shadowRoot?.querySelector('button');
-  if (!button) return;
+  const shadowRoot = wuiConnectButton.shadowRoot;
+  if (!shadowRoot) return;
 
-  button.style.border = 'none';
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(`
+      * {
+        background-color: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-size: 40px !important;
+        color: #FFFFFF !important;
+      }
+   `);
 
-  const wuiText = button.querySelector('wui-text');
-  if (!wuiText) return;
-
-  const slot = wuiText.shadowRoot?.querySelector('slot');
-  if (!slot) return;
-
-  if (window.matchMedia('(max-width: 992px)').matches) {
-    slot.style.fontSize = '32px';
-  } else {
-    slot.style.fontSize = '50px';
-  }
+  shadowRoot.adoptedStyleSheets = [sheet];
 };
 
 export default function ConnectButton() {
