@@ -10,6 +10,13 @@ import ConnectButton from './components/ConnectButton.tsx';
 import GenericPanel from './components/GenericPanel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
 import TestnetRibbon from './components/TestnetRibbon.tsx';
+import {
+  EFROGS_CONTRACT,
+  PORTAL_ADDRESS,
+  TESTNET_EFROGS_CONTRACT,
+  TESTNET_PORTAL_ADDRESS,
+  TRANSACTION_VALUE,
+} from './utils/constants.ts';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -22,8 +29,7 @@ function App() {
 
   const { address, chainId, isConnected, chain } = useAccount();
 
-  const eFrogsContract = '0x35c134262605bc69B3383EA132A077d09d8df061';
-  const { data: balance } = useReadContract({
+  const { data: balance, refetch } = useReadContract({
     abi: [{
       type: 'function',
       name: 'balanceOf',
@@ -32,9 +38,9 @@ function App() {
       outputs: [{ type: 'uint256' }],
     }],
     functionName: 'balanceOf',
-    address: eFrogsContract,
+    address: chain?.testnet ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
     args: [address ?? '0x0'],
-    chainId: 59141,
+    chainId,
     query: {
       enabled: !!address,
     },
@@ -58,16 +64,16 @@ function App() {
 
       try {
         let receipt = await veraxSdk.portal.attest(
-          '0x0Cb56F201E7aFe02E542E2D2D42c34d4ce7203F7',
+          chain?.testnet ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS,
           {
             schemaId: '0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5',
             expirationDate: Math.floor(Date.now() / 1000) + 2592000,
             subject: address,
-            attestationData: [{ contract: eFrogsContract, balance }],
+            attestationData: [{ contract: chain?.testnet ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT, balance }],
           },
           [],
           false,
-          100000000000000n,
+          TRANSACTION_VALUE,
         );
 
         if (receipt.transactionHash) {
@@ -92,7 +98,7 @@ function App() {
         }
       }
     }
-  }, [address, veraxSdk, balance]);
+  }, [address, veraxSdk, balance, chain?.testnet]);
 
   const disabled = useMemo(() => isConnected && (!address || !veraxSdk || !balance), [isConnected, address, veraxSdk, balance]);
 
@@ -108,7 +114,7 @@ function App() {
   return (
     <>
       <div className={'main-container'}>
-        {chain?.testnet && <TestnetRibbon />}
+        {chain?.testnet && <TestnetRibbon onNftMinted={refetch} />}
         <a href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
            target="_blank" rel="noopener noreferrer"
            className="link">
