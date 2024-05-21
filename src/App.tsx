@@ -17,6 +17,8 @@ import {
   TESTNET_PORTAL_ADDRESS,
   TRANSACTION_VALUE,
 } from './utils/constants.ts';
+import { lineaSepolia } from 'wagmi/chains';
+import { switchChain } from '@wagmi/core';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -28,6 +30,12 @@ function App() {
   const [message, setMessage] = useState<string>();
 
   const { address, chainId, isConnected, chain } = useAccount();
+
+  useEffect(() => {
+    if (chainId !== lineaSepolia.id) {
+      switchChain(wagmiConfig, { chainId: lineaSepolia.id });
+    }
+  }, [chainId]);
 
   const { data: balance, refetch } = useReadContract({
     abi: [{

@@ -1,9 +1,9 @@
-import { linea, lineaSepolia, mainnet } from 'wagmi/chains';
+import { lineaSepolia, mainnet } from 'wagmi/chains';
 import { getDefaultConfig } from 'connectkit';
 import { createConfig } from 'wagmi';
 
 export const walletConnectProjectId = 'b90f66826134d75b644e3311789615da';
-const chains = [lineaSepolia, linea, mainnet] as const;
+const chains = [lineaSepolia, mainnet] as const;
 export const wagmiConfig = createConfig(
   getDefaultConfig({
     chains,
