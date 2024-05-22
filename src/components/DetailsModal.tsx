@@ -15,7 +15,7 @@ const DetailsModal = ({ isOpen, onClose, txHash, attestationId, message }: Detai
   const { chainId } = useAccount();
 
   const truncateHexString = (hexString: string) => {
-    return `${hexString.slice(0, 7)}...${hexString.slice(hexString.length - 5, hexString.length)}`;
+    return `${hexString.slice(0, 5)}...${hexString.slice(hexString.length - 5, hexString.length)}`;
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -37,13 +37,14 @@ const DetailsModal = ({ isOpen, onClose, txHash, attestationId, message }: Detai
         }
 
         {message && <div className={'message error'}>{message}</div>}
-        
-        {txHash && <div className={'message'}>Transaction Hash: <a
-          href={`${chainId === 59144 ? 'https://lineascan.build/tx/' : 'https://sepolia.lineascan.build/tx/'}${txHash}`}
-          target="_blank" rel="noopener noreferrer">{truncateHexString(txHash)}</a></div>}
-        {attestationId && <div className={'message success'}>Attestation ID: <a
+
+        {attestationId && <div className={'message'}>Attestation ID: <a
           href={`${chainId === 59144 ? 'https://explorer.ver.ax/linea/attestations/' : 'https://explorer.ver.ax/linea-sepolia/attestations/'}${attestationId}`}
           target="_blank" rel="noopener noreferrer">{truncateHexString(attestationId)}</a></div>}
+
+        {txHash && <div className={`message sub ${attestationId ? '' : 'pending'}`}>Transaction Hash: <a
+          href={`${chainId === 59144 ? 'https://lineascan.build/tx/' : 'https://sepolia.lineascan.build/tx/'}${txHash}`}
+          target="_blank" rel="noopener noreferrer">{truncateHexString(txHash)}</a></div>}
       </div>
     </div>
   ) : null;

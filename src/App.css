@@ -59,3 +59,9 @@ body {
         transform: translate(180px, 230px);
     }
 }
+
+@media (min-width: 1800px) {
+    .grooving-frog {
+        transform: translate(180px, 300px);
+    }
+}
