@@ -10,3 +10,9 @@
         transform: translate(-50%, -110%);
     }
 }
+
+@media (min-width: 1800px) {
+    .connect-button-container {
+        transform: translate(-50%, -80%);
+    }
+}

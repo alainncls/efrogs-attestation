@@ -14,11 +14,12 @@
 
 .generic-button.with-label {
     justify-content: normal;
+    text-transform: uppercase;
+    color: #F1D199
 }
 
 .generic-button.with-label.disabled {
-    justify-content: normal;
-    color: #d5d5d5;
+    color: #D1D1D1;
 }
 
 .generic-button-label {

@@ -3,6 +3,6 @@ import { ConnectKitButton } from 'connectkit';
 
 export default function ConnectButton() {
   return <div className={'connect-button-container'}>
-    <ConnectKitButton />
+    <ConnectKitButton label={'CONNECT WALLET'} />
   </div>;
 }

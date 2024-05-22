@@ -17,7 +17,8 @@
 .generic-panel-title {
     position: fixed;
     z-index: 1;
-    color: #ffffff;
+    color: #F1D199;
+    text-transform: uppercase;
     text-align: center;
     font-size: 40px;
     line-height: normal;
@@ -36,5 +37,12 @@
         width: 20%;
         top: 40%;
         left: 50%;
+    }
+}
+
+@media (min-width: 1800px) {
+    .generic-panel-title {
+        font-size: 90px;
+        top: 35%;
     }
 }
