@@ -47,6 +47,9 @@ contract EFrogsPortal is AbstractPortal, Ownable {
      *          the sender is the subject of the attestation
      *          and if the sender owns an eFrog
      *          and if the value sent is sufficient
+     *          and if the schema is authorized
+     *          and if the token contract is the eFrogs contract
+     *          and if the token balance is correct
      */
     function _onAttest(
         AttestationPayload memory attestationPayload,
