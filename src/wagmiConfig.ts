@@ -8,7 +8,7 @@ export const wagmiConfig = createConfig(
   getDefaultConfig({
     chains,
     walletConnectProjectId,
-    appName: 'Your App Name',
+    appName: 'eFrogs Attestations',
     appDescription: 'Issue attestation of eFrogs ownership',
     appUrl: 'https://efrogs.alainnicolas.fr',
     appIcon: 'https://efrogs.alainnicolas.fr/favicon.jpg',

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.20.1",
-    "@verax-attestation-registry/verax-sdk": "^1.7.1",
+    "@verax-attestation-registry/verax-sdk": "^1.8.0",
     "connectkit": "^1.7.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
