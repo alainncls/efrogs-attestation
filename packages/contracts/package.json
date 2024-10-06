@@ -11,6 +11,10 @@
     "solhint": "solhint **/*.sol -c .solhint.json",
     "test": "npx hardhat test"
   },
+  "dependencies": {
+    "@openzeppelin/contracts": "4.9.6",
+    "@openzeppelin/contracts-upgradeable": "4.9.6"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
@@ -23,9 +27,5 @@
     "prettier": "^3.3.3",
     "prettier-plugin-solidity": "^1.4.1",
     "solhint": "^5.0.3"
-  },
-  "dependencies": {
-    "@openzeppelin/contracts": "4",
-    "@openzeppelin/contracts-upgradeable": "4"
   }
 }
