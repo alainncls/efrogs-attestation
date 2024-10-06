@@ -25,7 +25,7 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
     if (isConfirmed) {
       onNftMinted();
     }
-  }, [isConfirmed]);
+  }, [isConfirmed, onNftMinted]);
 
   const mintTestNft = () => {
     if (address) {
