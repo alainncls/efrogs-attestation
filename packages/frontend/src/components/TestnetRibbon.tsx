@@ -1,6 +1,14 @@
-import { useAccount, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
 import './TestnetRibbon.css';
-import { EFROGS_CONTRACT, TESTNET_EFROGS_CONTRACT, TRANSACTION_VALUE } from '../utils/constants.ts';
+import {
+  EFROGS_CONTRACT,
+  TESTNET_EFROGS_CONTRACT,
+  TRANSACTION_VALUE,
+} from '../utils/constants.ts';
 import { useEffect } from 'react';
 
 interface TestnetRibbonProps {
@@ -10,11 +18,7 @@ interface TestnetRibbonProps {
 const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   const { address, chainId, chain } = useAccount();
 
-  const {
-    data: hash,
-    isPending,
-    writeContract,
-  } = useWriteContract();
+  const { data: hash, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
@@ -33,19 +37,21 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
       try {
         writeContract({
           address: chain?.testnet ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
-          abi: [{
-            type: 'function',
-            name: 'createToken',
-            stateMutability: 'payable',
-            inputs: [
-              {
-                internalType: 'address',
-                name: 'to',
-                type: 'address',
-              },
-            ],
-            outputs: [],
-          }],
+          abi: [
+            {
+              type: 'function',
+              name: 'createToken',
+              stateMutability: 'payable',
+              inputs: [
+                {
+                  internalType: 'address',
+                  name: 'to',
+                  type: 'address',
+                },
+              ],
+              outputs: [],
+            },
+          ],
           functionName: 'createToken',
           args: [address ?? '0x0'],
           chainId,
@@ -72,8 +78,13 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   return (
     <div className="ribbon">
       <div>Testnet</div>
-      <button className={'btn-mint'} onClick={mintTestNft}
-              disabled={isPending || isConfirming}>{btnLabel()} </button>
+      <button
+        className={'btn-mint'}
+        onClick={mintTestNft}
+        disabled={isPending || isConfirming}
+      >
+        {btnLabel()}{' '}
+      </button>
     </div>
   );
 };

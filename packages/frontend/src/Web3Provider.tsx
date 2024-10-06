@@ -20,7 +20,6 @@ interface Web3ProviderProps {
 }
 
 export function Web3Provider({ children }: Readonly<Web3ProviderProps>) {
-
   const customTheme: CustomTheme = {
     '--ck-font-family': '"Jersey 10", sans-serif',
     '--ck-connectbutton-color': '#F1D199',
