@@ -10,19 +10,21 @@ The demo webapp is available at [efrogs.alainnicolas.fr](https://audit.alainnico
 ## How to use
 
 ```bash
-npm i
+pnpm install
 ```
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## Linea Sepolia data
 
 ### Portal
 
-[`0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7`](https://explorer.ver.ax/linea-sepolia/portals/0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7)
+[
+`0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7`](https://explorer.ver.ax/linea-sepolia/portals/0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7)
 
 ### Schema
 
-[`0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
+[
+`0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)

@@ -8,7 +8,12 @@ interface GenericButtonProps {
   onClick?: () => Promise<void>;
 }
 
-export default function GenericButton({ children, disabled, label, onClick }: GenericButtonProps) {
+export default function GenericButton({
+  children,
+  disabled,
+  label,
+  onClick,
+}: GenericButtonProps) {
   const [buttonHeight, setButtonHeight] = useState('auto');
 
   useEffect(() => {
@@ -19,9 +24,19 @@ export default function GenericButton({ children, disabled, label, onClick }: Ge
     img.src = disabled ? 'button_disabled.png' : '/button_enabled.png';
   }, [disabled]);
 
-  return <div className={`generic-button${disabled ? ' disabled' : ''}${label ? ' with-label' : ''}`}
-              onClick={onClick}
-              style={{ height: buttonHeight }}>
-    {label ? <div className={`generic-button-label${disabled ? ' disabled' : ''}`}>{label}</div> : children}
-  </div>;
+  return (
+    <div
+      className={`generic-button${disabled ? ' disabled' : ''}${label ? ' with-label' : ''}`}
+      onClick={onClick}
+      style={{ height: buttonHeight }}
+    >
+      {label ? (
+        <div className={`generic-button-label${disabled ? ' disabled' : ''}`}>
+          {label}
+        </div>
+      ) : (
+        children
+      )}
+    </div>
+  );
 }

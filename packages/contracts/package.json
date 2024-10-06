@@ -6,7 +6,7 @@
     "compile": "npx hardhat compile",
     "deploy:nft": "npx hardhat run scripts/deployEFrogsNFT.ts --network",
     "deploy:portal": "npx hardhat run scripts/deployEFrogsPortal.ts --network",
-    "lint": "prettier --list-different '**/*.sol' '**/*.ts' '**/*.json' && npm run solhint",
+    "lint": "prettier --list-different '**/*.sol' '**/*.ts' '**/*.json' --ignore-path '../../.prettierignore' && npm run solhint",
     "lint:fix": "prettier --write '**/*.sol' '**/*.ts' '**/*.json'",
     "solhint": "solhint **/*.sol -c .solhint.json",
     "test": "npx hardhat test"
@@ -23,5 +23,9 @@
     "prettier": "^3.3.3",
     "prettier-plugin-solidity": "^1.4.1",
     "solhint": "^5.0.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "4",
+    "@openzeppelin/contracts-upgradeable": "4"
   }
 }
