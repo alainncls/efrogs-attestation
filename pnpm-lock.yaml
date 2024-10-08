@@ -16,7 +16,7 @@ importers:
   .:
     dependencies:
       eslint:
-        specifier: '8'
+        specifier: ^8.57.1
         version: 8.57.1
       prettier:
         specifier: ^3.3.3
