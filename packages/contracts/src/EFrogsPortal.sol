@@ -32,11 +32,21 @@ contract EFrogsPortal is AbstractPortal, Ownable {
     error NotEFrogsContract();
     /// @dev Error thrown when the token balance is incorrect
     error IncorrectBalance();
+    /// @dev Error thrown when the function is not implemented
+    error NotImplemented();
 
     constructor(address[] memory modules, address router, address eFrogsAddress) AbstractPortal(modules, router) {
         eFrogsContract = IERC721(eFrogsAddress);
         fee = 0.0001 ether;
         authorizedSchemas[0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5] = true;
+    }
+
+    function _onAttest(
+        AttestationPayload memory /*attestationPayload*/,
+        address /*attester*/,
+        uint256 /*value*/
+    ) internal pure override {
+        revert NotImplemented();
     }
 
     /**
@@ -51,9 +61,9 @@ contract EFrogsPortal is AbstractPortal, Ownable {
      *          and if the token contract is the eFrogs contract
      *          and if the token balance is correct
      */
-    function _onAttest(
+    function _onAttestV2(
         AttestationPayload memory attestationPayload,
-        address /*attester*/,
+        bytes[] memory /*validationPayloads*/,
         uint256 value
     ) internal view override {
         address subject = address(0);
@@ -75,6 +85,38 @@ contract EFrogsPortal is AbstractPortal, Ownable {
             if (tokenAddress != address(eFrogsContract)) revert NotEFrogsContract();
             if (tokenBalance != balance) revert IncorrectBalance();
         }
+    }
+
+    function _onBulkAttest(
+        AttestationPayload[] memory /*attestationsPayloads*/,
+        bytes[][] memory /*validationPayloads*/
+    ) internal pure override {
+        revert NotImplemented();
+    }
+
+    function _onReplace(
+        bytes32 /*attestationId*/,
+        AttestationPayload memory /*attestationPayload*/,
+        address /*attester*/,
+        uint256 /*value*/
+    ) internal view override {
+        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
+    }
+
+    function _onBulkReplace(
+        bytes32[] memory /*attestationIds*/,
+        AttestationPayload[] memory /*attestationsPayloads*/,
+        bytes[][] memory /*validationPayloads*/
+    ) internal view override {
+        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
+    }
+
+    function _onRevoke(bytes32 /*attestationId*/) internal view override {
+        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
+    }
+
+    function _onBulkRevoke(bytes32[] memory /*attestationIds*/) internal view override {
+        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
     }
 
     /**
