@@ -1,5 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
+import 'hardhat-contract-sizer';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -22,17 +23,17 @@ const config: HardhatUserConfig = {
       {
         version: '0.8.21',
         settings: {
-          evmVersion: 'paris',
+          evmVersion: 'london',
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
         },
       },
     ],
   },
-  defaultNetwork: 'linea-goerli',
+  defaultNetwork: 'linea-sepolia',
   networks: {
-    'linea-goerli': {
-      url: `https://linea-goerli.infura.io/v3/${INFURA_KEY}`,
-      accounts: [PRIVATE_KEY],
-    },
     'linea-sepolia': {
       url: `https://linea-sepolia.infura.io/v3/${INFURA_KEY}`,
       accounts: [PRIVATE_KEY],
@@ -47,19 +48,10 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      'linea-goerli': LINEASCAN_API_KEY,
       'linea-sepolia': LINEASCAN_API_KEY,
       linea: LINEASCAN_API_KEY,
     },
     customChains: [
-      {
-        network: 'linea-goerli',
-        chainId: 59140,
-        urls: {
-          apiURL: 'https://api-testnet.lineascan.build/api',
-          browserURL: 'https://goerli.lineascan.build',
-        },
-      },
       {
         network: 'linea-sepolia',
         chainId: 59141,
