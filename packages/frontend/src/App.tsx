@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
-import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
+import { Conf, VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
 import { Hex } from 'viem';
@@ -13,11 +13,12 @@ import TestnetRibbon from './components/TestnetRibbon.tsx';
 import {
   EFROGS_CONTRACT,
   PORTAL_ADDRESS,
+  SCHEMA_ID,
   TESTNET_EFROGS_CONTRACT,
   TESTNET_PORTAL_ADDRESS,
   TRANSACTION_VALUE,
 } from './utils/constants.ts';
-import { lineaSepolia } from 'wagmi/chains';
+import { linea, lineaSepolia } from 'wagmi/chains';
 import { switchChain } from '@wagmi/core';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
@@ -29,11 +30,11 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>();
 
-  const { address, chainId, isConnected, chain } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
 
   useEffect(() => {
-    if (chainId !== lineaSepolia.id) {
-      switchChain(wagmiConfig, { chainId: lineaSepolia.id });
+    if (chainId !== lineaSepolia.id && chainId !== linea.id) {
+      switchChain(wagmiConfig, { chainId: linea.id });
     }
   }, [chainId]);
 
@@ -48,7 +49,8 @@ function App() {
       },
     ],
     functionName: 'balanceOf',
-    address: chain?.testnet ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
+    address:
+      chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
     args: [address ?? '0x0'],
     chainId,
     query: {
@@ -58,11 +60,18 @@ function App() {
 
   useEffect(() => {
     if (chainId && address) {
-      const sdkConf =
-        chainId === 59144
-          ? VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND
-          : VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND;
+      let sdkConf: Conf = VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND;
+      if (chainId === linea.id) {
+        sdkConf.subgraphUrl =
+          'https://gateway.thegraph.com/api/649414afdd14301c7a2f6d141f717ed1/subgraphs/id/ESRDQ5djmucKeqxNz7JGVHr621sjGEEsY6M6JibjJ9u3';
+      } else if (chainId === lineaSepolia.id) {
+        sdkConf = VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND;
+        sdkConf.subgraphUrl =
+          'https://gateway.thegraph.com/api/649414afdd14301c7a2f6d141f717ed1/subgraphs/id/2gfRmZ1e1uJKpCQsUrvxJmRivNa7dvvuULoc8SJabR8v';
+      }
+
       const sdk = new VeraxSdk(sdkConf, address);
+
       setVeraxSdk(sdk);
     }
   }, [chainId, address]);
@@ -75,18 +84,18 @@ function App() {
       setIsModalOpen(true);
 
       try {
-        let receipt = await veraxSdk.portal.attest(
-          chain?.testnet ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS,
+        let receipt = await veraxSdk.portal.attestV2(
+          chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS,
           {
-            schemaId:
-              '0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5',
+            schemaId: SCHEMA_ID,
             expirationDate: Math.floor(Date.now() / 1000) + 2592000,
             subject: address,
             attestationData: [
               {
-                contract: chain?.testnet
-                  ? TESTNET_EFROGS_CONTRACT
-                  : EFROGS_CONTRACT,
+                contract:
+                  chainId === lineaSepolia.id
+                    ? TESTNET_EFROGS_CONTRACT
+                    : EFROGS_CONTRACT,
                 balance,
               },
             ],
@@ -118,7 +127,7 @@ function App() {
         }
       }
     }
-  }, [address, veraxSdk, balance, chain?.testnet]);
+  }, [address, veraxSdk, balance, chainId]);
 
   const disabled = useMemo(
     () => isConnected && (!address || !veraxSdk || !balance),
@@ -137,7 +146,7 @@ function App() {
   return (
     <>
       <div className={'main-container'}>
-        {chain?.testnet && <TestnetRibbon onNftMinted={refetch} />}
+        {chainId === lineaSepolia.id && <TestnetRibbon onNftMinted={refetch} />}
         <a
           href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
           target="_blank"
