@@ -1,11 +1,11 @@
-import { lineaSepolia, mainnet } from 'wagmi/chains';
+import { linea, lineaSepolia, mainnet } from 'wagmi/chains';
 import { getDefaultConfig } from 'connectkit';
 import { createConfig, http } from 'wagmi';
 
 export const walletConnectProjectId = 'b90f66826134d75b644e3311789615da';
 const infuraApiKey: string = '2VbuXFYphoB468fyFPinOmis7o5';
 
-const chains = [lineaSepolia, mainnet] as const;
+const chains = [lineaSepolia, linea, mainnet] as const;
 export const wagmiConfig = createConfig(
   getDefaultConfig({
     walletConnectProjectId,
@@ -16,6 +16,7 @@ export const wagmiConfig = createConfig(
     chains,
     transports: {
       [mainnet.id]: http(`https://mainnet.infura.io/v3/${infuraApiKey}`),
+      [linea.id]: http(`https://linea-mainnet.infura.io/v3/${infuraApiKey}`),
       [lineaSepolia.id]: http(
         `https://linea-sepolia.infura.io/v3/${infuraApiKey}`,
       ),
