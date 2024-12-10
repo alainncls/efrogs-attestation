@@ -6,11 +6,7 @@ dotenv.config({ path: '.env' });
 
 const { INFURA_KEY, PRIVATE_KEY, LINEASCAN_API_KEY } = process.env;
 
-if (
-  INFURA_KEY === undefined ||
-  PRIVATE_KEY === undefined ||
-  LINEASCAN_API_KEY === undefined
-) {
+if (!INFURA_KEY || !PRIVATE_KEY || !LINEASCAN_API_KEY) {
   throw new Error(
     'INFURA_KEY, PRIVATE_KEY or LINEASCAN_API_KEY is not set in .env file',
   );
