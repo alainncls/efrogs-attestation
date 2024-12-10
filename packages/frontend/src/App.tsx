@@ -3,7 +3,7 @@ import './App.css';
 import { Conf, VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
-import { Hex } from 'viem';
+import { Abi, Hex } from 'viem';
 import { wagmiConfig } from './wagmiConfig.ts';
 import GenericButton from './components/GenericButton.tsx';
 import ConnectButton from './components/ConnectButton.tsx';
@@ -20,6 +20,7 @@ import {
 } from './utils/constants.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
 import { switchChain } from '@wagmi/core';
+import { abi as eFrogsPortalAbi } from '../../contracts/artifacts/src/EFrogsPortal.sol/EFrogsPortal.json';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -103,6 +104,7 @@ function App() {
           [],
           false,
           TRANSACTION_VALUE,
+          eFrogsPortalAbi as Abi,
         );
 
         if (receipt.transactionHash) {
