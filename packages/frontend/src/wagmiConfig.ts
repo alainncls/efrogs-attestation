@@ -5,7 +5,7 @@ import { createConfig, http } from 'wagmi';
 export const walletConnectProjectId = 'b90f66826134d75b644e3311789615da';
 const infuraApiKey: string = '2VbuXFYphoB468fyFPinOmis7o5';
 
-const chains = [lineaSepolia, linea] as const;
+const chains = [linea, lineaSepolia] as const;
 export const wagmiConfig = createConfig(
   getDefaultConfig({
     walletConnectProjectId,
