@@ -1,6 +1,5 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import 'hardhat-contract-sizer';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
