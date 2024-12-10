@@ -41,11 +41,11 @@ async function main() {
 
   console.log('Registering EFrogsPortal...');
 
-  const chainId = network.config.chainId;
+  const chainName = network.name;
   const signers = await ethers.getSigners();
   const signer = signers[0];
   const veraxSdk = new VeraxSdk(
-    chainId === 59144
+    chainName === 'linea'
       ? VeraxSdk.DEFAULT_LINEA_MAINNET
       : VeraxSdk.DEFAULT_LINEA_SEPOLIA,
     signer.address as Address,
