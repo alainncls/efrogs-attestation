@@ -2,12 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { Conf, VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
-import { waitForTransactionReceipt } from 'viem/actions';
+import { switchChain, waitForTransactionReceipt } from 'viem/actions';
 import { Abi, Hex } from 'viem';
-import { wagmiConfig } from './wagmiConfig.ts';
-import GenericButton from './components/GenericButton.tsx';
-import ConnectButton from './components/ConnectButton.tsx';
-import GenericPanel from './components/GenericPanel.tsx';
+import Panel from './components/Panel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
 import TestnetRibbon from './components/TestnetRibbon.tsx';
 import {
@@ -19,8 +16,10 @@ import {
   TRANSACTION_VALUE,
 } from './utils/constants.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
-import { switchChain } from '@wagmi/core';
 import { abi as eFrogsPortalAbi } from '../../contracts/artifacts/src/EFrogsPortal.sol/EFrogsPortal.json';
+import Footer from './components/Footer.tsx';
+import { wagmiConfig } from './wagmiConfig.ts';
+import Header from './components/Header.tsx';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -35,7 +34,8 @@ function App() {
 
   useEffect(() => {
     if (chainId !== lineaSepolia.id && chainId !== linea.id) {
-      switchChain(wagmiConfig, { chainId: linea.id });
+      const publicClient = wagmiConfig.getClient();
+      switchChain(publicClient, { id: linea.id });
     }
   }, [chainId]);
 
@@ -132,7 +132,7 @@ function App() {
   }, [address, veraxSdk, balance, chainId]);
 
   const disabled = useMemo(
-    () => isConnected && (!address || !veraxSdk || !balance),
+    () => !isConnected || (isConnected && (!address || !veraxSdk || !balance)),
     [isConnected, address, veraxSdk, balance],
   );
 
@@ -148,6 +148,7 @@ function App() {
   return (
     <>
       <div className={'main-container'}>
+        <Header />
         {chainId === lineaSepolia.id && <TestnetRibbon onNftMinted={refetch} />}
         <a
           href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
@@ -157,14 +158,7 @@ function App() {
         >
           <div className="grooving-frog"></div>
         </a>
-        <GenericPanel title={title} />
-        <GenericButton
-          disabled={disabled}
-          label={address ? 'Issue attestation' : undefined}
-          onClick={issueAttestation}
-        >
-          <ConnectButton />
-        </GenericButton>
+        <Panel title={title} disabled={disabled} onClick={issueAttestation} />
         <DetailsModal
           attestationId={attestationId}
           txHash={txHash}
@@ -172,6 +166,7 @@ function App() {
           onClose={toggleModal}
           message={message}
         />
+        <Footer />
       </div>
     </>
   );
