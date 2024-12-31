@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { Conf, VeraxSdk } from '@verax-attestation-registry/verax-sdk';
-import { useAccount, useReadContract } from 'wagmi';
-import { switchChain, waitForTransactionReceipt } from 'viem/actions';
+import { useAccount, useReadContract, useSwitchChain } from 'wagmi';
+import { waitForTransactionReceipt } from 'viem/actions';
 import { Abi, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
@@ -31,13 +31,13 @@ function App() {
   const [message, setMessage] = useState<string>();
 
   const { address, chainId, isConnected } = useAccount();
+  const { switchChain } = useSwitchChain();
 
   useEffect(() => {
     if (chainId !== lineaSepolia.id && chainId !== linea.id) {
-      const publicClient = wagmiConfig.getClient();
-      switchChain(publicClient, { id: linea.id });
+      switchChain({ chainId: linea.id });
     }
-  }, [chainId]);
+  }, [chainId, switchChain]);
 
   const { data: balance, refetch } = useReadContract({
     abi: [
@@ -132,7 +132,10 @@ function App() {
   }, [address, veraxSdk, balance, chainId]);
 
   const disabled = useMemo(
-    () => !isConnected || (isConnected && (!address || !veraxSdk || !balance)),
+    () =>
+      !isConnected ||
+      (chainId !== linea.id && chainId !== lineaSepolia.id) ||
+      (isConnected && (!address || !veraxSdk || !balance)),
     [isConnected, address, veraxSdk, balance],
   );
 
