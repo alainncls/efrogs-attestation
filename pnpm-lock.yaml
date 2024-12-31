@@ -11,9 +11,8 @@ overrides:
   elliptic@>=5.2.1 <=6.5.6: '>=6.5.7'
   cookie@<0.7.0: '>=0.7.0'
   elliptic@<6.5.6: '>=6.5.6'
-  secp256k1@>=4.0.0 <4.0.4: '>=4.0.4'
+  nanoid@<3.3.8: '>=3.3.8'
   elliptic@<6.6.0: '>=6.6.0'
-  cross-spawn@>=7.0.0 <7.0.5: '>=7.0.5'
 
 importers:
 
@@ -3522,9 +3521,9 @@ packages:
   multiformats@9.9.0:
     resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+  nanoid@5.0.9:
+    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -4114,8 +4113,8 @@ packages:
   scrypt-js@3.0.1:
     resolution: {integrity: sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==}
 
-  secp256k1@5.0.1:
-    resolution: {integrity: sha512-lDFs9AAIaWP9UCdtWrotXWWF9t8PWgQDcxqgAnpM9rMqxb3Oaq2J0thzPVSxBwdJgyQtkU/sYtFtbM1RSt/iYA==}
+  secp256k1@4.0.4:
+    resolution: {integrity: sha512-6JfvwvjUOn8F/jUoBY2Q1v5WY5XS+rj8qSe0v8Y4ezH4InLgTEeOOPQsRll9OV429Pvo6BCHGavIyJfr3TAhsw==}
     engines: {node: '>=18.0.0'}
 
   semver@5.7.2:
@@ -7104,7 +7103,7 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/safe-json': 1.0.2
       events: 3.3.0
-      ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ws: 7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -8176,7 +8175,7 @@ snapshots:
       randombytes: 2.1.0
       safe-buffer: 5.2.1
       scrypt-js: 3.0.1
-      secp256k1: 5.0.1
+      secp256k1: 4.0.4
       setimmediate: 1.0.5
 
   ethereum-cryptography@1.2.0:
@@ -9250,7 +9249,7 @@ snapshots:
 
   multiformats@9.9.0: {}
 
-  nanoid@3.3.7: {}
+  nanoid@5.0.9: {}
 
   natural-compare@1.4.0: {}
 
@@ -9524,7 +9523,7 @@ snapshots:
 
   postcss@8.4.47:
     dependencies:
-      nanoid: 3.3.7
+      nanoid: 5.0.9
       picocolors: 1.1.0
       source-map-js: 1.2.1
 
@@ -9836,7 +9835,7 @@ snapshots:
 
   scrypt-js@3.0.1: {}
 
-  secp256k1@5.0.1:
+  secp256k1@4.0.4:
     dependencies:
       elliptic: 6.6.1
       node-addon-api: 5.1.0
