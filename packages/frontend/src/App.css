@@ -21,6 +21,7 @@ body {
     --pending-color: #ffc107;
     --error-color: #dc3545;
     --message-text-color: #000000;
+    --wui-color-gray-glass-005: #000000
 }
 
 .main-container {

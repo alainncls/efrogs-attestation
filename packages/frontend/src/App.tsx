@@ -18,8 +18,8 @@ import {
 import { linea, lineaSepolia } from 'wagmi/chains';
 import { abi as eFrogsPortalAbi } from '../../contracts/artifacts/src/EFrogsPortal.sol/EFrogsPortal.json';
 import Footer from './components/Footer.tsx';
-import { wagmiConfig } from './wagmiConfig.ts';
 import Header from './components/Header.tsx';
+import { wagmiAdapter } from './wagmiConfig.ts';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
@@ -109,9 +109,12 @@ function App() {
 
         if (receipt.transactionHash) {
           setTxHash(receipt.transactionHash);
-          receipt = await waitForTransactionReceipt(wagmiConfig.getClient(), {
-            hash: receipt.transactionHash,
-          });
+          receipt = await waitForTransactionReceipt(
+            wagmiAdapter.wagmiConfig.getClient(),
+            {
+              hash: receipt.transactionHash,
+            },
+          );
           setAttestationId(receipt.logs?.[0].topics[1]);
         } else {
           setMessage(DEFAULT_ERROR_MESSAGE);
