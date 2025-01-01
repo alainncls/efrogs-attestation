@@ -4,6 +4,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transform: translate(0, -40%);
 }
 
 .signage-image {
