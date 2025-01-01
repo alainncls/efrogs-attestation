@@ -136,7 +136,7 @@ function App() {
       !isConnected ||
       (chainId !== linea.id && chainId !== lineaSepolia.id) ||
       (isConnected && (!address || !veraxSdk || !balance)),
-    [isConnected, address, veraxSdk, balance],
+    [isConnected, chainId, address, veraxSdk, balance],
   );
 
   const title = useMemo(() => {
