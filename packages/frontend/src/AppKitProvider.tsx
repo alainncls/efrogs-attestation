@@ -8,7 +8,7 @@ import LineaSepoliaIcon from './assets/linea-sepolia.svg';
 const queryClient = new QueryClient();
 
 const metadata = {
-  name: 'eFrogs Attestations',
+  name: 'eFrogs Attestation',
   description: 'Issue attestation of eFrogs ownership',
   url: 'https://efrogs.alainnicolas.fr',
   icons: ['https://efrogs.alainnicolas.fr/favicon.jpg'],
