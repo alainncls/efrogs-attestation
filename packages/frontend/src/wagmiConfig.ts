@@ -3,8 +3,18 @@ import { AppKitNetwork } from '@reown/appkit/networks';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { http } from 'viem';
 
-export const projectId: string = 'b90f66826134d75b644e3311789615da';
-const infuraApiKey: string = '2VbuXFYphoB468fyFPinOmis7o5';
+const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const infuraApiKey = import.meta.env.VITE_INFURA_API_KEY;
+
+if (!walletConnectProjectId) {
+  throw new Error('Missing VITE_WALLETCONNECT_PROJECT_ID environment variable');
+}
+
+if (!infuraApiKey) {
+  throw new Error('Missing VITE_INFURA_API_KEY environment variable');
+}
+
+export const projectId = walletConnectProjectId;
 
 export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
   linea,
@@ -16,10 +26,23 @@ export const wagmiAdapter = new WagmiAdapter({
   networks,
   projectId,
   transports: {
-    [linea.id]: http(`https://linea-mainnet.infura.io/v3/${infuraApiKey}`),
+    [linea.id]: http(`https://linea-mainnet.infura.io/v3/${infuraApiKey}`, {
+      timeout: 10_000,
+      retryCount: 3,
+      retryDelay: 1_000,
+    }),
     [lineaSepolia.id]: http(
       `https://linea-sepolia.infura.io/v3/${infuraApiKey}`,
+      {
+        timeout: 10_000,
+        retryCount: 3,
+        retryDelay: 1_000,
+      },
     ),
-    [mainnet.id]: http(`https://mainnet.infura.io/v3/${infuraApiKey}`),
+    [mainnet.id]: http(`https://mainnet.infura.io/v3/${infuraApiKey}`, {
+      timeout: 10_000,
+      retryCount: 3,
+      retryDelay: 1_000,
+    }),
   },
 });

@@ -5,50 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm -r run dev",
-    "postinstall": "pnpm --filter \"{packages/contracts}\" compile",
+    "format": "prettier --check '**/*.sol' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.md' --ignore-path .prettierignore",
+    "format:fix": "prettier --write '**/*.sol' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.md' --ignore-path .prettierignore",
+    "preinstall": "npx only-allow@1.2.2 pnpm",
     "lint": "pnpm -r run lint",
-    "lint:fix": "prettier --write '**/*.sol' '**/*.ts' '**/*.json' '**/*.tsx' '**/*.json' '**/*.md'",
-    "test": "pnpm -r run test"
+    "lint:fix": "pnpm -r run lint:fix",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck"
   },
-  "dependencies": {
-    "eslint": "^8.57.1",
-    "prettier": "^3.3.3"
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "prettier-plugin-solidity": "^2.2.1"
   },
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@10.26.2",
   "engines": {
-    "node": ">=18.18.0",
-    "pnpm": ">=9.10.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@babel/helpers@<7.26.10": ">=7.26.10",
-      "@babel/runtime@<7.26.10": ">=7.26.10",
-      "@coinbase/wallet-sdk@>=4.0 <4.3.0": ">=4.3.0",
-      "@metamask/sdk@>=0.16.0 <=0.33.0": ">=0.33.1",
-      "@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0": ">=0.33.1",
-      "axios@>=1.0.0 <1.8.2": ">=1.8.2",
-      "axios@>=1.0.0 <1.12.0": ">=1.12.0",
-      "base-x@<=3.0.10": ">=3.0.11",
-      "base-x@=5.0.0": ">=5.0.1",
-      "brace-expansion@>=2.0.0 <=2.0.1": ">=2.0.2",
-      "brace-expansion@>=1.0.0 <=1.1.11": ">=1.1.12",
-      "cipher-base@<=1.0.4": ">=1.0.5",
-      "cookie@<0.7.0": ">=0.7.0",
-      "elliptic@>=5.2.1 <=6.5.6": ">=6.5.7",
-      "elliptic@>=4.0.0 <=6.5.6": ">=6.5.7",
-      "elliptic@>=2.0.0 <=6.5.6": ">=6.5.7",
-      "elliptic@<6.5.6": ">=6.5.6",
-      "elliptic@<6.6.0": ">=6.6.0",
-      "elliptic@<=6.6.0": ">=6.6.1",
-      "esbuild@<=0.24.2": ">=0.25.0",
-      "form-data@>=4.0.0 <4.0.4": ">=4.0.4",
-      "js-yaml@>=4.0.0 <4.1.1": ">=4.1.1",
-      "pbkdf2@>=3.0.10 <=3.1.2": ">=3.1.3",
-      "pbkdf2@<=3.1.2": ">=3.1.3",
-      "sha.js@<=2.4.11": ">=2.4.12",
-      "tmp@<=0.2.3": ">=0.2.4",
-      "undici@>=4.5.0 <5.28.5": ">=5.28.5",
-      "undici@<5.29.0": ">=5.29.0"
-    }
+    "node": ">=22.21.1",
+    "pnpm": ">=10"
   }
 }

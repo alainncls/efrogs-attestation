@@ -1,4 +1,6 @@
 artifacts
 cache
+dist
 node_modules
+pnpm-lock.yaml
 typechain-types
