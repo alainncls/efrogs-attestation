@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import './Panel.css';
 
 interface PanelProps {
@@ -7,24 +7,42 @@ interface PanelProps {
   onClick: () => Promise<void>;
 }
 
-const Panel = React.memo(({ title, disabled, onClick }: PanelProps) => {
+export default function Panel({ title, disabled, onClick }: PanelProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    if (disabled || isLoading) return;
+    setIsLoading(true);
+    try {
+      await onClick();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="panel">
       <div className="signage-image">
-        <div className="panel-title">{title}</div>
+        <h1 className="panel-title">{title}</h1>
       </div>
       <div className="button-container">
-        <div
+        <button
+          type="button"
           className={`button${disabled ? ' disabled' : ''}`}
-          onClick={!disabled ? onClick : undefined}
+          onClick={handleClick}
+          disabled={disabled || isLoading}
+          aria-busy={isLoading}
+          aria-label={
+            disabled
+              ? 'Connect wallet to issue attestation'
+              : 'Issue attestation'
+          }
         >
-          <div className={`button-label${disabled ? ' disabled' : ''}`}>
-            Issue attestation
-          </div>
-        </div>
+          <span className={`button-label${disabled ? ' disabled' : ''}`}>
+            {isLoading ? 'Processing...' : 'Issue attestation'}
+          </span>
+        </button>
       </div>
     </div>
   );
-});
-
-export default Panel;
+}

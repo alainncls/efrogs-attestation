@@ -1,0 +1,48 @@
+.chain-mismatch-banner {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #dc3545;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Jersey 10', sans-serif;
+  font-size: 24px;
+  text-align: center;
+}
+
+.switch-chain-btn {
+  background-color: #ffffff;
+  color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-family: 'Jersey 10', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.switch-chain-btn:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.switch-chain-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (min-width: 992px) {
+  .chain-mismatch-banner {
+    flex-direction: row;
+    top: 80px;
+  }
+}
+
