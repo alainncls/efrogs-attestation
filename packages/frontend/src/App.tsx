@@ -108,21 +108,6 @@ function App() {
           customAbi: EFROGS_PORTAL_ABI,
         };
 
-        console.log('portalAddress', portalAddress);
-        console.log(
-          'veraxSdk - isPortalRegistered',
-          await veraxSdk.portal.isPortalRegistered(portalAddress),
-        );
-
-        const params = await veraxSdk.portal.simulateAttest(
-          portalAddress,
-          attestationPayload,
-          validationPayload,
-          options,
-        );
-
-        console.log('Simulation params:', params);
-
         let receipt = await veraxSdk.portal.attest(
           portalAddress,
           attestationPayload,
