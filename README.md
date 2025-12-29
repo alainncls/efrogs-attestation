@@ -63,13 +63,17 @@ The frontend requires the following environment variables:
 
 ### Portal
 
-- Linea Sepolia: [`0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7`](https://explorer.ver.ax/linea-sepolia/portals/0x0cb56f201e7afe02e542e2d2d42c34d4ce7203f7)
-- Linea Mainnet: [`0xA49C247221C358c8cF6c4EbF3C89adE23AbE318D`](https://explorer.ver.ax/linea/portals/0xa49c247221c358c8cf6c4ebf3c89ade23abe318d)
+- Linea Sepolia: [
+  `0x407e280281B812Adef69A91230659C9D738D82Cb`](https://explorer.ver.ax/linea-sepolia/portals/0x407e280281B812Adef69A91230659C9D738D82Cb)
+- Linea Mainnet: [
+  `0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e`](https://explorer.ver.ax/linea/portals/0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e)
 
 ### Schema
 
-- Linea Sepolia: [`0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
-- Linea Mainnet: [`0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
+- Linea Sepolia: [
+  `0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
+- Linea Mainnet: [
+  `0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5`](https://explorer.ver.ax/linea/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)
 
 ## 🔗 Useful Links
 

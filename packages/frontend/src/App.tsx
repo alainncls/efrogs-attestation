@@ -1,9 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import './App.css';
-import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
+import {
+  AttestationPayload,
+  TransactionOptions,
+  VeraxSdk,
+} from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
-import { Hex } from 'viem';
+import { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
 import TestnetRibbon from './components/TestnetRibbon.tsx';
@@ -81,26 +85,49 @@ function App() {
       setIsModalOpen(true);
 
       try {
-        let receipt = await veraxSdk.portal.attestV2(
-          chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS,
-          {
-            schemaId: SCHEMA_ID,
-            expirationDate: Math.floor(Date.now() / 1000) + 2592000,
-            subject: address,
-            attestationData: [
-              {
-                contract:
-                  chainId === lineaSepolia.id
-                    ? TESTNET_EFROGS_CONTRACT
-                    : EFROGS_CONTRACT,
-                balance,
-              },
-            ],
-          },
-          [],
-          false,
-          TRANSACTION_VALUE,
-          EFROGS_PORTAL_ABI,
+        const portalAddress: Address =
+          chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS;
+        const attestationPayload: AttestationPayload = {
+          schemaId: SCHEMA_ID,
+          expirationDate: Math.floor(Date.now() / 1000) + 2592000,
+          subject: address,
+          attestationData: [
+            {
+              contract:
+                chainId === lineaSepolia.id
+                  ? TESTNET_EFROGS_CONTRACT
+                  : EFROGS_CONTRACT,
+              balance,
+            },
+          ],
+        };
+        const validationPayload: string[] = [];
+        const options: TransactionOptions = {
+          waitForConfirmation: false,
+          value: TRANSACTION_VALUE,
+          customAbi: EFROGS_PORTAL_ABI,
+        };
+
+        console.log('portalAddress', portalAddress);
+        console.log(
+          'veraxSdk - isPortalRegistered',
+          await veraxSdk.portal.isPortalRegistered(portalAddress),
+        );
+
+        const params = await veraxSdk.portal.simulateAttest(
+          portalAddress,
+          attestationPayload,
+          validationPayload,
+          options,
+        );
+
+        console.log('Simulation params:', params);
+
+        let receipt = await veraxSdk.portal.attest(
+          portalAddress,
+          attestationPayload,
+          validationPayload,
+          options,
         );
 
         if (receipt.transactionHash) {

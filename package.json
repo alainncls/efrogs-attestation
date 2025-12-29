@@ -2,7 +2,6 @@
   "name": "efrogs-attestation",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "pnpm -r run dev",
     "format": "prettier --check '**/*.sol' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.md' --ignore-path .prettierignore",
