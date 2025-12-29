@@ -15,7 +15,7 @@
     "@reown/appkit": "^1.8.15",
     "@reown/appkit-adapter-wagmi": "^1.8.15",
     "@tanstack/react-query": "^5.90.14",
-    "@verax-attestation-registry/verax-sdk": "2.2.1",
+    "@verax-attestation-registry/verax-sdk": "5.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "viem": "^2.43.3",

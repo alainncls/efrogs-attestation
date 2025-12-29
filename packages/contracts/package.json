@@ -2,12 +2,12 @@
   "name": "efrogs-attestation-contracts",
   "version": "0.0.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "compile": "npx hardhat compile",
     "deploy:nft": "npx hardhat run scripts/deployEFrogsNFT.ts --network",
     "deploy:portal": "npx hardhat run scripts/deployEFrogsPortal.ts --network",
     "lint": "solhint 'src/**/*.sol' -c .solhint.json",
-    "lint:fix": "solhint 'src/**/*.sol' -c .solhint.json --fix",
     "test": "npx hardhat test"
   },
   "dependencies": {
@@ -17,9 +17,10 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.13",
     "@types/node": "^22.15.32",
-    "@verax-attestation-registry/verax-contracts": "^9.0.0",
-    "@verax-attestation-registry/verax-sdk": "2.2.1",
+    "@verax-attestation-registry/verax-contracts": "10.0.0",
+    "@verax-attestation-registry/verax-sdk": "5.0.0",
     "dotenv": "^16.5.0",
     "ethers": "^6.16.0",
     "hardhat": "^2.28.1",
