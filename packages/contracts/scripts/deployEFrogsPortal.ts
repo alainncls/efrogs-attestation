@@ -54,11 +54,11 @@ async function main() {
 
   await veraxSdk.portal.register(
     eFrogsPortalAddress,
-    'eFrogs Portal',
-    'eFrogs attestations',
+    'eFrogs Portal V2',
+    'eFrogs attestations V2',
     true,
-    'alainnicolas.eth',
-    true,
+    'alain.linea.eth',
+    { waitForConfirmation: true },
   );
 
   console.log(`EFrogsPortal is registered!`);

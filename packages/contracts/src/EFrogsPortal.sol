@@ -3,15 +3,15 @@ pragma solidity 0.8.21;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {AbstractPortal} from "@verax-attestation-registry/verax-contracts/contracts/abstracts/AbstractPortal.sol";
+import {AbstractPortalV2} from "@verax-attestation-registry/verax-contracts/contracts/abstracts/AbstractPortalV2.sol";
 import {AttestationPayload} from "@verax-attestation-registry/verax-contracts/contracts/types/Structs.sol";
 
 /**
  * @title eFrogs Portal
- * @author alainnicolas.eth
+ * @author alain.linea.eth
  * @notice This contract aims to attest of eFrogs ownership
  */
-contract EFrogsPortal is AbstractPortal, Ownable {
+contract EFrogsPortal is AbstractPortalV2, Ownable {
     IERC721 public eFrogsContract;
 
     uint256 public fee;
@@ -24,8 +24,6 @@ contract EFrogsPortal is AbstractPortal, Ownable {
     error SenderIsNotOwner();
     /// @dev Error thrown when the transaction value is insufficient to cover the fee
     error InsufficientFee();
-    /// @dev Error thrown when the withdraw fails
-    error WithdrawFail();
     /// @dev Error thrown when the Schema is not authorized on this Portal
     error SchemaNotAuthorized();
     /// @dev Error thrown when the token contract is not the eFrogs contract
@@ -35,18 +33,10 @@ contract EFrogsPortal is AbstractPortal, Ownable {
     /// @dev Error thrown when the function is not implemented
     error NotImplemented();
 
-    constructor(address[] memory modules, address router, address eFrogsAddress) AbstractPortal(modules, router) {
+    constructor(address[] memory modules, address router, address eFrogsAddress) AbstractPortalV2(modules, router) {
         eFrogsContract = IERC721(eFrogsAddress);
         fee = 0.0001 ether;
         authorizedSchemas[0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5] = true;
-    }
-
-    function _onAttest(
-        AttestationPayload memory /*attestationPayload*/,
-        address /*attester*/,
-        uint256 /*value*/
-    ) internal pure override {
-        revert NotImplemented();
     }
 
     /**
@@ -61,7 +51,7 @@ contract EFrogsPortal is AbstractPortal, Ownable {
      *          and if the token contract is the eFrogs contract
      *          and if the token balance is correct
      */
-    function _onAttestV2(
+    function _onAttest(
         AttestationPayload memory attestationPayload,
         bytes[] memory /*validationPayloads*/,
         uint256 value
