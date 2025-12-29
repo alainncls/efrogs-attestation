@@ -5,7 +5,7 @@ import {
 } from 'wagmi';
 import './TestnetRibbon.css';
 import {
-  EFROGS_CONTRACT,
+  EFROGS_NFT_ABI,
   TESTNET_EFROGS_CONTRACT,
   TRANSACTION_VALUE,
 } from '../utils/constants.ts';
@@ -16,9 +16,9 @@ interface TestnetRibbonProps {
 }
 
 const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
-  const { address, chainId, chain } = useAccount();
+  const { address, chainId } = useAccount();
 
-  const { data: hash, isPending, writeContract } = useWriteContract();
+  const { data: hash, isPending, writeContract, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
@@ -31,35 +31,22 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
     }
   }, [isConfirmed, onNftMinted]);
 
+  useEffect(() => {
+    if (error && import.meta.env.DEV) {
+      console.error('Mint transaction failed:', error);
+    }
+  }, [error]);
+
   const mintTestNft = () => {
     if (address) {
-      console.log('Minting test NFT...');
-      try {
-        writeContract({
-          address: chain?.testnet ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
-          abi: [
-            {
-              type: 'function',
-              name: 'createToken',
-              stateMutability: 'payable',
-              inputs: [
-                {
-                  internalType: 'address',
-                  name: 'to',
-                  type: 'address',
-                },
-              ],
-              outputs: [],
-            },
-          ],
-          functionName: 'createToken',
-          args: [address ?? '0x0'],
-          chainId,
-          value: TRANSACTION_VALUE,
-        });
-      } catch (error) {
-        console.error('Transaction failed:', error);
-      }
+      writeContract({
+        address: TESTNET_EFROGS_CONTRACT,
+        abi: EFROGS_NFT_ABI,
+        functionName: 'createToken',
+        args: [address],
+        chainId,
+        value: TRANSACTION_VALUE,
+      });
     }
   };
 
@@ -76,14 +63,16 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   };
 
   return (
-    <div className="ribbon">
-      <div>Testnet</div>
+    <div className="ribbon" role="status" aria-label="Testnet mode active">
+      <span>Testnet</span>
       <button
-        className={'btn-mint'}
+        type="button"
+        className="btn-mint"
         onClick={mintTestNft}
-        disabled={isPending || isConfirming}
+        disabled={isPending || isConfirming || !address}
+        aria-busy={isPending || isConfirming}
       >
-        {btnLabel()}{' '}
+        {btnLabel()}
       </button>
     </div>
   );

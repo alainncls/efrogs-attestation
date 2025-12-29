@@ -43,6 +43,7 @@
     max-width: 400px;
     width: 50%;
     height: 60px;
+    background-color: transparent;
     background-image: url('/button_enabled.png');
     background-size: contain;
     background-position: center;
@@ -54,9 +55,17 @@
     cursor: pointer;
     padding: 12px;
     box-sizing: border-box;
+    font-family: inherit;
 }
 
-.button.disabled {
+.button:focus-visible {
+    outline: 2px solid #F1D199;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.button.disabled,
+.button:disabled {
     background-image: url('/button_disabled.png');
     cursor: not-allowed;
 }

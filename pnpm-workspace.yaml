@@ -1,2 +1,14 @@
 packages:
   - 'packages/*'
+
+overrides:
+  '@babel/helpers@<7.26.10': '>=7.26.10'
+  '@babel/runtime@<7.26.10': '>=7.26.10'
+  '@coinbase/wallet-sdk@>=4.0 <4.3.0': '>=4.3.0'
+  '@metamask/sdk@>=0.16.0 <=0.33.0': '>=0.33.1'
+  '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': '>=0.33.1'
+  'cookie@<0.7.0': '>=0.7.0'
+  'elliptic@<=6.6.0': '>=6.6.1'
+  'sha.js@<=2.4.11': '>=2.4.12'
+  'tmp@<=0.2.3': '>=0.2.4'
+  'undici@<5.29.0': '>=5.29.0'

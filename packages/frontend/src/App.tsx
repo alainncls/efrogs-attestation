@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import './App.css';
-import { Conf, VeraxSdk } from '@verax-attestation-registry/verax-sdk';
-import { useAccount, useReadContract, useSwitchChain } from 'wagmi';
+import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
+import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
-import { Abi, Hex } from 'viem';
+import { Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
 import TestnetRibbon from './components/TestnetRibbon.tsx';
 import {
   EFROGS_CONTRACT,
+  EFROGS_NFT_ABI,
+  EFROGS_PORTAL_ABI,
+  LINEA_MAINNET_SUBGRAPH_URL,
+  LINEA_SEPOLIA_SUBGRAPH_URL,
   PORTAL_ADDRESS,
   SCHEMA_ID,
   TESTNET_EFROGS_CONTRACT,
@@ -16,66 +20,58 @@ import {
   TRANSACTION_VALUE,
 } from './utils/constants.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
-import { abi as eFrogsPortalAbi } from '../../contracts/artifacts/src/EFrogsPortal.sol/EFrogsPortal.json';
 import Footer from './components/Footer.tsx';
 import Header from './components/Header.tsx';
 import { wagmiAdapter } from './wagmiConfig.ts';
+import ChainMismatchBanner from './components/ChainMismatchBanner.tsx';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 
 function App() {
-  const [veraxSdk, setVeraxSdk] = useState<VeraxSdk>();
   const [txHash, setTxHash] = useState<Hex>();
   const [attestationId, setAttestationId] = useState<Hex>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>();
 
   const { address, chainId, isConnected } = useAccount();
-  const { switchChain } = useSwitchChain();
 
-  useEffect(() => {
-    if (chainId !== lineaSepolia.id && chainId !== linea.id) {
-      switchChain({ chainId: linea.id });
-    }
-  }, [chainId, switchChain]);
+  const isValidChain = chainId === linea.id || chainId === lineaSepolia.id;
 
   const { data: balance, refetch } = useReadContract({
-    abi: [
-      {
-        type: 'function',
-        name: 'balanceOf',
-        stateMutability: 'view',
-        inputs: [{ name: 'account', type: 'address' }],
-        outputs: [{ type: 'uint256' }],
-      },
-    ],
+    abi: EFROGS_NFT_ABI,
     functionName: 'balanceOf',
     address:
       chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
     args: [address ?? '0x0'],
     chainId,
     query: {
-      enabled: !!address,
+      enabled: !!address && isValidChain,
     },
   });
 
-  useEffect(() => {
-    if (chainId && address) {
-      let sdkConf: Conf = VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND;
-      if (chainId === linea.id) {
-        sdkConf.subgraphUrl =
-          'https://gateway.thegraph.com/api/649414afdd14301c7a2f6d141f717ed1/subgraphs/id/ESRDQ5djmucKeqxNz7JGVHr621sjGEEsY6M6JibjJ9u3';
-      } else if (chainId === lineaSepolia.id) {
-        sdkConf = VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND;
-        sdkConf.subgraphUrl =
-          'https://gateway.thegraph.com/api/649414afdd14301c7a2f6d141f717ed1/subgraphs/id/2gfRmZ1e1uJKpCQsUrvxJmRivNa7dvvuULoc8SJabR8v';
-      }
-
-      const sdk = new VeraxSdk(sdkConf, address);
-
-      setVeraxSdk(sdk);
+  const veraxSdk = useMemo(() => {
+    if (!chainId || !address || !isValidChain) {
+      return undefined;
     }
-  }, [chainId, address]);
+
+    if (chainId === linea.id) {
+      const sdkConf = {
+        ...VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
+        subgraphUrl: LINEA_MAINNET_SUBGRAPH_URL,
+      };
+      return new VeraxSdk(sdkConf, address);
+    }
+
+    if (chainId === lineaSepolia.id) {
+      const sdkConf = {
+        ...VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND,
+        subgraphUrl: LINEA_SEPOLIA_SUBGRAPH_URL,
+      };
+      return new VeraxSdk(sdkConf, address);
+    }
+
+    return undefined;
+  }, [chainId, address, isValidChain]);
 
   const issueAttestation = useCallback(async () => {
     if (address && veraxSdk && balance) {
@@ -104,7 +100,7 @@ function App() {
           [],
           false,
           TRANSACTION_VALUE,
-          eFrogsPortalAbi as Abi,
+          EFROGS_PORTAL_ABI,
         );
 
         if (receipt.transactionHash) {
@@ -115,7 +111,7 @@ function App() {
               hash: receipt.transactionHash,
             },
           );
-          setAttestationId(receipt.logs?.[0].topics[1]);
+          setAttestationId(receipt.logs?.[0]?.topics[1]);
         } else {
           setMessage(DEFAULT_ERROR_MESSAGE);
         }
@@ -137,9 +133,9 @@ function App() {
   const disabled = useMemo(
     () =>
       !isConnected ||
-      (chainId !== linea.id && chainId !== lineaSepolia.id) ||
+      !isValidChain ||
       (isConnected && (!address || !veraxSdk || !balance)),
-    [isConnected, chainId, address, veraxSdk, balance],
+    [isConnected, isValidChain, address, veraxSdk, balance],
   );
 
   const title = useMemo(() => {
@@ -155,14 +151,20 @@ function App() {
     <>
       <div className={'main-container'}>
         <Header />
+        {!isValidChain && isConnected && <ChainMismatchBanner />}
         {chainId === lineaSepolia.id && <TestnetRibbon onNftMinted={refetch} />}
         <a
           href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
           target="_blank"
           rel="noopener noreferrer"
           className="link"
+          aria-label="View eFrog #645 on Element Market"
         >
-          <div className="grooving-frog"></div>
+          <div
+            className="grooving-frog"
+            role="img"
+            aria-label="Dancing frog animation"
+          ></div>
         </a>
         <Panel title={title} disabled={disabled} onClick={issueAttestation} />
         <DetailsModal
