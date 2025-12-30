@@ -1,55 +1,78 @@
-import { ethers, network, run } from 'hardhat';
-import dotenv from 'dotenv';
+import hre, { network } from 'hardhat';
+import { verifyContract } from '@nomicfoundation/hardhat-verify/verify';
 import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
-import { Address, Hex } from 'viem';
+import { isAddress, isHex, type Address, type Hex } from 'viem';
 
-dotenv.config({ path: '../.env' });
+function requireAddress(value: string | undefined, name: string): Address {
+  if (!value || !isAddress(value)) {
+    throw new Error(`${name} must be a valid address, got: ${value}`);
+  }
+  return value;
+}
+
+function requireHex(value: string | undefined, name: string): Hex {
+  if (!value || !isHex(value)) {
+    throw new Error(`${name} must be a valid hex string, got: ${value}`);
+  }
+  return value;
+}
 
 async function main() {
   console.log(`START EFROGS SCRIPT`);
 
-  const { ROUTER_ADDRESS, PRIVATE_KEY, EFROGS_ADDRESS } = process.env;
-
-  if (!ROUTER_ADDRESS || ROUTER_ADDRESS === '') {
-    throw new Error('ROUTER_ADDRESS is not set in .env file');
-  }
-
-  if (!PRIVATE_KEY || PRIVATE_KEY === '') {
-    throw new Error('PRIVATE_KEY is not set in .env file');
-  }
+  const routerAddress = requireAddress(
+    process.env.ROUTER_ADDRESS,
+    'ROUTER_ADDRESS',
+  );
+  const eFrogsAddress = requireAddress(
+    process.env.EFROGS_ADDRESS,
+    'EFROGS_ADDRESS',
+  );
+  const privateKey = requireHex(process.env.PRIVATE_KEY, 'PRIVATE_KEY');
 
   console.log('Deploying EFrogsPortal...');
 
-  const constructorArguments = [[], ROUTER_ADDRESS, EFROGS_ADDRESS];
+  const connection = await network.connect();
+  const constructorArguments: [Address[], Address, Address] = [
+    [],
+    routerAddress,
+    eFrogsAddress,
+  ];
 
-  const eFrogsPortal = await ethers.deployContract(
+  const eFrogsPortal = await connection.viem.deployContract(
     'EFrogsPortal',
     constructorArguments,
   );
-  await eFrogsPortal.waitForDeployment();
-  const eFrogsPortalAddress = (await eFrogsPortal.getAddress()) as Address;
+  const eFrogsPortalAddress = eFrogsPortal.address;
+
+  console.log(`EFrogsPortal deployed at ${eFrogsPortalAddress}`);
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  await run('verify:verify', {
-    address: eFrogsPortalAddress,
-    constructorArguments: constructorArguments,
-  });
+  console.log('Verifying contract...');
+  await verifyContract(
+    {
+      address: eFrogsPortalAddress,
+      constructorArgs: [...constructorArguments],
+    },
+    hre,
+  );
 
   console.log(`EFrogsPortal successfully deployed and verified!`);
   console.log(`EFrogsPortal is at ${eFrogsPortalAddress}`);
 
   console.log('Registering EFrogsPortal...');
 
-  const chainName = network.name;
-  const signers = await ethers.getSigners();
-  const signer = signers[0];
+  const networkName = connection.networkName;
+  const [walletClient] = await connection.viem.getWalletClients();
+  const walletAddress = walletClient.account.address;
+
   const veraxSdk = new VeraxSdk(
-    chainName === 'linea'
+    networkName === 'linea'
       ? VeraxSdk.DEFAULT_LINEA_MAINNET
       : VeraxSdk.DEFAULT_LINEA_SEPOLIA,
-    signer.address as Address,
-    PRIVATE_KEY as Hex,
+    walletAddress,
+    privateKey,
   );
 
   await veraxSdk.portal.register(
@@ -66,8 +89,6 @@ async function main() {
   console.log(`END EFROGS SCRIPT`);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

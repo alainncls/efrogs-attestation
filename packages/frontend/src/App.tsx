@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import './App.css';
-import {
+import type {
   AttestationPayload,
   TransactionOptions,
-  VeraxSdk,
 } from '@verax-attestation-registry/verax-sdk';
+import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
-import { Address, Hex } from 'viem';
+import type { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import DetailsModal from './components/DetailsModal.tsx';
 import TestnetRibbon from './components/TestnetRibbon.tsx';

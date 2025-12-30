@@ -1,136 +1,136 @@
 .panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transform: translate(0, -40%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(0, -40%);
 }
 
 .signage-image {
-    position: relative;
-    width: 300px;
-    height: 419px;
-    background-image: url(/signage-phone.png);
-    background-size: cover;
-    background-position: center;
+  position: relative;
+  width: 300px;
+  height: 419px;
+  background-image: url(/signage-phone.png);
+  background-size: cover;
+  background-position: center;
 }
 
 .panel-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    color: #F1D199;
-    font-size: 40px;
-    text-transform: uppercase;
-    width: 80%;
-    padding: 10%;
-    text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: #f1d199;
+  font-size: 40px;
+  text-transform: uppercase;
+  width: 80%;
+  padding: 10%;
+  text-align: center;
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .button {
-    position: relative;
-    min-width: 200px;
-    max-width: 400px;
-    width: 50%;
-    height: 60px;
-    background-color: transparent;
-    background-image: url('/button_enabled.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    padding: 12px;
-    box-sizing: border-box;
-    font-family: inherit;
+  position: relative;
+  min-width: 200px;
+  max-width: 400px;
+  width: 50%;
+  height: 60px;
+  background-color: transparent;
+  background-image: url('/button_enabled.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .button:focus-visible {
-    outline: 2px solid #F1D199;
-    outline-offset: 2px;
-    border-radius: 4px;
+  outline: 2px solid #f1d199;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .button.disabled,
 .button:disabled {
-    background-image: url('/button_disabled.png');
-    cursor: not-allowed;
+  background-image: url('/button_disabled.png');
+  cursor: not-allowed;
 }
 
 .button-label {
-    position: relative;
-    color: #F1D199;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 24px;
-    line-height: 1.2;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0 12px;
-    transform: translate(0, -4px);
+  position: relative;
+  color: #f1d199;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 12px;
+  transform: translate(0, -4px);
 }
 
 .button-label.disabled {
-    color: #D1D1D1;
+  color: #d1d1d1;
 }
 
 @media (min-width: 992px) {
-    .panel {
-        flex-direction: column;
-        transform: translate(0, -30%);
-    }
+  .panel {
+    flex-direction: column;
+    transform: translate(0, -30%);
+  }
 
-    .signage-image {
-        width: 551px;
-        height: 770px;
-        transform: translate(0, 0);
-        background-image: url(/signage.png);
-    }
+  .signage-image {
+    width: 551px;
+    height: 770px;
+    transform: translate(0, 0);
+    background-image: url(/signage.png);
+  }
 
-    .panel-title {
-        font-size: 80px;
-    }
+  .panel-title {
+    font-size: 80px;
+  }
 
-    .button-container {
-        margin-top: 40px;
-    }
+  .button-container {
+    margin-top: 40px;
+  }
 
-    .button {
-        height: 80px;
-    }
+  .button {
+    height: 80px;
+  }
 
-    .button-label {
-        font-size: 36px;
-        transform: translate(0, -5px);
-    }
+  .button-label {
+    font-size: 36px;
+    transform: translate(0, -5px);
+  }
 }
 
 @media (min-width: 1800px) {
-    .panel-title {
-        font-size: 90px;
-    }
+  .panel-title {
+    font-size: 90px;
+  }
 
-    .button {
-        height: 100px;
-    }
+  .button {
+    height: 100px;
+  }
 
-    .button-label {
-        font-size: 42px;
-        transform: translate(0, -6px);
-    }
+  .button-label {
+    font-size: 42px;
+    transform: translate(0, -6px);
+  }
 }

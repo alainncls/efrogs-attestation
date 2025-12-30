@@ -2,10 +2,11 @@
   "name": "efrogs-attestation",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "pnpm -r run dev",
-    "format": "prettier --check '**/*.sol' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.md' --ignore-path .prettierignore",
-    "format:fix": "prettier --write '**/*.sol' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.md' --ignore-path .prettierignore",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "preinstall": "npx only-allow@1.2.2 pnpm",
     "lint": "pnpm -r run lint",
     "lint:fix": "pnpm -r run lint:fix",
@@ -13,8 +14,12 @@
     "typecheck": "pnpm -r run typecheck"
   },
   "devDependencies": {
-    "prettier": "^3.7.4",
-    "prettier-plugin-solidity": "^2.2.1"
+    "@eslint/js": "catalog:eslint",
+    "eslint": "catalog:eslint",
+    "globals": "catalog:eslint",
+    "prettier": "catalog:prettier",
+    "prettier-plugin-solidity": "catalog:prettier",
+    "typescript-eslint": "catalog:eslint"
   },
   "packageManager": "pnpm@10.26.2",
   "engines": {

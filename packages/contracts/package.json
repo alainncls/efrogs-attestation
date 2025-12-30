@@ -2,29 +2,33 @@
   "name": "efrogs-attestation-contracts",
   "version": "0.0.0",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
-    "compile": "npx hardhat compile",
-    "deploy:nft": "npx hardhat run scripts/deployEFrogsNFT.ts --network",
-    "deploy:portal": "npx hardhat run scripts/deployEFrogsPortal.ts --network",
-    "lint": "solhint 'src/**/*.sol' -c .solhint.json",
-    "test": "npx hardhat test"
+    "compile": "hardhat compile",
+    "deploy:nft": "hardhat run scripts/deployEFrogsNFT.ts --network",
+    "deploy:portal": "hardhat run scripts/deployEFrogsPortal.ts --network",
+    "lint": "eslint . && solhint 'src/**/*.sol' -c .solhint.json",
+    "lint:fix": "eslint . --fix",
+    "test": "hardhat test",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.9.6",
-    "@openzeppelin/contracts-upgradeable": "4.9.6"
+    "@openzeppelin/contracts": "catalog:openzeppelin",
+    "@openzeppelin/contracts-upgradeable": "catalog:openzeppelin"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.8",
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.13",
-    "@types/node": "^22.15.32",
-    "@verax-attestation-registry/verax-contracts": "10.0.0",
-    "@verax-attestation-registry/verax-sdk": "5.0.0",
-    "dotenv": "^16.5.0",
-    "ethers": "^6.16.0",
-    "hardhat": "^2.28.1",
-    "solhint": "^5.0.5",
-    "viem": "^2.43.3"
+    "@eslint/js": "catalog:eslint",
+    "@nomicfoundation/hardhat-verify": "catalog:hardhat",
+    "@nomicfoundation/hardhat-viem": "catalog:hardhat",
+    "@types/node": "catalog:typescript",
+    "@verax-attestation-registry/verax-contracts": "catalog:verax",
+    "@verax-attestation-registry/verax-sdk": "catalog:verax",
+    "eslint": "catalog:eslint",
+    "globals": "catalog:eslint",
+    "hardhat": "catalog:hardhat",
+    "solhint": "catalog:hardhat",
+    "typescript": "catalog:typescript",
+    "typescript-eslint": "catalog:eslint",
+    "viem": "catalog:web3"
   }
 }
