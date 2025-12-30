@@ -5,6 +5,7 @@ dist
 artifacts
 cache
 typechain-types
+*.tsbuildinfo
 
 .idea
 .DS_Store

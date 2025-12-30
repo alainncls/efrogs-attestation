@@ -1,8 +1,8 @@
-import { HardhatUserConfig } from 'hardhat/config';
-import '@nomicfoundation/hardhat-toolbox';
-import dotenv from 'dotenv';
+import { defineConfig } from 'hardhat/config';
+import hardhatViem from '@nomicfoundation/hardhat-viem';
+import hardhatVerify from '@nomicfoundation/hardhat-verify';
 
-dotenv.config({ path: '.env' });
+process.loadEnvFile();
 
 const { INFURA_KEY, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 
@@ -12,7 +12,8 @@ if (!INFURA_KEY || !PRIVATE_KEY || !ETHERSCAN_API_KEY) {
   );
 }
 
-const config: HardhatUserConfig = {
+export default defineConfig({
+  plugins: [hardhatViem, hardhatVerify],
   solidity: {
     compilers: [
       {
@@ -27,41 +28,26 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  defaultNetwork: 'linea-sepolia',
   networks: {
     'linea-sepolia': {
+      type: 'http',
       url: `https://linea-sepolia.infura.io/v3/${INFURA_KEY}`,
       accounts: [PRIVATE_KEY],
+      chainId: 59141,
     },
     linea: {
+      type: 'http',
       url: `https://linea-mainnet.infura.io/v3/${INFURA_KEY}`,
       accounts: [PRIVATE_KEY],
+      chainId: 59144,
     },
   },
   paths: {
     sources: './src',
   },
-  etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
-    customChains: [
-      {
-        network: 'linea-sepolia',
-        chainId: 59141,
-        urls: {
-          apiURL: 'https://api.etherscan.io/v2/api',
-          browserURL: 'https://sepolia.lineascan.build',
-        },
-      },
-      {
-        network: 'linea',
-        chainId: 59144,
-        urls: {
-          apiURL: 'https://api.etherscan.io/v2/api',
-          browserURL: 'https://lineascan.build',
-        },
-      },
-    ],
+  verify: {
+    etherscan: {
+      apiKey: ETHERSCAN_API_KEY,
+    },
   },
-};
-
-export default config;
+});

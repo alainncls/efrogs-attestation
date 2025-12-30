@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAccount } from 'wagmi';
 import './DetailsModal.css';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 
 interface DetailsModalProps {
   isOpen: boolean;

@@ -1,68 +1,68 @@
 body {
-    font-family: 'Jersey 10', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-image: url(/background.jpg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  font-family: 'Jersey 10', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url(/background.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    --link-color: #007bff;
-    --success-color: #28a745;
-    --pending-color: #ffc107;
-    --error-color: #dc3545;
-    --message-text-color: #000000;
-    --wui-color-gray-glass-005: #000000
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  --link-color: #007bff;
+  --success-color: #28a745;
+  --pending-color: #ffc107;
+  --error-color: #dc3545;
+  --message-text-color: #000000;
+  --wui-color-gray-glass-005: #000000;
 }
 
 .main-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-grow: 1;
 }
 
 .grooving-frog {
-    position: absolute;
-    background-image: url(/grooving_frog.gif);
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    top: 50%;
-    left: 50%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    cursor: pointer;
+  position: absolute;
+  background-image: url(/grooving_frog.gif);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
 }
 
 @media (max-width: 992px) {
-    .grooving-frog {
-        transform: translate(80px, 160px);
-    }
+  .grooving-frog {
+    transform: translate(80px, 160px);
+  }
 }
 
 @media (min-width: 992px) {
-    .grooving-frog {
-        transform: translate(180px, 230px);
-    }
+  .grooving-frog {
+    transform: translate(180px, 230px);
+  }
 }
 
 @media (min-width: 1800px) {
-    .grooving-frog {
-        transform: translate(180px, 300px);
-    }
+  .grooving-frog {
+    transform: translate(180px, 300px);
+  }
 }
