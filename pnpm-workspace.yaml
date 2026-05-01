@@ -28,7 +28,7 @@ catalogs:
     react: ^19.2.5
     react-dom: ^19.2.5
   typescript:
-    '@types/node': ^22.19.17
+    '@types/node': ^24.12.2
     typescript: ^5.9.3
   verax:
     '@verax-attestation-registry/verax-contracts': 10.0.0
