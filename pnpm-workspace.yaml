@@ -3,50 +3,63 @@ packages:
 
 catalogs:
   eslint:
-    '@eslint/js': ^9.39.2
-    eslint: ^9.39.2
+    '@eslint/js': ^9.39.4
+    eslint: ^9.39.4
     globals: ^16.5.0
-    typescript-eslint: ^8.51.0
+    typescript-eslint: ^8.59.1
   eslint-react:
-    eslint-plugin-react-hooks: ^7.0.1
-    eslint-plugin-react-refresh: ^0.4.26
+    eslint-plugin-react-hooks: ^7.1.1
+    eslint-plugin-react-refresh: ^0.5.2
   hardhat:
-    '@nomicfoundation/hardhat-verify': ^3.0.8
-    '@nomicfoundation/hardhat-viem': ^3.0.1
-    hardhat: ^3.1.1
-    solhint: ^6.0.2
+    '@nomicfoundation/hardhat-verify': 3.0.15
+    '@nomicfoundation/hardhat-viem': ^3.0.6
+    hardhat: 3.4.2
+    solhint: ^6.2.1
   openzeppelin:
     '@openzeppelin/contracts': 4.9.6
     '@openzeppelin/contracts-upgradeable': 4.9.6
   prettier:
-    prettier: ^3.7.4
-    prettier-plugin-solidity: ^2.2.1
+    prettier: ^3.8.3
+    prettier-plugin-solidity: ^2.3.1
   react:
-    '@tanstack/react-query': ^5.90.15
-    '@types/react': ^19.2.7
+    '@tanstack/react-query': 5.100.6
+    '@types/react': ^19.2.14
     '@types/react-dom': ^19.2.3
-    react: ^19.2.3
-    react-dom: ^19.2.3
+    react: ^19.2.5
+    react-dom: ^19.2.5
   typescript:
-    '@types/node': ^22.19.3
+    '@types/node': ^22.19.17
     typescript: ^5.9.3
   verax:
     '@verax-attestation-registry/verax-contracts': 10.0.0
-    '@verax-attestation-registry/verax-sdk': 5.0.0
+    '@verax-attestation-registry/verax-sdk': 5.4.0
   vite:
-    '@vitejs/plugin-react': ^5.1.2
-    vite: ^7.3.0
+    '@vitejs/plugin-react': ^5.2.0
+    vite: ^7.3.2
   wagmi:
-    '@reown/appkit': ^1.8.15
-    '@reown/appkit-adapter-wagmi': ^1.8.15
-    wagmi: ^3.1.3
+    '@reown/appkit': ^1.8.19
+    '@reown/appkit-adapter-wagmi': ^1.8.19
+    '@wagmi/core': 3.0.1
+    wagmi: 3.1.3
   web3:
-    viem: ^2.43.3
+    viem: 2.48.4
 
 overrides:
-  bl@<0.9.5: '>=0.9.5'
-  bl@<1.2.3: '>=1.2.3'
-  nanoid@>=4.0.0 <5.0.9: '>=5.0.9'
-  parse-duration@<2.1.3: '>=2.1.3'
-  semver@<4.3.2: '>=4.3.2'
-  semver@<5.7.2: '>=5.7.2'
+  ajv@>=7.0.0-alpha.0 <8.20.0: '>=8.20.0'
+  anymatch>picomatch: 4.0.4
+  axios@>=1.0.0 <1.15.2: '>=1.15.2'
+  bn.js@>=4.0.0 <4.12.3: '>=4.12.3'
+  bn.js@>=5.0.0 <5.2.3: '>=5.2.3'
+  brace-expansion@>=1.0.0 <1.1.13: 1.1.13
+  defu@>=6.0.0 <=6.1.4: '>=6.1.7'
+  flatted@<3.4.2: '>=3.4.2'
+  follow-redirects@>=1.0.0 <1.16.0: '>=1.16.0'
+  h3@>=1.0.0 <1.15.11: '>=1.15.11'
+  hono@>=4.0.0 <4.12.16: '>=4.12.16'
+  lodash@>=4.0.0 <4.18.1: '>=4.18.1'
+  picomatch@>=2.0.0 <2.3.2: '>=2.3.2'
+  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
+  postcss@>=8.0.0 <8.5.13: '>=8.5.13'
+  rollup@>=4.0.0 <4.60.2: '>=4.60.2'
+  socket.io-parser@>=4.0.0 <4.2.6: '>=4.2.6'
+  undici@>=6.0.0 <6.25.0: '>=6.25.0'

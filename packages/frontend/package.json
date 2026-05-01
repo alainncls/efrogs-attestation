@@ -16,6 +16,7 @@
     "@reown/appkit-adapter-wagmi": "catalog:wagmi",
     "@tanstack/react-query": "catalog:react",
     "@verax-attestation-registry/verax-sdk": "catalog:verax",
+    "@wagmi/core": "catalog:wagmi",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "viem": "catalog:web3",

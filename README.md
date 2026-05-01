@@ -85,7 +85,7 @@ pnpm dev
 ### Frontend (`packages/frontend/.env`)
 
 | Variable                        | Description                    | Required |
-|---------------------------------|--------------------------------|----------|
+| ------------------------------- | ------------------------------ | -------- |
 | `VITE_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud Project ID | Yes      |
 | `VITE_INFURA_API_KEY`           | Infura API Key for RPC         | Yes      |
 | `VITE_GRAPH_API_KEY`            | The Graph API Key              | Yes      |
@@ -93,7 +93,7 @@ pnpm dev
 ### Contracts (`packages/contracts/.env`)
 
 | Variable            | Description                        | Required       |
-|---------------------|------------------------------------|----------------|
+| ------------------- | ---------------------------------- | -------------- |
 | `INFURA_KEY`        | Infura API Key                     | Yes            |
 | `PRIVATE_KEY`       | Deployer private key (with 0x)     | Yes            |
 | `ETHERSCAN_API_KEY` | Lineascan API Key for verification | Yes            |
@@ -136,21 +136,21 @@ pnpm preview          # Preview production build
 ### eFrogs NFT
 
 | Network       | Address                                                                                                                            |
-|---------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Linea Mainnet | [`0x194395587d7b169e63eaf251e86b1892fa8f1960`](https://lineascan.build/address/0x194395587d7b169e63eaf251e86b1892fa8f1960)         |
 | Linea Sepolia | [`0x35c134262605bc69B3383EA132A077d09d8df061`](https://sepolia.lineascan.build/address/0x35c134262605bc69B3383EA132A077d09d8df061) |
 
 ### EFrogsPortal (Verax)
 
 | Network       | Address                                                                                                                                  |
-|---------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Linea Mainnet | [`0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e`](https://explorer.ver.ax/linea/portals/0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e)         |
 | Linea Sepolia | [`0x407e280281B812Adef69A91230659C9D738D82Cb`](https://explorer.ver.ax/linea-sepolia/portals/0x407e280281B812Adef69A91230659C9D738D82Cb) |
 
 ### Attestation Schema
 
 | Network       | Schema ID                                                                                                                             |
-|---------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Linea Mainnet | [`0x5dc8bc...d2f5`](https://explorer.ver.ax/linea/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5)         |
 | Linea Sepolia | [`0x5dc8bc...d2f5`](https://explorer.ver.ax/linea-sepolia/schemas/0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5) |
 
