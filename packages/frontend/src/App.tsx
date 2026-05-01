@@ -78,93 +78,90 @@ function App() {
   }, [chainId, address, isValidChain]);
 
   const issueAttestation = useCallback(async () => {
-    if (address && veraxSdk && balance) {
-      setTxHash(undefined);
-      setAttestationId(undefined);
-      setMessage(undefined);
-      setIsModalOpen(true);
+    if (!address || !veraxSdk || !balance) return;
 
-      try {
-        const portalAddress: Address =
-          chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS;
-        const attestationPayload: AttestationPayload = {
-          schemaId: SCHEMA_ID,
-          expirationDate: Math.floor(Date.now() / 1000) + 2592000,
-          subject: address,
-          attestationData: [
-            {
-              contract:
-                chainId === lineaSepolia.id
-                  ? TESTNET_EFROGS_CONTRACT
-                  : EFROGS_CONTRACT,
-              balance,
-            },
-          ],
-        };
-        const validationPayload: string[] = [];
-        const options: TransactionOptions = {
-          waitForConfirmation: false,
-          value: TRANSACTION_VALUE,
-          customAbi: EFROGS_PORTAL_ABI,
-        };
+    setTxHash(undefined);
+    setAttestationId(undefined);
+    setMessage(undefined);
+    setIsModalOpen(true);
 
-        let receipt = await veraxSdk.portal.attest(
-          portalAddress,
-          attestationPayload,
-          validationPayload,
-          options,
+    try {
+      const portalAddress: Address =
+        chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS;
+      const attestationPayload: AttestationPayload = {
+        schemaId: SCHEMA_ID,
+        expirationDate: Math.floor(Date.now() / 1000) + 2592000,
+        subject: address,
+        attestationData: [
+          {
+            contract:
+              chainId === lineaSepolia.id
+                ? TESTNET_EFROGS_CONTRACT
+                : EFROGS_CONTRACT,
+            balance,
+          },
+        ],
+      };
+      const validationPayload: string[] = [];
+      const options: TransactionOptions = {
+        waitForConfirmation: false,
+        value: TRANSACTION_VALUE,
+        customAbi: EFROGS_PORTAL_ABI,
+      };
+
+      let receipt = await veraxSdk.portal.attest(
+        portalAddress,
+        attestationPayload,
+        validationPayload,
+        options,
+      );
+
+      if (receipt.transactionHash) {
+        setTxHash(receipt.transactionHash);
+        receipt = await waitForTransactionReceipt(
+          wagmiAdapter.wagmiConfig.getClient(),
+          {
+            hash: receipt.transactionHash,
+          },
         );
-
-        if (receipt.transactionHash) {
-          setTxHash(receipt.transactionHash);
-          receipt = await waitForTransactionReceipt(
-            wagmiAdapter.wagmiConfig.getClient(),
-            {
-              hash: receipt.transactionHash,
-            },
-          );
-          setAttestationId(receipt.logs?.[0]?.topics[1]);
+        setAttestationId(receipt.logs?.[0]?.topics[1]);
+      } else {
+        setMessage(DEFAULT_ERROR_MESSAGE);
+      }
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) {
+        if (e.message.includes('User rejected the request')) {
+          setMessage('User denied transaction signature');
         } else {
-          setMessage(DEFAULT_ERROR_MESSAGE);
+          setMessage(`${DEFAULT_ERROR_MESSAGE} - ${e.message}`);
         }
-      } catch (e) {
-        console.error(e);
-        if (e instanceof Error) {
-          if (e.message.includes('User rejected the request')) {
-            setMessage('User denied transaction signature');
-          } else {
-            setMessage(`${DEFAULT_ERROR_MESSAGE} - ${e.message}`);
-          }
-        } else {
-          setMessage(DEFAULT_ERROR_MESSAGE);
-        }
+      } else {
+        setMessage(DEFAULT_ERROR_MESSAGE);
       }
     }
   }, [address, veraxSdk, balance, chainId]);
 
-  const disabled = useMemo(
-    () =>
-      !isConnected ||
-      !isValidChain ||
-      (isConnected && (!address || !veraxSdk || !balance)),
-    [isConnected, isValidChain, address, veraxSdk, balance],
-  );
+  const disabled =
+    !isConnected || !isValidChain || !address || !veraxSdk || !balance;
 
-  const title = useMemo(() => {
-    if (!address) return 'Attest your eFrogs';
-    return `You have ${Number(balance) || 0} eFrog${Number(balance) === 1 ? '' : 's'}`;
-  }, [address, balance]);
+  const frogBalance = Number(balance ?? 0n);
+  const title = address
+    ? `You have ${frogBalance} eFrog${frogBalance === 1 ? '' : 's'}`
+    : 'Attest your eFrogs';
 
   const toggleModal = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
+    setIsModalOpen((isOpen) => !isOpen);
+  }, []);
 
   return (
     <>
       <div className={'main-container'}>
         <Header />
-        {!isValidChain && isConnected && <ChainMismatchBanner />}
-        {chainId === lineaSepolia.id && <TestnetRibbon onNftMinted={refetch} />}
+        {!isValidChain && isConnected ? <ChainMismatchBanner /> : null}
+        {chainId === lineaSepolia.id ? (
+          <TestnetRibbon onNftMinted={refetch} />
+        ) : null}
         <a
           href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
           target="_blank"

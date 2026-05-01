@@ -38,29 +38,26 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   }, [error]);
 
   const mintTestNft = () => {
-    if (address) {
-      writeContract({
-        address: TESTNET_EFROGS_CONTRACT,
-        abi: EFROGS_NFT_ABI,
-        functionName: 'createToken',
-        args: [address],
-        chainId,
-        value: TRANSACTION_VALUE,
-      });
-    }
+    if (!address) return;
+
+    writeContract({
+      address: TESTNET_EFROGS_CONTRACT,
+      abi: EFROGS_NFT_ABI,
+      functionName: 'createToken',
+      args: [address],
+      chainId,
+      value: TRANSACTION_VALUE,
+    });
   };
 
-  const btnLabel = () => {
-    if (isPending) {
-      return 'Confirming...';
-    } else if (isConfirming) {
-      return 'Minting...';
-    } else if (isConfirmed) {
-      return 'Test NFT Minted!';
-    }
-
-    return 'Mint a test eFrog NFT';
-  };
+  const buttonLabel = isPending
+    ? 'Confirming...'
+    : isConfirming
+      ? 'Minting...'
+      : isConfirmed
+        ? 'Test NFT Minted!'
+        : 'Mint a test eFrog NFT';
+  const isMinting = isPending || isConfirming;
 
   return (
     <div className="ribbon" role="status" aria-label="Testnet mode active">
@@ -69,10 +66,10 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
         type="button"
         className="btn-mint"
         onClick={mintTestNft}
-        disabled={isPending || isConfirming || !address}
-        aria-busy={isPending || isConfirming}
+        disabled={isMinting || !address}
+        aria-busy={isMinting}
       >
-        {btnLabel()}
+        {buttonLabel}
       </button>
     </div>
   );

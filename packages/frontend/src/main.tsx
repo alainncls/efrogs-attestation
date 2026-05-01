@@ -11,3 +11,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </AppKitProvider>
   </React.StrictMode>,
 );
+
+if (import.meta.env.PROD) {
+  void import('./insights.ts').then(({ scheduleInsights }) => {
+    scheduleInsights();
+  });
+}

@@ -3,6 +3,12 @@ import { useAccount } from 'wagmi';
 import './DetailsModal.css';
 import type { Hex } from 'viem';
 
+const LINEA_MAINNET_CHAIN_ID = 59144;
+
+const truncateHexString = (hexString: string) => {
+  return `${hexString.slice(0, 6)}...${hexString.slice(-4)}`;
+};
+
 interface DetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,10 +26,6 @@ const DetailsModal = ({
 }: DetailsModalProps) => {
   const { chainId } = useAccount();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  const truncateHexString = (hexString: string) => {
-    return `${hexString.slice(0, 6)}...${hexString.slice(-4)}`;
-  };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -45,15 +47,17 @@ const DetailsModal = ({
 
   if (!isOpen) return null;
 
-  const explorerBaseUrl =
-    chainId === 59144
-      ? 'https://explorer.ver.ax/linea/attestations/'
-      : 'https://explorer.ver.ax/linea-sepolia/attestations/';
+  const isMainnet = chainId === LINEA_MAINNET_CHAIN_ID;
+  const explorerBaseUrl = isMainnet
+    ? 'https://explorer.ver.ax/linea/attestations/'
+    : 'https://explorer.ver.ax/linea-sepolia/attestations/';
 
-  const txExplorerBaseUrl =
-    chainId === 59144
-      ? 'https://lineascan.build/tx/'
-      : 'https://sepolia.lineascan.build/tx/';
+  const txExplorerBaseUrl = isMainnet
+    ? 'https://lineascan.build/tx/'
+    : 'https://sepolia.lineascan.build/tx/';
+
+  const showValidationPending = !message && !txHash && !attestationId;
+  const showTransactionPending = !message && txHash && !attestationId;
 
   return (
     <div
@@ -75,9 +79,9 @@ const DetailsModal = ({
           ×
         </button>
 
-        {!message && (
+        {!message ? (
           <>
-            {!txHash && !attestationId && (
+            {showValidationPending ? (
               <div
                 className="message pending"
                 role="status"
@@ -86,8 +90,8 @@ const DetailsModal = ({
               >
                 User validation pending...
               </div>
-            )}
-            {txHash && !attestationId && (
+            ) : null}
+            {showTransactionPending ? (
               <div
                 className="message pending"
                 role="status"
@@ -96,17 +100,17 @@ const DetailsModal = ({
               >
                 Transaction pending...
               </div>
-            )}
+            ) : null}
           </>
-        )}
+        ) : null}
 
-        {message && (
+        {message ? (
           <div className="message error" role="alert" id="modal-title">
             {message}
           </div>
-        )}
+        ) : null}
 
-        {attestationId && (
+        {attestationId ? (
           <div className="message" id="modal-title">
             Attestation ID:{' '}
             <a
@@ -118,9 +122,9 @@ const DetailsModal = ({
               {truncateHexString(attestationId)}
             </a>
           </div>
-        )}
+        ) : null}
 
-        {txHash && (
+        {txHash ? (
           <div className={`message sub ${attestationId ? '' : 'pending'}`}>
             Transaction Hash:{' '}
             <a
@@ -132,7 +136,7 @@ const DetailsModal = ({
               {truncateHexString(txHash)}
             </a>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
