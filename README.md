@@ -60,7 +60,7 @@ corepack prepare pnpm@latest --activate
 ## 🛠 Technologies
 
 - Frontend: React 19 + TypeScript + Vite 7
-- Smart Contracts: Solidity 0.8.21 + Hardhat 3
+- Smart Contracts: Solidity 0.8.21/0.8.24 + Hardhat 3
 - Wallet Connection: wagmi v3 + viem v2 + Reown AppKit
 - Attestations: Verax Attestation Registry
 - Network: Linea (mainnet & Sepolia testnet)

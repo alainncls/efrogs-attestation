@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -23,7 +23,7 @@ contract EFrogsNFT is ERC721, Ownable {
     /// @dev Error thrown when the withdrawal fails
     error WithdrawFailed();
 
-    constructor() ERC721("FakeEFrogs", "FAKEEFROGS") {
+    constructor() ERC721("FakeEFrogs", "FAKEEFROGS") Ownable(msg.sender) {
         tokenCounter = 0;
     }
 
@@ -35,7 +35,7 @@ contract EFrogsNFT is ERC721, Ownable {
     function createToken(address to) public payable {
         if (msg.value < MINT_PRICE) revert InsufficientFee();
         _safeMint(to, tokenCounter);
-        tokenCounter++;
+        ++tokenCounter;
     }
 
     /**

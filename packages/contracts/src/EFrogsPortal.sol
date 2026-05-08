@@ -33,7 +33,11 @@ contract EFrogsPortal is AbstractPortalV2, Ownable {
     /// @dev Error thrown when the function is not implemented
     error NotImplemented();
 
-    constructor(address[] memory modules, address router, address eFrogsAddress) AbstractPortalV2(modules, router) {
+    constructor(
+        address[] memory modules,
+        address router,
+        address eFrogsAddress
+    ) AbstractPortalV2(modules, router) Ownable(msg.sender) {
         eFrogsContract = IERC721(eFrogsAddress);
         fee = 0.0001 ether;
         authorizedSchemas[0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5] = true;
