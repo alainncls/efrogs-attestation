@@ -11,16 +11,6 @@ export const PORTAL_ADDRESS = '0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e';
 export const SCHEMA_ID =
   '0x5dc8bc9158dd69ee8a234bb8f9ab1f4f17bb52c84b6fd4720d58ec82bb43d2f5';
 
-const graphApiKey = import.meta.env.VITE_GRAPH_API_KEY;
-
-if (!graphApiKey) {
-  throw new Error('Missing VITE_GRAPH_API_KEY environment variable');
-}
-
-export const LINEA_MAINNET_SUBGRAPH_URL = `https://gateway.thegraph.com/api/${graphApiKey}/subgraphs/id/ESRDQ5djmucKeqxNz7JGVHr621sjGEEsY6M6JibjJ9u3`;
-
-export const LINEA_SEPOLIA_SUBGRAPH_URL = `https://gateway.thegraph.com/api/${graphApiKey}/subgraphs/id/2gfRmZ1e1uJKpCQsUrvxJmRivNa7dvvuULoc8SJabR8v`;
-
 export const EFROGS_PORTAL_ABI = [
   {
     type: 'function',

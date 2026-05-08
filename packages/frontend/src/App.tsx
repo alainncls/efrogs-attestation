@@ -12,8 +12,6 @@ import {
   EFROGS_CONTRACT,
   EFROGS_NFT_ABI,
   EFROGS_PORTAL_ABI,
-  LINEA_MAINNET_SUBGRAPH_URL,
-  LINEA_SEPOLIA_SUBGRAPH_URL,
   PORTAL_ADDRESS,
   SCHEMA_ID,
   TESTNET_EFROGS_CONTRACT,
@@ -45,23 +43,11 @@ const createVeraxSdk = (
   address: Address,
 ) => {
   if (chainId === linea.id) {
-    return new VeraxSdk(
-      {
-        ...VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
-        subgraphUrl: LINEA_MAINNET_SUBGRAPH_URL,
-      },
-      address,
-    );
+    return new VeraxSdk(VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND, address);
   }
 
   if (chainId === lineaSepolia.id) {
-    return new VeraxSdk(
-      {
-        ...VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND,
-        subgraphUrl: LINEA_SEPOLIA_SUBGRAPH_URL,
-      },
-      address,
-    );
+    return new VeraxSdk(VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND, address);
   }
 
   return undefined;

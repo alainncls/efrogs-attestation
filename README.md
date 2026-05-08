@@ -88,7 +88,6 @@ pnpm dev
 | ------------------------------- | ------------------------------ | -------- |
 | `VITE_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud Project ID | Yes      |
 | `VITE_INFURA_API_KEY`           | Infura API Key for RPC         | Yes      |
-| `VITE_GRAPH_API_KEY`            | The Graph API Key              | Yes      |
 
 ### Contracts (`packages/contracts/.env`)
 
