@@ -93,16 +93,16 @@ contract EFrogsPortal is AbstractPortalV2, Ownable {
         AttestationPayload memory /*attestationPayload*/,
         address /*attester*/,
         uint256 /*value*/
-    ) internal view override {
-        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
+    ) internal pure override {
+        revert NotImplemented();
     }
 
     function _onBulkReplace(
         bytes32[] memory /*attestationIds*/,
         AttestationPayload[] memory /*attestationsPayloads*/,
         bytes[][] memory /*validationPayloads*/
-    ) internal view override {
-        if (msg.sender != portalRegistry.getPortalByAddress(address(this)).ownerAddress) revert OnlyPortalOwner();
+    ) internal pure override {
+        revert NotImplemented();
     }
 
     function _onRevoke(bytes32 /*attestationId*/) internal view override {

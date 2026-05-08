@@ -9,7 +9,7 @@
     "deploy:portal": "hardhat run scripts/deployEFrogsPortal.ts --network",
     "lint": "eslint . && solhint 'src/**/*.sol' -c .solhint.json",
     "lint:fix": "eslint . --fix",
-    "test": "hardhat test",
+    "test": "hardhat test && node test/repositorySecurity.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

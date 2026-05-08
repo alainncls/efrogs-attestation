@@ -3,6 +3,8 @@ import { verifyContract } from '@nomicfoundation/hardhat-verify/verify';
 import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
 import { isAddress, isHex, type Address, type Hex } from 'viem';
 
+const PRIVATE_KEY_HEX_LENGTH = 66;
+
 function requireAddress(value: string | undefined, name: string): Address {
   if (!value || !isAddress(value)) {
     throw new Error(`${name} must be a valid address, got: ${value}`);
@@ -10,9 +12,13 @@ function requireAddress(value: string | undefined, name: string): Address {
   return value;
 }
 
-function requireHex(value: string | undefined, name: string): Hex {
-  if (!value || !isHex(value)) {
-    throw new Error(`${name} must be a valid hex string, got: ${value}`);
+function requirePrivateKey(value: string | undefined): Hex {
+  if (
+    !value ||
+    value.length !== PRIVATE_KEY_HEX_LENGTH ||
+    !isHex(value, { strict: true })
+  ) {
+    throw new Error('PRIVATE_KEY must be a valid 32-byte hex string');
   }
   return value;
 }
@@ -28,7 +34,7 @@ async function main() {
     process.env.EFROGS_ADDRESS,
     'EFROGS_ADDRESS',
   );
-  const privateKey = requireHex(process.env.PRIVATE_KEY, 'PRIVATE_KEY');
+  const privateKey = requirePrivateKey(process.env.PRIVATE_KEY);
 
   console.log('Deploying EFrogsPortal...');
 
