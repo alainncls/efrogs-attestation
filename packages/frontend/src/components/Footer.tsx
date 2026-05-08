@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import './Footer.css';
 import LogoGitHub from '../assets/icons/github.svg';
 import XLogo from '../assets/icons/x.svg';
 import LogoVerax from '../assets/icons/verax.svg';
 
-export default function Footer() {
+function Footer() {
   return (
     <footer className="footer">
       <a
@@ -33,3 +34,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export default memo(Footer);

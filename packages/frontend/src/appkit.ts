@@ -1,0 +1,47 @@
+import { networks, projectId, wagmiAdapter } from './wagmiConfig.ts';
+import LineaMainnetIcon from './assets/linea-mainnet.svg';
+import LineaSepoliaIcon from './assets/linea-sepolia.svg';
+
+const metadata = {
+  name: 'eFrogs Attestation',
+  description: 'Issue attestation of eFrogs ownership',
+  url: 'https://efrogs.alainnicolas.fr',
+  icons: ['https://efrogs.alainnicolas.fr/favicon.jpg'],
+};
+
+let appKitInitialization: Promise<void> | undefined;
+
+export const initializeAppKit = () => {
+  appKitInitialization ??= import('@reown/appkit/react').then(
+    ({ createAppKit }) => {
+      createAppKit({
+        adapters: [wagmiAdapter],
+        networks,
+        defaultNetwork: networks[0],
+        projectId,
+        metadata,
+        features: {
+          analytics: true,
+          email: false,
+          socials: false,
+          swaps: false,
+          onramp: false,
+          history: false,
+        },
+        coinbasePreference: 'eoaOnly',
+        themeMode: 'dark',
+        themeVariables: {
+          '--w3m-font-family':
+            'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
+          '--w3m-accent': '#CB7763',
+        },
+        chainImages: {
+          59144: LineaMainnetIcon,
+          59141: LineaSepoliaIcon,
+        },
+      });
+    },
+  );
+
+  return appKitInitialization;
+};

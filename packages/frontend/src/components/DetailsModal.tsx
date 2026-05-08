@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { useAccount } from 'wagmi';
+import { memo, useCallback, useEffect, useRef } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
+import { useChainId } from 'wagmi';
 import './DetailsModal.css';
 import type { Hex } from 'viem';
 
@@ -24,20 +25,26 @@ const DetailsModal = ({
   attestationId,
   message,
 }: DetailsModalProps) => {
-  const { chainId } = useAccount();
+  const chainId = useChainId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const handleOverlayClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     if (isOpen && closeButtonRef.current) {
@@ -142,4 +149,4 @@ const DetailsModal = ({
   );
 };
 
-export default DetailsModal;
+export default memo(DetailsModal);

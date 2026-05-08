@@ -1,16 +1,14 @@
-import { useCallback, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import './App.css';
 import type {
   AttestationPayload,
   TransactionOptions,
 } from '@verax-attestation-registry/verax-sdk';
-import { VeraxSdk } from '@verax-attestation-registry/verax-sdk';
+import type * as VeraxSdkModule from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'viem/actions';
 import type { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
-import DetailsModal from './components/DetailsModal.tsx';
-import TestnetRibbon from './components/TestnetRibbon.tsx';
 import {
   EFROGS_CONTRACT,
   EFROGS_NFT_ABI,
@@ -27,9 +25,48 @@ import { linea, lineaSepolia } from 'wagmi/chains';
 import Footer from './components/Footer.tsx';
 import Header from './components/Header.tsx';
 import { wagmiAdapter } from './wagmiConfig.ts';
-import ChainMismatchBanner from './components/ChainMismatchBanner.tsx';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
+const ATTESTATION_EXPIRATION_SECONDS = 2_592_000;
+
+const ChainMismatchBanner = lazy(
+  () => import('./components/ChainMismatchBanner.tsx'),
+);
+const DetailsModal = lazy(() => import('./components/DetailsModal.tsx'));
+const TestnetRibbon = lazy(() => import('./components/TestnetRibbon.tsx'));
+
+type VeraxSdkConstructor = typeof VeraxSdkModule.VeraxSdk;
+
+const getEfrogsContractAddress = (chainId?: number) =>
+  chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT;
+
+const createVeraxSdk = (
+  VeraxSdk: VeraxSdkConstructor,
+  chainId: number,
+  address: Address,
+) => {
+  if (chainId === linea.id) {
+    return new VeraxSdk(
+      {
+        ...VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
+        subgraphUrl: LINEA_MAINNET_SUBGRAPH_URL,
+      },
+      address,
+    );
+  }
+
+  if (chainId === lineaSepolia.id) {
+    return new VeraxSdk(
+      {
+        ...VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND,
+        subgraphUrl: LINEA_SEPOLIA_SUBGRAPH_URL,
+      },
+      address,
+    );
+  }
+
+  return undefined;
+};
 
 function App() {
   const [txHash, setTxHash] = useState<Hex>();
@@ -44,8 +81,7 @@ function App() {
   const { data: balance, refetch } = useReadContract({
     abi: EFROGS_NFT_ABI,
     functionName: 'balanceOf',
-    address:
-      chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT,
+    address: getEfrogsContractAddress(chainId),
     args: [address ?? '0x0'],
     chainId,
     query: {
@@ -53,32 +89,8 @@ function App() {
     },
   });
 
-  const veraxSdk = useMemo(() => {
-    if (!chainId || !address || !isValidChain) {
-      return undefined;
-    }
-
-    if (chainId === linea.id) {
-      const sdkConf = {
-        ...VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
-        subgraphUrl: LINEA_MAINNET_SUBGRAPH_URL,
-      };
-      return new VeraxSdk(sdkConf, address);
-    }
-
-    if (chainId === lineaSepolia.id) {
-      const sdkConf = {
-        ...VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND,
-        subgraphUrl: LINEA_SEPOLIA_SUBGRAPH_URL,
-      };
-      return new VeraxSdk(sdkConf, address);
-    }
-
-    return undefined;
-  }, [chainId, address, isValidChain]);
-
   const issueAttestation = useCallback(async () => {
-    if (!address || !veraxSdk || !balance) return;
+    if (!address || !chainId || !isValidChain || !balance) return;
 
     setTxHash(undefined);
     setAttestationId(undefined);
@@ -86,18 +98,25 @@ function App() {
     setIsModalOpen(true);
 
     try {
+      const { VeraxSdk } =
+        await import('@verax-attestation-registry/verax-sdk');
+      const veraxSdk = createVeraxSdk(VeraxSdk, chainId, address);
+
+      if (!veraxSdk) {
+        setMessage(DEFAULT_ERROR_MESSAGE);
+        return;
+      }
+
       const portalAddress: Address =
         chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS;
       const attestationPayload: AttestationPayload = {
         schemaId: SCHEMA_ID,
-        expirationDate: Math.floor(Date.now() / 1000) + 2592000,
+        expirationDate:
+          Math.floor(Date.now() / 1000) + ATTESTATION_EXPIRATION_SECONDS,
         subject: address,
         attestationData: [
           {
-            contract:
-              chainId === lineaSepolia.id
-                ? TESTNET_EFROGS_CONTRACT
-                : EFROGS_CONTRACT,
+            contract: getEfrogsContractAddress(chainId),
             balance,
           },
         ],
@@ -140,27 +159,32 @@ function App() {
         setMessage(DEFAULT_ERROR_MESSAGE);
       }
     }
-  }, [address, veraxSdk, balance, chainId]);
+  }, [address, balance, chainId, isValidChain]);
 
-  const disabled =
-    !isConnected || !isValidChain || !address || !veraxSdk || !balance;
+  const disabled = !isConnected || !isValidChain || !address || !balance;
 
   const frogBalance = Number(balance ?? 0n);
   const title = address
     ? `You have ${frogBalance} eFrog${frogBalance === 1 ? '' : 's'}`
     : 'Attest your eFrogs';
 
-  const toggleModal = useCallback(() => {
-    setIsModalOpen((isOpen) => !isOpen);
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
   }, []);
 
   return (
     <>
       <div className={'main-container'}>
         <Header />
-        {!isValidChain && isConnected ? <ChainMismatchBanner /> : null}
+        {!isValidChain && isConnected ? (
+          <Suspense fallback={null}>
+            <ChainMismatchBanner />
+          </Suspense>
+        ) : null}
         {chainId === lineaSepolia.id ? (
-          <TestnetRibbon onNftMinted={refetch} />
+          <Suspense fallback={null}>
+            <TestnetRibbon onNftMinted={refetch} />
+          </Suspense>
         ) : null}
         <a
           href="https://element.market/assets/linea/0x194395587d7b169e63eaf251e86b1892fa8f1960/645"
@@ -176,13 +200,17 @@ function App() {
           ></div>
         </a>
         <Panel title={title} disabled={disabled} onClick={issueAttestation} />
-        <DetailsModal
-          attestationId={attestationId}
-          txHash={txHash}
-          isOpen={isModalOpen}
-          onClose={toggleModal}
-          message={message}
-        />
+        {isModalOpen ? (
+          <Suspense fallback={null}>
+            <DetailsModal
+              attestationId={attestationId}
+              txHash={txHash}
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              message={message}
+            />
+          </Suspense>
+        ) : null}
         <Footer />
       </div>
     </>

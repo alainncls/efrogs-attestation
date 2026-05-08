@@ -1,9 +1,12 @@
+import { memo } from 'react';
 import './Header.css';
 
-export default function Header() {
+function Header() {
   return (
     <header className={'header'}>
       <appkit-button balance={'hide'} />
     </header>
   );
 }
+
+export default memo(Header);

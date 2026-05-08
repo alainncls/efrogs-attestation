@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import './Panel.css';
 
 interface PanelProps {
@@ -7,10 +7,10 @@ interface PanelProps {
   onClick: () => Promise<void>;
 }
 
-export default function Panel({ title, disabled, onClick }: PanelProps) {
+function Panel({ title, disabled, onClick }: PanelProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = useCallback(async () => {
     if (disabled || isLoading) return;
     setIsLoading(true);
     try {
@@ -18,7 +18,7 @@ export default function Panel({ title, disabled, onClick }: PanelProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [disabled, isLoading, onClick]);
 
   return (
     <div className="panel">
@@ -46,3 +46,5 @@ export default function Panel({ title, disabled, onClick }: PanelProps) {
     </div>
   );
 }
+
+export default memo(Panel);

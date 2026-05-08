@@ -9,7 +9,7 @@ import {
   TESTNET_EFROGS_CONTRACT,
   TRANSACTION_VALUE,
 } from '../utils/constants.ts';
-import { useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 
 interface TestnetRibbonProps {
   onNftMinted: () => void;
@@ -37,7 +37,7 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
     }
   }, [error]);
 
-  const mintTestNft = () => {
+  const mintTestNft = useCallback(() => {
     if (!address) return;
 
     writeContract({
@@ -48,7 +48,7 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
       chainId,
       value: TRANSACTION_VALUE,
     });
-  };
+  }, [address, chainId, writeContract]);
 
   const buttonLabel = isPending
     ? 'Confirming...'
@@ -75,4 +75,4 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   );
 };
 
-export default TestnetRibbon;
+export default memo(TestnetRibbon);

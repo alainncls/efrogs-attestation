@@ -1,13 +1,14 @@
+import { memo, useCallback } from 'react';
 import { useSwitchChain } from 'wagmi';
 import { linea } from 'wagmi/chains';
 import './ChainMismatchBanner.css';
 
-export default function ChainMismatchBanner() {
+function ChainMismatchBanner() {
   const { switchChain, isPending } = useSwitchChain();
 
-  const handleSwitchChain = () => {
+  const handleSwitchChain = useCallback(() => {
     switchChain({ chainId: linea.id });
-  };
+  }, [switchChain]);
 
   return (
     <div className="chain-mismatch-banner" role="alert">
@@ -24,3 +25,5 @@ export default function ChainMismatchBanner() {
     </div>
   );
 }
+
+export default memo(ChainMismatchBanner);
