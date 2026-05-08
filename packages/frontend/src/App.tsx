@@ -6,7 +6,6 @@ import type {
 } from '@verax-attestation-registry/verax-sdk';
 import type * as VeraxSdkModule from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
-import { waitForTransactionReceipt } from 'viem/actions';
 import type { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import {
@@ -137,6 +136,7 @@ function App() {
 
       if (receipt.transactionHash) {
         setTxHash(receipt.transactionHash);
+        const { waitForTransactionReceipt } = await import('viem/actions');
         receipt = await waitForTransactionReceipt(
           wagmiAdapter.wagmiConfig.getClient(),
           {
@@ -164,9 +164,9 @@ function App() {
   const disabled = !isConnected || !isValidChain || !address || !balance;
 
   const frogBalance = Number(balance ?? 0n);
-  const title = address
+  const walletStatus = address
     ? `You have ${frogBalance} eFrog${frogBalance === 1 ? '' : 's'}`
-    : 'Attest your eFrogs';
+    : undefined;
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -174,8 +174,15 @@ function App() {
 
   return (
     <>
-      <div className={'main-container'}>
-        <Header />
+      <Header />
+      <main
+        className={'main-container'}
+        aria-describedby="application-description"
+      >
+        <p id="application-description" className="sr-only">
+          Create on-chain ownership attestations for eFrogs NFTs using Verax on
+          Linea.
+        </p>
         {!isValidChain && isConnected ? (
           <Suspense fallback={null}>
             <ChainMismatchBanner />
@@ -199,7 +206,12 @@ function App() {
             aria-label="Dancing frog animation"
           ></div>
         </a>
-        <Panel title={title} disabled={disabled} onClick={issueAttestation} />
+        <Panel
+          title="Attest your eFrogs"
+          status={walletStatus}
+          disabled={disabled}
+          onClick={issueAttestation}
+        />
         {isModalOpen ? (
           <Suspense fallback={null}>
             <DetailsModal
@@ -211,8 +223,8 @@ function App() {
             />
           </Suspense>
         ) : null}
-        <Footer />
-      </div>
+      </main>
+      <Footer />
     </>
   );
 }

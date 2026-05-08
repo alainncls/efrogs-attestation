@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://efrogs.alainnicolas.fr/sitemap.xml

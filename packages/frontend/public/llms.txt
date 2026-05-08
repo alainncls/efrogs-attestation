@@ -1,0 +1,9 @@
+# eFrogs Attestation
+
+eFrogs Attestation is a Web3 application for creating on-chain ownership attestations for eFrogs NFTs on Linea using the Verax Attestation Registry.
+
+- [Website](https://efrogs.alainnicolas.fr/)
+- [Source code](https://github.com/alainncls/efrogs-attestation)
+- [Verax portal](https://explorer.ver.ax/linea/portals/0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e)
+- [Linea network](https://linea.build/)
+- [Verax documentation](https://docs.ver.ax/)

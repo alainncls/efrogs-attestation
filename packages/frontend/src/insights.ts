@@ -18,34 +18,42 @@ const initializeInsights = () => {
 
 const requestIdleTask = (callback: () => void) => {
   if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(callback, { timeout: 2_000 });
+    window.requestIdleCallback(callback, { timeout: 3_000 });
     return;
   }
 
-  globalThis.setTimeout(callback, 0);
+  globalThis.setTimeout(callback, 2_000);
 };
 
 export const scheduleInsights = () => {
-  requestIdleTask(() => {
-    const existingScript = document.getElementById(INSIGHTS_SCRIPT_ID);
+  const loadScript = () =>
+    requestIdleTask(() => {
+      const existingScript = document.getElementById(INSIGHTS_SCRIPT_ID);
 
-    if (existingScript) {
-      if (window.insights) {
-        initializeInsights();
-      } else {
-        existingScript.addEventListener('load', initializeInsights, {
-          once: true,
-        });
+      if (existingScript) {
+        if (window.insights) {
+          initializeInsights();
+        } else {
+          existingScript.addEventListener('load', initializeInsights, {
+            once: true,
+          });
+        }
+        return;
       }
-      return;
-    }
 
-    const script = document.createElement('script');
-    script.async = true;
-    script.id = INSIGHTS_SCRIPT_ID;
-    script.src = INSIGHTS_SCRIPT_SRC;
-    script.addEventListener('load', initializeInsights, { once: true });
+      const script = document.createElement('script');
+      script.async = true;
+      script.id = INSIGHTS_SCRIPT_ID;
+      script.src = INSIGHTS_SCRIPT_SRC;
+      script.addEventListener('load', initializeInsights, { once: true });
 
-    document.head.append(script);
-  });
+      document.head.append(script);
+    });
+
+  if (document.readyState === 'complete') {
+    loadScript();
+    return;
+  }
+
+  window.addEventListener('load', loadScript, { once: true });
 };

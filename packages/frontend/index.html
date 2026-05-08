@@ -4,9 +4,30 @@
     <meta charset="UTF-8" />
     <link href="/favicon.jpg" rel="icon" type="image/jpeg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap"
-      rel="stylesheet"
+      href="/fonts/jersey-10.woff2"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link
+      href="/signage-phone.webp"
+      rel="preload"
+      as="image"
+      type="image/webp"
+      media="(max-width: 991px)"
+      fetchpriority="high"
+    />
+    <link
+      href="/signage.webp"
+      rel="preload"
+      as="image"
+      type="image/webp"
+      media="(min-width: 992px)"
+      fetchpriority="high"
+    />
+    <link href="https://api.web3modal.org" rel="dns-prefetch" />
+    <link href="https://getinsights.io" rel="dns-prefetch" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>eFrogs Attestation - Verify Your NFT Ownership on Linea</title>
 
@@ -25,11 +46,12 @@
       content="eFrogs, Linea, Verax, blockchain attestation, NFT verification, Web3, cryptocurrency, digital ownership, eFroglets, CROAK token, blockchain technology, Ethereum L2"
     />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://efrogs.alainnicolas.fr" />
+    <link rel="canonical" href="https://efrogs.alainnicolas.fr/" />
+    <link rel="manifest" href="/manifest.webmanifest" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://efrogs.alainnicolas.fr" />
+    <meta property="og:url" content="https://efrogs.alainnicolas.fr/" />
     <meta
       property="og:title"
       content="eFrogs Attestation - Verify Your NFT Ownership on Linea"
@@ -40,10 +62,12 @@
     />
     <meta
       property="og:image"
-      content="https://efrogs.alainnicolas.fr/background.jpg"
+      content="https://efrogs.alainnicolas.fr/og-image.jpg"
     />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="eFrogs Attestation pond scene" />
     <meta property="og:site_name" content="eFrogs Attestation" />
     <meta property="og:locale" content="en_US" />
 
@@ -61,12 +85,9 @@
     />
     <meta
       name="twitter:image"
-      content="https://efrogs.alainnicolas.fr/background.jpg"
+      content="https://efrogs.alainnicolas.fr/og-image.jpg"
     />
-    <meta
-      name="twitter:image:alt"
-      content="eFrogs Attestation Background - A pond at sunset"
-    />
+    <meta name="twitter:image:alt" content="eFrogs Attestation pond scene" />
 
     <!-- Additional Meta Tags -->
     <meta name="theme-color" content="#34D399" />
@@ -78,9 +99,63 @@
     />
     <meta name="application-name" content="eFrogs Attestation" />
     <meta name="msapplication-TileColor" content="#34D399" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "eFrogs Attestation",
+        "url": "https://efrogs.alainnicolas.fr/",
+        "description": "Create on-chain attestations for eFrogs NFT ownership using Verax on Linea.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "image": "https://efrogs.alainnicolas.fr/og-image.jpg",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.0001",
+          "priceCurrency": "ETH"
+        },
+        "creator": {
+          "@type": "Person",
+          "name": "alain.linea.eth",
+          "sameAs": ["https://github.com/alainncls", "https://x.com/Alain_Ncls"]
+        },
+        "sameAs": [
+          "https://github.com/alainncls/efrogs-attestation",
+          "https://explorer.ver.ax/linea/portals/0x5f47bCeB43B8114cf85d3Ac50e9850164dE2984e"
+        ]
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="main-container" aria-describedby="application-description">
+        <p id="application-description" class="sr-only">
+          Create on-chain ownership attestations for eFrogs NFTs on Linea with
+          Verax.
+        </p>
+        <div class="panel">
+          <div class="signage">
+            <div class="signage-content">
+              <h1 class="panel-title">Attest your eFrogs</h1>
+            </div>
+          </div>
+          <div class="button-container">
+            <button
+              type="button"
+              class="button disabled"
+              disabled
+              aria-label="Connect wallet to issue attestation"
+            >
+              <span class="button-label disabled">Issue attestation</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <noscript>
+      eFrogs Attestation requires JavaScript to connect a wallet and create a
+      Verax attestation on Linea.
+    </noscript>
     <script src="/src/main.tsx" type="module"></script>
   </body>
 </html>

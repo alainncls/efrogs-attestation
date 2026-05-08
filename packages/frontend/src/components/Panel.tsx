@@ -3,11 +3,12 @@ import './Panel.css';
 
 interface PanelProps {
   title: string;
+  status?: string;
   disabled: boolean;
   onClick: () => Promise<void>;
 }
 
-function Panel({ title, disabled, onClick }: PanelProps) {
+function Panel({ title, status, disabled, onClick }: PanelProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = useCallback(async () => {
@@ -22,8 +23,33 @@ function Panel({ title, disabled, onClick }: PanelProps) {
 
   return (
     <div className="panel">
-      <div className="signage-image">
-        <h1 className="panel-title">{title}</h1>
+      <div className="signage">
+        <picture className="signage-art" aria-hidden="true">
+          <source
+            media="(min-width: 992px)"
+            srcSet="/signage.webp"
+            type="image/webp"
+          />
+          <source media="(min-width: 992px)" srcSet="/signage.png" />
+          <source srcSet="/signage-phone.webp" type="image/webp" />
+          <img
+            className="signage-image"
+            src="/signage-phone.png"
+            alt=""
+            width="300"
+            height="419"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
+        <div className="signage-content">
+          <h1 className="panel-title">{title}</h1>
+          {status ? (
+            <p className="panel-status" aria-live="polite">
+              {status}
+            </p>
+          ) : null}
+        </div>
       </div>
       <div className="button-container">
         <button

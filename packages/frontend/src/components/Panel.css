@@ -7,26 +7,56 @@
   transform: translate(0, -40%);
 }
 
-.signage-image {
+.signage {
   position: relative;
   width: 300px;
   height: 419px;
-  background-image: url(/signage-phone.png);
-  background-size: cover;
-  background-position: center;
+}
+
+.signage-art,
+.signage-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.signage-image {
+  object-fit: contain;
+}
+
+.signage-content {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .panel-title {
   position: absolute;
-  top: 50%;
+  top: 49%;
   left: 50%;
   transform: translate(-50%, 0);
   color: #f1d199;
-  font-size: 40px;
+  font-size: 38px;
+  line-height: 0.9;
   text-transform: uppercase;
   width: 80%;
   padding: 10%;
   text-align: center;
+  margin: 0;
+}
+
+.panel-status {
+  position: absolute;
+  top: 68%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: #f1d199;
+  font-size: 22px;
+  line-height: 1;
+  text-transform: uppercase;
+  width: 72%;
+  text-align: center;
+  margin: 0;
 }
 
 .button-container {
@@ -95,15 +125,18 @@
     transform: translate(0, -30%);
   }
 
-  .signage-image {
+  .signage {
     width: 551px;
     height: 770px;
     transform: translate(0, 0);
-    background-image: url(/signage.png);
   }
 
   .panel-title {
-    font-size: 80px;
+    font-size: 76px;
+  }
+
+  .panel-status {
+    font-size: 34px;
   }
 
   .button-container {
@@ -122,7 +155,11 @@
 
 @media (min-width: 1800px) {
   .panel-title {
-    font-size: 90px;
+    font-size: 84px;
+  }
+
+  .panel-status {
+    font-size: 38px;
   }
 
   .button {

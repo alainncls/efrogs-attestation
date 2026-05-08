@@ -9,3 +9,33 @@
   box-sizing: border-box;
   z-index: 10;
 }
+
+.wallet-button {
+  min-width: 132px;
+  min-height: 40px;
+  border: 1px solid rgb(241 209 153 / 0.7);
+  border-radius: 6px;
+  background: rgb(16 32 24 / 0.84);
+  color: #f1d199;
+  cursor: pointer;
+  font:
+    20px/1 'Jersey 10',
+    sans-serif;
+  letter-spacing: 0;
+  padding: 8px 14px;
+  text-transform: uppercase;
+}
+
+.wallet-button:hover:not(:disabled) {
+  background: rgb(24 48 36 / 0.9);
+}
+
+.wallet-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.wallet-button:focus-visible {
+  outline: 2px solid #f1d199;
+  outline-offset: 2px;
+}

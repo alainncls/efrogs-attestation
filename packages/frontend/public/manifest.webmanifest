@@ -1,0 +1,17 @@
+{
+  "name": "eFrogs Attestation",
+  "short_name": "eFrogs",
+  "description": "Create on-chain eFrogs NFT ownership attestations using Verax on Linea.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#102018",
+  "theme_color": "#34D399",
+  "icons": [
+    {
+      "src": "/favicon.jpg",
+      "sizes": "300x300",
+      "type": "image/jpeg"
+    }
+  ]
+}
