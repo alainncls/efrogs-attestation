@@ -35,7 +35,7 @@ catalogs:
     '@verax-attestation-registry/verax-sdk': 5.4.0
   vite:
     '@vitejs/plugin-react': ^6.0.1
-    vite: ^8.0.11
+    vite: ^8.0.16
   wagmi:
     '@reown/appkit': ^1.8.19
     '@reown/appkit-adapter-wagmi': ^1.8.19
