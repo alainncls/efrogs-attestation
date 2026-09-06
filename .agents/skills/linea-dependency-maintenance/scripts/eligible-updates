@@ -8,7 +8,12 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
 
 function parseArgs(argv) {
-  const args = { manager: 'auto', days: 3, minutes: null };
+  const args = {
+    manager: 'auto',
+    days: 3,
+    minutes: null,
+    holds: DEFAULT_HOLDS_PATH,
+  };
   for (let index = 2; index < argv.length; index += 1) {
     const arg = argv[index];
     const next = argv[index + 1];
@@ -21,14 +26,69 @@ function parseArgs(argv) {
     } else if (arg === '--minutes' && next) {
       args.minutes = Number(next);
       index += 1;
+    } else if (arg === '--holds' && next) {
+      args.holds = next;
+      index += 1;
     } else if (arg === '--help') {
       console.error(
-        'Usage: eligible-updates [--manager auto|npm|pnpm] [--days N | --minutes N]',
+        'Usage: eligible-updates [--manager auto|npm|pnpm] [--days N | --minutes N] [--holds <file>]',
       );
       process.exit(0);
     }
   }
   return args;
+}
+
+// A hold is a version ceiling for a package with releases known broken for this
+// repo. Held versions are filtered out of the inventory and surfaced as
+// `heldAt` so the agent does not chase a bump the policy gate would reject.
+// `@types/foo` follows the `foo` ceiling at the major level.
+const DEFAULT_HOLDS_PATH = '.github/dependency-holds.json';
+
+// A malformed holds file must fail closed with a clear error: silently
+// un-holding every package would feed the refresh a wrong inventory.
+function loadHolds(path) {
+  if (!existsSync(path)) return new Map();
+  let parsed;
+  try {
+    parsed = JSON.parse(readFileSync(path, 'utf8'));
+  } catch (error) {
+    throw new Error(`${path}: could not be parsed (${error.message})`);
+  }
+  if (!Array.isArray(parsed?.holds)) {
+    throw new Error(`${path}: expected a "holds" array`);
+  }
+  const ceilings = new Map();
+  for (const entry of parsed.holds) {
+    if (!Array.isArray(entry?.packages) || !parseVersion(entry?.maxVersion)) {
+      throw new Error(
+        `${path}: entry is missing a valid "packages" list or "maxVersion"`,
+      );
+    }
+    for (const name of entry.packages) ceilings.set(name, entry.maxVersion);
+  }
+  return ceilings;
+}
+
+// `@types/foo` tracks the `foo` ceiling. DefinitelyTyped encodes a scoped
+// runtime package as `scope__name` (`@types/babel__core` → `@babel/core`).
+function typesRuntimeFor(name) {
+  const types = String(name).match(/^@types\/(.+)$/);
+  if (!types) return null;
+  const inner = types[1];
+  const separator = inner.indexOf('__');
+  if (separator === -1) return inner;
+  return `@${inner.slice(0, separator)}/${inner.slice(separator + 2)}`;
+}
+
+// The runtime ceiling applies to the types package at the major level only.
+function heldCeiling(ceilings, name) {
+  const direct = ceilings.get(name);
+  if (direct) return { max: direct, majorOnly: false };
+  const runtime = typesRuntimeFor(name);
+  const inherited = runtime ? ceilings.get(runtime) : undefined;
+  if (inherited) return { max: inherited, majorOnly: true };
+  return null;
 }
 
 function detectManager() {
@@ -136,6 +196,7 @@ function classify(current, target) {
 
 async function main() {
   const args = parseArgs(process.argv);
+  const holds = loadHolds(args.holds);
   const manager = args.manager === 'auto' ? detectManager() : args.manager;
   if (!['npm', 'pnpm'].includes(manager))
     throw new Error('--manager must be auto, npm, or pnpm');
@@ -160,11 +221,17 @@ async function main() {
       .filter((version) => !parseVersion(version)?.prerelease)
       .sort(compareVersions);
 
+    const hold = heldCeiling(holds, item.name);
+    const heldAt = hold?.max ?? '';
     const newerEligible = versions
       .filter((version) => compareVersions(version, current) > 0)
-      .filter(
-        (version) => times[version] && new Date(times[version]) <= cutoff,
-      );
+      .filter((version) => times[version] && new Date(times[version]) <= cutoff)
+      .filter((version) => {
+        if (!hold) return true;
+        if (hold.majorOnly)
+          return parseVersion(version).major <= parseVersion(hold.max).major;
+        return compareVersions(version, hold.max) <= 0;
+      });
 
     const sameMajor = newerEligible.filter(
       (version) => parseVersion(version).major === parseVersion(current).major,
@@ -192,6 +259,7 @@ async function main() {
       eligibleAnyPublished: eligibleAny ? times[eligibleAny] : '',
       eligibleAnyType: eligibleAny ? classify(current, eligibleAny) : '',
       latestIsMajor: latest ? classify(current, latest) === 'major' : false,
+      heldAt,
     });
   }
 
@@ -202,6 +270,7 @@ async function main() {
         cwd: join(process.cwd()),
         now: now.toISOString(),
         cutoff: cutoff.toISOString(),
+        holds: Object.fromEntries(holds),
         rows,
       },
       null,
