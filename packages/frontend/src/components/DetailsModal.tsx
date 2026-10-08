@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef } from 'react';
-import type { KeyboardEvent, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import './DetailsModal.css';
 import type { Hex } from 'viem';
 import {
@@ -28,10 +28,11 @@ const DetailsModal = ({
   attestationId,
   message,
 }: DetailsModalProps) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleOverlayClick = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
+    (e: MouseEvent<HTMLDialogElement>) => {
       if (e.target === e.currentTarget) {
         onClose();
       }
@@ -39,19 +40,23 @@ const DetailsModal = ({
     [onClose],
   );
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
   useEffect(() => {
-    if (isOpen && closeButtonRef.current) {
-      closeButtonRef.current.focus();
-    }
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (!isOpen || dialog.open) return;
+
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : undefined;
+    dialog.showModal();
+    closeButtonRef.current?.focus();
+
+    return () => {
+      if (dialog.open) dialog.close();
+      previouslyFocused?.focus();
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -65,15 +70,20 @@ const DetailsModal = ({
   const showTransactionPending = !message && txHash && !attestationId;
 
   return (
-    <div
+    <dialog
+      ref={dialogRef}
       className="overlay"
       onClick={handleOverlayClick}
-      onKeyDown={handleKeyDown}
-      role="dialog"
-      aria-modal="true"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       aria-labelledby="modal-title"
     >
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal">
+        <h2 id="modal-title" className="sr-only">
+          Attestation status
+        </h2>
         <button
           ref={closeButtonRef}
           type="button"
@@ -87,22 +97,12 @@ const DetailsModal = ({
         {!message ? (
           <>
             {showValidationPending ? (
-              <div
-                className="message pending"
-                role="status"
-                aria-live="polite"
-                id="modal-title"
-              >
+              <div className="message pending" role="status" aria-live="polite">
                 User validation pending...
               </div>
             ) : null}
             {showTransactionPending ? (
-              <div
-                className="message pending"
-                role="status"
-                aria-live="polite"
-                id="modal-title"
-              >
+              <div className="message pending" role="status" aria-live="polite">
                 Transaction pending...
               </div>
             ) : null}
@@ -110,13 +110,13 @@ const DetailsModal = ({
         ) : null}
 
         {message ? (
-          <div className="message error" role="alert" id="modal-title">
+          <div className="message error" role="alert">
             {message}
           </div>
         ) : null}
 
         {attestationId && attestationUrl ? (
-          <div className="message" id="modal-title">
+          <div className="message" role="status" aria-live="polite">
             Attestation ID:{' '}
             <a
               href={attestationUrl}
@@ -143,7 +143,7 @@ const DetailsModal = ({
           </div>
         ) : null}
       </div>
-    </div>
+    </dialog>
   );
 };
 
