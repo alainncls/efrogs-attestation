@@ -204,6 +204,14 @@ function successReceipt(
 
 describe('issue attestation receipt context', () => {
   beforeEach(() => {
+    if (!HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = function showModal() {
+        this.setAttribute('open', '');
+      };
+      HTMLDialogElement.prototype.close = function close() {
+        this.removeAttribute('open');
+      };
+    }
     resetWallet();
     harness.constructed.length = 0;
     attestGate = deferred<SubmittedTx>();
