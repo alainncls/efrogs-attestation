@@ -1,10 +1,11 @@
 import { memo, useCallback, useEffect, useRef } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
-import { useChainId } from 'wagmi';
 import './DetailsModal.css';
 import type { Hex } from 'viem';
-
-const LINEA_MAINNET_CHAIN_ID = 59144;
+import {
+  getAttestationExplorerUrl,
+  getTransactionExplorerUrl,
+} from '../utils/attestationReceipt.ts';
 
 const truncateHexString = (hexString: string) => {
   return `${hexString.slice(0, 6)}...${hexString.slice(-4)}`;
@@ -13,6 +14,7 @@ const truncateHexString = (hexString: string) => {
 interface DetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  chainId: number;
   txHash?: Hex;
   attestationId?: Hex;
   message?: string;
@@ -21,11 +23,11 @@ interface DetailsModalProps {
 const DetailsModal = ({
   isOpen,
   onClose,
+  chainId,
   txHash,
   attestationId,
   message,
 }: DetailsModalProps) => {
-  const chainId = useChainId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleOverlayClick = useCallback(
@@ -54,14 +56,10 @@ const DetailsModal = ({
 
   if (!isOpen) return null;
 
-  const isMainnet = chainId === LINEA_MAINNET_CHAIN_ID;
-  const explorerBaseUrl = isMainnet
-    ? 'https://explorer.ver.ax/linea/attestations/'
-    : 'https://explorer.ver.ax/linea-sepolia/attestations/';
-
-  const txExplorerBaseUrl = isMainnet
-    ? 'https://lineascan.build/tx/'
-    : 'https://sepolia.lineascan.build/tx/';
+  const attestationUrl = attestationId
+    ? getAttestationExplorerUrl(chainId, attestationId)
+    : undefined;
+  const txUrl = txHash ? getTransactionExplorerUrl(chainId, txHash) : undefined;
 
   const showValidationPending = !message && !txHash && !attestationId;
   const showTransactionPending = !message && txHash && !attestationId;
@@ -117,11 +115,11 @@ const DetailsModal = ({
           </div>
         ) : null}
 
-        {attestationId ? (
+        {attestationId && attestationUrl ? (
           <div className="message" id="modal-title">
             Attestation ID:{' '}
             <a
-              href={`${explorerBaseUrl}${attestationId}`}
+              href={attestationUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View attestation ${truncateHexString(attestationId)} on Verax Explorer`}
@@ -131,11 +129,11 @@ const DetailsModal = ({
           </div>
         ) : null}
 
-        {txHash ? (
+        {txHash && txUrl ? (
           <div className={`message sub ${attestationId ? '' : 'pending'}`}>
             Transaction Hash:{' '}
             <a
-              href={`${txExplorerBaseUrl}${txHash}`}
+              href={txUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View transaction ${truncateHexString(txHash)} on Lineascan`}
