@@ -6,7 +6,7 @@ import type {
 } from '@verax-attestation-registry/verax-sdk';
 import type * as VeraxSdkModule from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
-import type { Address, Hex } from 'viem';
+import type { Address, Hex, TransactionReceipt } from 'viem';
 import Panel from './components/Panel.tsx';
 import {
   EFROGS_CONTRACT,
@@ -18,6 +18,15 @@ import {
   TESTNET_PORTAL_ADDRESS,
   TRANSACTION_VALUE,
 } from './utils/constants.ts';
+import {
+  ATTESTATION_EVENT_MISSING_MESSAGE,
+  extractAttestationIdFromReceipt,
+  isSupportedLineaChainId,
+  RECEIPT_CLIENT_MISSING_MESSAGE,
+  RECEIPT_REVERTED_MESSAGE,
+  UNSUPPORTED_ORIGIN_CHAIN_MESSAGE,
+  USER_REJECTED_MESSAGE,
+} from './utils/attestationReceipt.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
 import Footer from './components/Footer.tsx';
 import Header from './components/Header.tsx';
@@ -25,6 +34,11 @@ import { wagmiAdapter } from './wagmiConfig.ts';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 const ATTESTATION_EXPIRATION_SECONDS = 2_592_000;
+
+type OriginatingSubmission = {
+  chainId: number;
+  txHash?: Hex;
+};
 
 const ChainMismatchBanner = lazy(
   () => import('./components/ChainMismatchBanner.tsx'),
@@ -36,6 +50,22 @@ type VeraxSdkConstructor = typeof VeraxSdkModule.VeraxSdk;
 
 const getEfrogsContractAddress = (chainId?: number) =>
   chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT;
+
+const getPortalAddress = (chainId: number): Address | undefined => {
+  if (chainId === linea.id) return PORTAL_ADDRESS;
+  if (chainId === lineaSepolia.id) return TESTNET_PORTAL_ADDRESS;
+  return undefined;
+};
+
+const getLineaReceiptClient = (chainId: number) => {
+  if (chainId === linea.id) {
+    return wagmiAdapter.wagmiConfig.getClient({ chainId: linea.id });
+  }
+  if (chainId === lineaSepolia.id) {
+    return wagmiAdapter.wagmiConfig.getClient({ chainId: lineaSepolia.id });
+  }
+  return undefined;
+};
 
 const createVeraxSdk = (
   VeraxSdk: VeraxSdkConstructor,
@@ -54,14 +84,14 @@ const createVeraxSdk = (
 };
 
 function App() {
-  const [txHash, setTxHash] = useState<Hex>();
+  const [submission, setSubmission] = useState<OriginatingSubmission>();
   const [attestationId, setAttestationId] = useState<Hex>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>();
 
   const { address, chainId, isConnected } = useAccount();
 
-  const isValidChain = chainId === linea.id || chainId === lineaSepolia.id;
+  const isValidChain = isSupportedLineaChainId(chainId);
 
   const { data: balance, refetch } = useReadContract({
     abi: EFROGS_NFT_ABI,
@@ -75,69 +105,126 @@ function App() {
   });
 
   const issueAttestation = useCallback(async () => {
-    if (!address || !chainId || !isValidChain || !balance) return;
+    const originatingChainId = chainId;
+    const originatingAddress = address;
+    const originatingBalance = balance;
+    const originatingPortalAddress = isSupportedLineaChainId(originatingChainId)
+      ? getPortalAddress(originatingChainId)
+      : undefined;
+    const originatingNftContract = isSupportedLineaChainId(originatingChainId)
+      ? getEfrogsContractAddress(originatingChainId)
+      : undefined;
+    const fee = TRANSACTION_VALUE;
+    const receiptClient = isSupportedLineaChainId(originatingChainId)
+      ? getLineaReceiptClient(originatingChainId)
+      : undefined;
 
-    setTxHash(undefined);
+    if (
+      !originatingAddress ||
+      !isSupportedLineaChainId(originatingChainId) ||
+      !originatingBalance ||
+      !originatingPortalAddress ||
+      !originatingNftContract
+    ) {
+      return;
+    }
+
+    const attestationPayload: AttestationPayload = {
+      schemaId: SCHEMA_ID,
+      expirationDate:
+        Math.floor(Date.now() / 1000) + ATTESTATION_EXPIRATION_SECONDS,
+      subject: originatingAddress,
+      attestationData: [
+        {
+          contract: originatingNftContract,
+          balance: originatingBalance,
+        },
+      ],
+    };
+    const validationPayload: string[] = [];
+    const options: TransactionOptions = {
+      waitForConfirmation: false,
+      value: fee,
+      customAbi: EFROGS_PORTAL_ABI,
+    };
+
+    setSubmission({ chainId: originatingChainId });
     setAttestationId(undefined);
     setMessage(undefined);
     setIsModalOpen(true);
 
+    if (!receiptClient) {
+      setMessage(RECEIPT_CLIENT_MISSING_MESSAGE);
+      return;
+    }
+
     try {
       const { VeraxSdk } =
         await import('@verax-attestation-registry/verax-sdk');
-      const veraxSdk = createVeraxSdk(VeraxSdk, chainId, address);
+
+      if (!isSupportedLineaChainId(originatingChainId)) {
+        setMessage(UNSUPPORTED_ORIGIN_CHAIN_MESSAGE);
+        return;
+      }
+
+      const veraxSdk = createVeraxSdk(
+        VeraxSdk,
+        originatingChainId,
+        originatingAddress,
+      );
 
       if (!veraxSdk) {
         setMessage(DEFAULT_ERROR_MESSAGE);
         return;
       }
 
-      const portalAddress: Address =
-        chainId === lineaSepolia.id ? TESTNET_PORTAL_ADDRESS : PORTAL_ADDRESS;
-      const attestationPayload: AttestationPayload = {
-        schemaId: SCHEMA_ID,
-        expirationDate:
-          Math.floor(Date.now() / 1000) + ATTESTATION_EXPIRATION_SECONDS,
-        subject: address,
-        attestationData: [
-          {
-            contract: getEfrogsContractAddress(chainId),
-            balance,
-          },
-        ],
-      };
-      const validationPayload: string[] = [];
-      const options: TransactionOptions = {
-        waitForConfirmation: false,
-        value: TRANSACTION_VALUE,
-        customAbi: EFROGS_PORTAL_ABI,
-      };
-
-      let receipt = await veraxSdk.portal.attest(
-        portalAddress,
-        attestationPayload,
-        validationPayload,
-        options,
-      );
-
-      if (receipt.transactionHash) {
-        setTxHash(receipt.transactionHash);
-        const { waitForTransactionReceipt } = await import('viem/actions');
-        receipt = await waitForTransactionReceipt(
-          wagmiAdapter.wagmiConfig.getClient(),
-          {
-            hash: receipt.transactionHash,
-          },
+      const submitted: Partial<TransactionReceipt> =
+        await veraxSdk.portal.attest(
+          originatingPortalAddress,
+          attestationPayload,
+          validationPayload,
+          options,
         );
-        setAttestationId(receipt.logs?.[0]?.topics[1]);
-      } else {
+      const transactionHash = submitted.transactionHash;
+
+      if (!transactionHash) {
         setMessage(DEFAULT_ERROR_MESSAGE);
+        return;
       }
+
+      setSubmission({
+        chainId: originatingChainId,
+        txHash: transactionHash,
+      });
+
+      const { waitForTransactionReceipt } = await import('viem/actions');
+      const confirmed = await waitForTransactionReceipt(receiptClient, {
+        hash: transactionHash,
+      });
+
+      if (confirmed.status !== 'success') {
+        setAttestationId(undefined);
+        setMessage(RECEIPT_REVERTED_MESSAGE);
+        return;
+      }
+
+      const registeredAttestationId = extractAttestationIdFromReceipt(
+        originatingChainId,
+        confirmed.logs,
+      );
+      if (!registeredAttestationId) {
+        setAttestationId(undefined);
+        setMessage(ATTESTATION_EVENT_MISSING_MESSAGE);
+        return;
+      }
+
+      setAttestationId(registeredAttestationId);
     } catch (e) {
       console.error(e);
+      setAttestationId(undefined);
       if (e instanceof Error) {
         if (e.message.includes('User rejected the request')) {
-          setMessage('User denied transaction signature');
+          setMessage(USER_REJECTED_MESSAGE);
         } else {
           setMessage(`${DEFAULT_ERROR_MESSAGE} - ${e.message}`);
         }
@@ -145,7 +232,7 @@ function App() {
         setMessage(DEFAULT_ERROR_MESSAGE);
       }
     }
-  }, [address, balance, chainId, isValidChain]);
+  }, [address, balance, chainId]);
 
   const disabled = !isConnected || !isValidChain || !address || !balance;
 
@@ -198,11 +285,12 @@ function App() {
           disabled={disabled}
           onClick={issueAttestation}
         />
-        {isModalOpen ? (
+        {isModalOpen && submission ? (
           <Suspense fallback={null}>
             <DetailsModal
               attestationId={attestationId}
-              txHash={txHash}
+              chainId={submission.chainId}
+              txHash={submission.txHash}
               isOpen={isModalOpen}
               onClose={closeModal}
               message={message}
