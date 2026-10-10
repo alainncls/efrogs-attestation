@@ -27,6 +27,7 @@ import {
   UNSUPPORTED_ORIGIN_CHAIN_MESSAGE,
   USER_REJECTED_MESSAGE,
 } from './utils/attestationReceipt.ts';
+import { encodeEfrogsAttestationData } from './utils/attestationPayload.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
 import Footer from './components/Footer.tsx';
 import Header from './components/Header.tsx';
@@ -134,12 +135,10 @@ function App() {
       expirationDate:
         Math.floor(Date.now() / 1000) + ATTESTATION_EXPIRATION_SECONDS,
       subject: originatingAddress,
-      attestationData: [
-        {
-          contract: originatingNftContract,
-          balance: originatingBalance,
-        },
-      ],
+      attestationData: encodeEfrogsAttestationData(
+        originatingNftContract,
+        originatingBalance,
+      ),
     };
     const validationPayload: string[] = [];
     const options: TransactionOptions = {
