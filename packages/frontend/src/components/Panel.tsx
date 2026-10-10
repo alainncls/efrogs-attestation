@@ -1,4 +1,5 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
+import type { Ref } from 'react';
 import './Panel.css';
 
 interface PanelProps {
@@ -6,20 +7,32 @@ interface PanelProps {
   status?: string;
   disabled: boolean;
   onClick: () => Promise<void>;
+  onRetry?: () => void;
+  triggerRef?: Ref<HTMLButtonElement>;
 }
 
-function Panel({ title, status, disabled, onClick }: PanelProps) {
+function Panel({
+  title,
+  status,
+  disabled,
+  onClick,
+  onRetry,
+  triggerRef,
+}: PanelProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const submissionLock = useRef(false);
 
   const handleClick = useCallback(async () => {
-    if (disabled || isLoading) return;
+    if (disabled || submissionLock.current) return;
+    submissionLock.current = true;
     setIsLoading(true);
     try {
       await onClick();
     } finally {
+      submissionLock.current = false;
       setIsLoading(false);
     }
-  }, [disabled, isLoading, onClick]);
+  }, [disabled, onClick]);
 
   return (
     <div className="panel">
@@ -53,6 +66,7 @@ function Panel({ title, status, disabled, onClick }: PanelProps) {
       </div>
       <div className="button-container">
         <button
+          ref={triggerRef}
           type="button"
           className={`button${disabled ? ' disabled' : ''}`}
           onClick={handleClick}
@@ -68,6 +82,11 @@ function Panel({ title, status, disabled, onClick }: PanelProps) {
             {isLoading ? 'Processing...' : 'Issue attestation'}
           </span>
         </button>
+        {onRetry ? (
+          <button type="button" className="panel-retry" onClick={onRetry}>
+            Retry balance
+          </button>
+        ) : null}
       </div>
     </div>
   );
