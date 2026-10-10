@@ -1,5 +1,9 @@
 import { memo, useCallback, useEffect, useRef } from 'react';
-import type { MouseEvent } from 'react';
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent,
+  RefObject,
+} from 'react';
 import './DetailsModal.css';
 import type { Hex } from 'viem';
 import {
@@ -18,6 +22,8 @@ interface DetailsModalProps {
   txHash?: Hex;
   attestationId?: Hex;
   message?: string;
+  returnFocusRef?: RefObject<HTMLElement | null>;
+  fallbackFocusRef?: RefObject<HTMLElement | null>;
 }
 
 const DetailsModal = ({
@@ -27,6 +33,8 @@ const DetailsModal = ({
   txHash,
   attestationId,
   message,
+  returnFocusRef,
+  fallbackFocusRef,
 }: DetailsModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -40,6 +48,36 @@ const DetailsModal = ({
     [onClose],
   );
 
+  const handleDialogKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLDialogElement>) => {
+      if (event.key !== 'Tab') return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -50,14 +88,26 @@ const DetailsModal = ({
       document.activeElement instanceof HTMLElement
         ? document.activeElement
         : undefined;
+    const returnFocusTarget = returnFocusRef?.current;
+    const fallbackFocusTarget = fallbackFocusRef?.current;
     dialog.showModal();
     closeButtonRef.current?.focus();
 
     return () => {
       if (dialog.open) dialog.close();
-      previouslyFocused?.focus();
+      requestAnimationFrame(() => {
+        const preferredTarget = returnFocusTarget ?? previouslyFocused;
+        if (
+          preferredTarget?.isConnected &&
+          !('disabled' in preferredTarget && preferredTarget.disabled)
+        ) {
+          preferredTarget.focus();
+          return;
+        }
+        fallbackFocusTarget?.focus();
+      });
     };
-  }, [isOpen]);
+  }, [fallbackFocusRef, isOpen, returnFocusRef]);
 
   if (!isOpen) return null;
 
@@ -74,6 +124,7 @@ const DetailsModal = ({
       ref={dialogRef}
       className="overlay"
       onClick={handleOverlayClick}
+      onKeyDown={handleDialogKeyDown}
       onCancel={(event) => {
         event.preventDefault();
         onClose();

@@ -28,6 +28,9 @@
   padding: 60px;
   width: 80%;
   max-width: 500px;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
   font-size: 24px;
   border: 5px solid #f1d199;
   background: #5f382a;
@@ -37,7 +40,7 @@
 @media (max-width: 600px) {
   .modal {
     padding: clamp(24px, 8vw, 60px);
-    width: min(90vw, 500px);
+    width: min(calc(100vw - 2rem), 500px);
   }
 
   .message {
@@ -52,6 +55,7 @@
 
 .message a {
   color: #ee9f5e;
+  overflow-wrap: anywhere;
 }
 
 .message.pending a {
@@ -89,4 +93,9 @@
   color: #f1d199;
   background-color: transparent;
   border: none;
+}
+
+.close-button:focus-visible {
+  outline: 2px solid #f1d199;
+  outline-offset: 2px;
 }

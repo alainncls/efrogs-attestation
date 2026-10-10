@@ -4,12 +4,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
   transform: translate(0, -40%);
 }
 
 .signage {
   position: relative;
-  width: 300px;
+  width: min(300px, 80vw);
   height: 419px;
 }
 
@@ -69,7 +70,7 @@
 
 .button {
   position: relative;
-  min-width: 200px;
+  min-width: min(200px, 100%);
   max-width: 400px;
   width: 50%;
   height: 60px;
@@ -119,6 +120,23 @@
   color: #d1d1d1;
 }
 
+.panel-retry {
+  position: absolute;
+  margin-top: 1rem;
+  transform: translateY(2.5rem);
+  color: #f1d199;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.panel-retry:focus-visible {
+  outline: 2px solid #f1d199;
+  outline-offset: 3px;
+}
+
 @media (min-width: 992px) {
   .panel {
     flex-direction: column;
@@ -126,7 +144,7 @@
   }
 
   .signage {
-    width: 551px;
+    width: min(551px, 80vw);
     height: 770px;
     transform: translate(0, 0);
   }

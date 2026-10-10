@@ -32,5 +32,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        run: pnpm --filter efrogs-attestation-frontend exec playwright install chromium
+
       - name: Validate
         run: pnpm format && pnpm lint && pnpm typecheck && pnpm test && pnpm --filter efrogs-attestation-frontend build

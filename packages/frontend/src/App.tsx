@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import './App.css';
 import type {
   AttestationPayload,
@@ -32,6 +32,10 @@ import { linea, lineaSepolia } from 'wagmi/chains';
 import Footer from './components/Footer.tsx';
 import Header from './components/Header.tsx';
 import { wagmiAdapter } from './wagmiConfig.ts';
+import {
+  canIssueAttestation,
+  getOwnershipStatus,
+} from './utils/ownershipStatus.ts';
 
 const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
 const ATTESTATION_EXPIRATION_SECONDS = 2_592_000;
@@ -89,12 +93,19 @@ function App() {
   const [attestationId, setAttestationId] = useState<Hex>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>();
+  const panelTriggerRef = useRef<HTMLButtonElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   const { address, chainId, isConnected } = useAccount();
 
   const isValidChain = isSupportedLineaChainId(chainId);
 
-  const { data: balance, refetch } = useReadContract({
+  const {
+    data: balance,
+    error: balanceError,
+    isPending: isBalanceLoading,
+    refetch,
+  } = useReadContract({
     abi: EFROGS_NFT_ABI,
     functionName: 'balanceOf',
     address: getEfrogsContractAddress(chainId),
@@ -233,12 +244,15 @@ function App() {
     }
   }, [address, balance, chainId]);
 
-  const disabled = !isConnected || !isValidChain || !address || !balance;
-
-  const frogBalance = Number(balance ?? 0n);
-  const walletStatus = address
-    ? `You have ${frogBalance} eFrog${frogBalance === 1 ? '' : 's'}`
-    : undefined;
+  const ownership = {
+    address,
+    chainId,
+    balance,
+    isLoading: isBalanceLoading,
+    hasError: !!balanceError,
+  };
+  const disabled = !isConnected || !canIssueAttestation(ownership);
+  const walletStatus = getOwnershipStatus(ownership);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -248,6 +262,8 @@ function App() {
     <>
       <Header />
       <main
+        ref={mainRef}
+        tabIndex={-1}
         className={'main-container'}
         aria-describedby="application-description"
       >
@@ -283,6 +299,8 @@ function App() {
           status={walletStatus}
           disabled={disabled}
           onClick={issueAttestation}
+          onRetry={balanceError ? () => void refetch() : undefined}
+          triggerRef={panelTriggerRef}
         />
         {isModalOpen && submission ? (
           <Suspense fallback={null}>
@@ -293,6 +311,8 @@ function App() {
               isOpen={isModalOpen}
               onClose={closeModal}
               message={message}
+              returnFocusRef={panelTriggerRef}
+              fallbackFocusRef={mainRef}
             />
           </Suspense>
         ) : null}
