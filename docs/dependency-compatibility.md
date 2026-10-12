@@ -1,5 +1,26 @@
 # Dependency compatibility review
 
+## 2026-10-12 resolution
+
+The historical findings below are superseded: the regenerated frozen lockfile
+now reports **zero vulnerabilities at every severity**, without suppressions.
+
+- `@base-org/account@2.5.13` removes the vulnerable older CDP/Solana/Jayson chain.
+- `@walletconnect/ethereum-provider@2.26.0` removes the older query-string chain.
+- The scoped `@reown/appkit-adapter-wagmi>@wagmi/connectors@8.2.0` override
+  aligns the adapter with the connectors and Wagmi core already used by the app.
+  The adapter imports only `baseAccount`, `coinbaseWallet` and `safe`; the real
+  connector integration test constructs all three on both Linea chains with
+  loopback transports. This is a tested cross-major alignment, not a claim of
+  SemVer compatibility. It removes obsolete MetaMask/Gemini/Porto dependency paths.
+- The now-unnecessary Hono override is removed. The GraphQL Tools security
+  override remains covered by the real Verax SDK fetch/decode/simulation tests.
+
+All 45 newly introduced versions satisfy the 72-hour minimum release age.
+No signing, broadcast or production wallet connection is used by these tests.
+
+## Historical review (2026-10-10)
+
 Reviewed 2026-10-10 on `cf2263b6deb5f454d00892c9bd92a7d97b200e2d` with the
 frozen pnpm lock, local registry audit, and the Verax SDK 5.4.0 integration
 tests added in this branch.
@@ -48,3 +69,11 @@ subgraphs/RPC, WalletConnect, or production signing. No GitHub Actions run was
 started. pnpm 10.26.2 reports peer warnings (`use-sync-external-store` vs React
 19 and `@wagmi/connectors` vs `@wagmi/core`); the local build/tests are required
 to be re-run after any parent dependency migration.
+
+## 2026-10-12 release checks
+
+Frozen pnpm 10.26.2 install, formatting, lint, typecheck and production build
+passed. All 9 Solidity tests, repository security checks, 15 frontend/SDK/wallet
+tests and 12 desktop/mobile Playwright cases passed. Full and production audit
+both report zero vulnerabilities (786 / 377 dependencies). No budgets,
+advisories or test assertions were disabled. GitHub Actions were not triggered.
