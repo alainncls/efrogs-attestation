@@ -17,7 +17,7 @@ import {
 import { encodeEfrogsAttestationData } from './utils/attestationPayload.ts';
 import { linea, lineaSepolia } from 'wagmi/chains';
 
-const ABI_SCHEMA = 'address contract,uint256 balance';
+const ABI_SCHEMA = '(address contract, uint256 balance)';
 const NFT = '0x194395587d7b169e63eaf251e86b1892fa8f1960' as const;
 const SUBJECT = '0x2222222222222222222222222222222222222222' as const;
 const ATTESTER = '0x1111111111111111111111111111111111111111' as const;
@@ -60,7 +60,9 @@ const attestationRecord = (sdk: VeraxSdk): Attestation => ({
   revoked: false,
   subject: SUBJECT,
   encodedSubject: '0x',
-  attestationData: sdk.utils.encode(ABI_SCHEMA, [NFT, BALANCE]),
+  attestationData: sdk.utils.encode(ABI_SCHEMA, [
+    { contract: NFT, balance: BALANCE },
+  ]),
   decodedData: [],
   decodedPayload: {},
   schema: schemaRecord(),
@@ -154,7 +156,7 @@ describe('Verax SDK EFrogs schema against local GraphQL and JSON-RPC', () => {
     );
   });
 
-  it('queries and decodes the real two-field EFrogs schema', async () => {
+  it('queries and decodes the real tuple EFrogs schema', async () => {
     const sdk = createSdk(VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND);
     const attestations = await sdk.attestation.findBy(1, 0, {
       subject: SUBJECT,
@@ -219,7 +221,7 @@ describe('Verax SDK EFrogs schema against local GraphQL and JSON-RPC', () => {
 
       expect(request.functionName).toBe('attest');
       expect(JSON.stringify(request.args)).toContain(
-        sdk.utils.encode(ABI_SCHEMA, [NFT, BALANCE]),
+        sdk.utils.encode(ABI_SCHEMA, [{ contract: NFT, balance: BALANCE }]),
       );
       expect(rpcMethods).toContain('eth_call');
       expect(rpcChainIds.every((seen) => seen === chainId)).toBe(true);
