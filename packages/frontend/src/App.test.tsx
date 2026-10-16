@@ -336,7 +336,7 @@ describe('issue attestation receipt context', () => {
       expect.objectContaining({
         schemaId: SCHEMA_ID,
         subject: ACCOUNT_A,
-        attestationData: [TESTNET_EFROGS_CONTRACT, 3n],
+        attestationData: [{ contract: TESTNET_EFROGS_CONTRACT, balance: 3n }],
       }),
       [],
       expect.objectContaining({
@@ -467,7 +467,7 @@ describe('issue attestation receipt context', () => {
       expect.objectContaining({
         schemaId: SCHEMA_ID,
         subject: ACCOUNT_A,
-        attestationData: [EFROGS_CONTRACT, 4n],
+        attestationData: [{ contract: EFROGS_CONTRACT, balance: 4n }],
       }),
       [],
       expect.objectContaining({

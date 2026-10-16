@@ -54,13 +54,13 @@ moderate advisory is suppressed, and the audit is not described as clean.
 
 ## Real EFrogs payload contract
 
-The deployed schema has two positional fields: `address tokenContract,uint256
-balance`. The app previously supplied one object in `attestationData`, while
-Verax SDK 5.4.0's encoder consumes positional schema values. `simulateAttest`
-against local GraphQL/RPC reproduced the ABI parameter/value mismatch. The
-frontend now passes `[tokenContract, balance]` at a narrow documented type
-boundary. The integration test confirms SDK fetch/decode and custom-ABI call
-preparation on Linea Mainnet and Sepolia; it never signs or sends a transaction.
+The deployed schema is one tuple: `(address contract, uint256 balance)`.
+Verax SDK 5.4.0 encodes `attestationData` with `parseAbiParameters(schema)`, which
+gives one tuple parameter. The frontend must pass exactly one value,
+`[{ contract, balance }]`. A positional `[contract, balance]` array fails with an
+ABI params/values length mismatch. The integration test uses the real schema
+string and confirms SDK fetch/decode and custom-ABI call preparation on Linea
+Mainnet and Sepolia; it never signs or sends a transaction.
 
 ## Verification limits
 
