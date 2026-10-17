@@ -12,7 +12,7 @@ import {
 } from '../utils/attestationReceipt.ts';
 
 const truncateHexString = (hexString: string) => {
-  return `${hexString.slice(0, 6)}...${hexString.slice(-4)}`;
+  return `${hexString.slice(0, 6)}…${hexString.slice(-4)}`;
 };
 
 interface DetailsModalProps {
@@ -116,8 +116,11 @@ const DetailsModal = ({
     : undefined;
   const txUrl = txHash ? getTransactionExplorerUrl(chainId, txHash) : undefined;
 
-  const showValidationPending = !message && !txHash && !attestationId;
-  const showTransactionPending = !message && txHash && !attestationId;
+  const title = attestationId
+    ? 'Attested'
+    : txHash
+      ? 'Pending…'
+      : 'Confirm in wallet';
 
   return (
     <dialog
@@ -129,69 +132,62 @@ const DetailsModal = ({
         event.preventDefault();
         onClose();
       }}
-      aria-labelledby="modal-title"
+      aria-label="Attestation status"
     >
       <div className="modal">
-        <h2 id="modal-title" className="sr-only">
-          Attestation status
-        </h2>
         <button
           ref={closeButtonRef}
           type="button"
           className="close-button"
           onClick={onClose}
-          aria-label="Close modal"
+          aria-label="Close"
         >
           ×
         </button>
 
-        {!message ? (
-          <>
-            {showValidationPending ? (
-              <div className="message pending" role="status" aria-live="polite">
-                User validation pending...
-              </div>
-            ) : null}
-            {showTransactionPending ? (
-              <div className="message pending" role="status" aria-live="polite">
-                Transaction pending...
-              </div>
-            ) : null}
-          </>
-        ) : null}
-
         {message ? (
-          <div className="message error" role="alert">
+          <p className="modal-title error" role="alert">
             {message}
-          </div>
-        ) : null}
+          </p>
+        ) : (
+          <p className="modal-title" role="status" aria-live="polite">
+            {title}
+          </p>
+        )}
 
-        {attestationId && attestationUrl ? (
-          <div className="message" role="status" aria-live="polite">
-            Attestation ID:{' '}
-            <a
-              href={attestationUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View attestation ${truncateHexString(attestationId)} on Verax Explorer`}
-            >
-              {truncateHexString(attestationId)}
-            </a>
-          </div>
-        ) : null}
-
-        {txHash && txUrl ? (
-          <div className={`message sub ${attestationId ? '' : 'pending'}`}>
-            Transaction Hash:{' '}
-            <a
-              href={txUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View transaction ${truncateHexString(txHash)} on Lineascan`}
-            >
-              {truncateHexString(txHash)}
-            </a>
-          </div>
+        {(attestationId && attestationUrl) || (txHash && txUrl) ? (
+          <dl className="modal-links">
+            {attestationId && attestationUrl ? (
+              <div>
+                <dt>Attestation</dt>
+                <dd>
+                  <a
+                    href={attestationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`View attestation ${truncateHexString(attestationId)}`}
+                  >
+                    {truncateHexString(attestationId)}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
+            {txHash && txUrl ? (
+              <div>
+                <dt>Transaction</dt>
+                <dd>
+                  <a
+                    href={txUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`View transaction ${truncateHexString(txHash)}`}
+                  >
+                    {truncateHexString(txHash)}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
+          </dl>
         ) : null}
       </div>
     </dialog>

@@ -52,7 +52,7 @@ export function ModalHarness() {
       setTxHash(TX_HASH);
       setAttestationId(ATTESTATION_ID);
     } else {
-      setMessage('User denied transaction signature');
+      setMessage('Rejected in wallet');
     }
     resolverRef.current?.();
   }, []);
@@ -91,7 +91,7 @@ export function ModalHarness() {
       <p role="status">{getOwnershipStatus(ownership)}</p>
       <p data-testid="issue-count">{issueCount}</p>
       <button type="button" onClick={() => setRetryCount((count) => count + 1)}>
-        Retry balance
+        Retry
       </button>
       <button type="button" onClick={() => setChainId(lineaSepolia.id)}>
         Select Sepolia

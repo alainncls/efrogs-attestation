@@ -12,15 +12,15 @@ function ChainMismatchBanner() {
 
   return (
     <div className="chain-mismatch-banner" role="alert">
-      <span>Please switch to Linea network to use this app</span>
+      <span>Wrong network</span>
       <button
         type="button"
         onClick={handleSwitchChain}
         disabled={isPending}
-        className="switch-chain-btn"
+        className="chip"
         aria-busy={isPending}
       >
-        {isPending ? 'Switching...' : 'Switch to Linea'}
+        {isPending ? 'Switching…' : 'Switch to Linea'}
       </button>
     </div>
   );

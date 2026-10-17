@@ -11,7 +11,7 @@ function Footer() {
         href="https://github.com/alainncls/efrogs-attestation"
         rel="nofollow noopener noreferrer"
         target="_blank"
-        aria-label="View source code on GitHub"
+        aria-label="Source on GitHub"
       >
         <img src={LogoGitHub} alt="" className="svg-white" aria-hidden="true" />
       </a>
@@ -19,7 +19,7 @@ function Footer() {
         href="https://x.com/Alain_Ncls"
         rel="nofollow noopener noreferrer"
         target="_blank"
-        aria-label="Follow @Alain_Ncls on X"
+        aria-label="@Alain_Ncls on X"
       >
         <img src={XLogo} alt="" className="svg-white" aria-hidden="true" />
       </a>
@@ -27,7 +27,7 @@ function Footer() {
         href="https://www.ver.ax"
         rel="nofollow noopener noreferrer"
         target="_blank"
-        aria-label="Learn more about Verax"
+        aria-label="Verax"
       >
         <img src={LogoVerax} alt="" aria-hidden="true" />
       </a>

@@ -4,7 +4,7 @@ import './Header.css';
 import { initializeAppKit } from '../appkit.ts';
 
 const truncateAddress = (address: string) =>
-  `${address.slice(0, 6)}...${address.slice(-4)}`;
+  `${address.slice(0, 6)}…${address.slice(-4)}`;
 
 function Header() {
   const { address, isConnected } = useAccount();
@@ -26,7 +26,7 @@ function Header() {
   }, [isConnected]);
 
   const label = isWalletLoading
-    ? 'Loading...'
+    ? 'Opening…'
     : address
       ? truncateAddress(address)
       : 'Connect wallet';
@@ -35,7 +35,7 @@ function Header() {
     <header className={'header'}>
       <button
         type="button"
-        className="wallet-button"
+        className="chip wallet-button"
         onClick={openWallet}
         disabled={isWalletLoading}
         aria-busy={isWalletLoading}

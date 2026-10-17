@@ -19,83 +19,85 @@
 }
 
 .overlay::backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 0.5);
 }
 
 .modal {
   position: relative;
   box-sizing: border-box;
-  padding: 60px;
-  width: 80%;
-  max-width: 500px;
-  max-width: calc(100vw - 2rem);
+  width: min(calc(100vw - 2rem), 440px);
   max-height: calc(100dvh - 2rem);
   overflow: auto;
-  font-size: 24px;
-  border: 5px solid #f1d199;
-  background: #5f382a;
-  box-shadow: 0 4px 0 0 #2b1f2e;
+  padding: 48px 32px 32px;
+  border: 5px solid var(--cream);
+  background: var(--wood);
+  box-shadow: 0 4px 0 0 var(--wood-shadow);
+  color: var(--cream);
+  text-align: center;
 }
 
-@media (max-width: 600px) {
-  .modal {
-    padding: clamp(24px, 8vw, 60px);
-    width: min(calc(100vw - 2rem), 500px);
-  }
-
-  .message {
-    font-size: clamp(28px, 8vw, 40px);
-    overflow-wrap: anywhere;
-  }
-
-  .message.sub {
-    font-size: clamp(22px, 6vw, 30px);
-  }
-}
-
-.message a {
-  color: #ee9f5e;
+.modal-title {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1;
+  text-transform: uppercase;
   overflow-wrap: anywhere;
 }
 
-.message.pending a {
-  color: rgba(241, 209, 153, 0.5);
+.modal-title.error {
+  color: var(--danger);
 }
 
-.message {
-  color: #f1d199;
-  text-align: center;
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+.modal-links {
+  display: grid;
+  gap: 8px;
+  margin: 24px 0 0;
+  font-size: 24px;
+  line-height: 1.2;
 }
 
-.message.sub {
-  font-size: 30px;
-  margin-top: 10px;
+.modal-links > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding-top: 8px;
+  border-top: 2px solid rgb(241 209 153 / 0.25);
 }
 
-.message.pending {
-  color: rgba(241, 209, 153, 0.5);
+.modal-links dt {
+  text-transform: uppercase;
 }
 
-.message.error {
-  color: var(--error-color);
+.modal-links dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.modal-links a {
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.modal-links a:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
 }
 
 .close-button {
   position: absolute;
-  top: -4px;
-  right: 0;
+  top: 4px;
+  right: 8px;
+  padding: 0 8px;
+  border: none;
+  background-color: transparent;
+  color: var(--cream);
   cursor: pointer;
   font-size: 40px;
-  color: #f1d199;
-  background-color: transparent;
-  border: none;
+  line-height: 1;
 }
 
 .close-button:focus-visible {
-  outline: 2px solid #f1d199;
+  outline: 2px solid var(--cream);
   outline-offset: 2px;
 }

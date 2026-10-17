@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 const openButton = (page: Page) =>
-  page.getByRole('button', { name: 'Issue attestation' });
+  page.getByRole('button', { name: /^Attest/ });
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/e2e/modal-harness.html');
@@ -20,14 +20,12 @@ test('one in-flight issue opens a keyboard-contained native dialog and returns f
   });
 
   const dialog = page.getByRole('dialog', { name: 'Attestation status' });
-  const close = dialog.getByRole('button', { name: 'Close modal' });
+  const close = dialog.getByRole('button', { name: 'Close', exact: true });
   const trigger = openButton(page);
   await expect(dialog).toBeVisible();
   await expect(close).toBeFocused();
   await expect(page.getByTestId('issue-count')).toHaveText('1');
-  await expect(dialog.getByRole('status')).toHaveText(
-    'User validation pending...',
-  );
+  await expect(dialog.getByRole('status')).toHaveText('Confirm in wallet');
   await page.keyboard.press('Shift+Tab');
   await expect(close).toBeFocused();
 
@@ -78,16 +76,14 @@ test('keeps result links on the originating chain and exposes error recovery', a
     );
     window.efrogTest.complete('success');
   });
-  await expect(page.getByRole('status').first()).toHaveText(
-    'Switch to Linea to check eFrog ownership.',
-  );
+  await expect(page.getByRole('status').first()).toHaveText('Switch to Linea');
   await expect(openButton(page)).toBeDisabled();
 
   const dialog = page.getByRole('dialog', { name: 'Attestation status' });
   await expect(
     dialog.getByRole('link', { name: /View attestation/ }),
   ).toHaveAttribute('href', /explorer\.ver\.ax\/linea\/attestations\//);
-  await dialog.getByRole('button', { name: 'Close modal' }).click();
+  await dialog.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.getByRole('main')).toBeFocused();
   await page.evaluate(() =>
     window.efrogTest.setIdentity(
@@ -99,10 +95,8 @@ test('keeps result links on the originating chain and exposes error recovery', a
 
   await openButton(page).click();
   await page.evaluate(() => window.efrogTest.complete('error'));
-  await expect(page.getByRole('alert')).toHaveText(
-    'User denied transaction signature',
-  );
-  await page.getByRole('button', { name: 'Close modal' }).click();
+  await expect(page.getByRole('alert')).toHaveText('Rejected in wallet');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(openButton(page)).toBeEnabled();
 });
 
@@ -113,7 +107,7 @@ test('returns focus to a stable fallback when the trigger disappears during a pe
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.evaluate(() => window.efrogTest.hideTrigger(true));
 
-  await page.getByRole('button', { name: 'Close modal' }).click();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(page.getByRole('main')).toBeFocused();
 });
@@ -122,31 +116,25 @@ test('does not report unresolved/error balance as zero and retries a failed read
   page,
 }) => {
   await page.evaluate(() => window.efrogTest.setBalance('loading'));
-  await expect(page.getByRole('status').first()).toHaveText(
-    'Checking eFrog ownership...',
-  );
+  await expect(page.getByRole('status').first()).toHaveText('Checking…');
   await expect(openButton(page)).toBeDisabled();
 
   await page.evaluate(() => window.efrogTest.setBalance('0'));
-  await expect(page.getByRole('status').first()).toHaveText(
-    'You have 0 eFrogs',
-  );
+  await expect(page.getByRole('status').first()).toHaveText('No eFrog found');
   await expect(openButton(page)).toBeDisabled();
 
   await page.evaluate(() => window.efrogTest.setBalance('error'));
   await expect(page.getByRole('status').first()).toHaveText(
-    'Could not load eFrog balance. Retry.',
+    'Balance unavailable',
   );
   await expect(openButton(page)).toBeDisabled();
-  await page.getByRole('button', { name: 'Retry balance' }).last().click();
+  await page.getByRole('button', { name: 'Retry' }).last().click();
   await expect
     .poll(() => page.evaluate(() => window.efrogTest.retryCount()))
     .toBe(1);
 
   await page.evaluate(() => window.efrogTest.setBalance('2'));
-  await expect(page.getByRole('status').first()).toHaveText(
-    'You have 2 eFrogs',
-  );
+  await expect(page.getByRole('status').first()).toHaveText('You own 2 eFrogs');
   await expect(openButton(page)).toBeEnabled();
 });
 
