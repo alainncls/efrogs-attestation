@@ -27,6 +27,7 @@ import {
   RECEIPT_REVERTED_MESSAGE,
   USER_REJECTED_MESSAGE,
 } from './utils/attestationReceipt.ts';
+import { encodeEfrogsAttestationData } from './utils/attestationPayload.ts';
 
 const ACCOUNT_A = '0x1111111111111111111111111111111111111111' as Address;
 const ACCOUNT_B = '0x2222222222222222222222222222222222222222' as Address;
@@ -36,7 +37,6 @@ const UNRELATED_ID = `0x${'11'.repeat(32)}` as Hex;
 const WRONG_TOPIC = `0x${'22'.repeat(32)}` as Hex;
 const WRONG_REGISTRY = '0x3333333333333333333333333333333333333333' as Address;
 
-type SubmittedTx = { transactionHash?: Hex };
 type ConfirmedReceipt = {
   status: 'success' | 'reverted';
   transactionHash: Hex;
@@ -58,30 +58,18 @@ const harness = vi.hoisted(() => {
     59144: { id: 'linea-mainnet-receipt-client' },
     59141: { id: 'linea-sepolia-receipt-client' },
   };
-  const attest = vi.fn();
+  const simulateContract = vi.fn();
+  const writeContract = vi.fn();
   const waitForTransactionReceipt = vi.fn();
   const getClient = vi.fn();
-  const constructed: Array<{ conf: unknown; address: string }> = [];
-
-  class VeraxSdk {
-    static DEFAULT_LINEA_MAINNET_FRONTEND = { id: 'mainnet-frontend' };
-    static DEFAULT_LINEA_SEPOLIA_FRONTEND = { id: 'sepolia-frontend' };
-    portal: { attest: typeof attest };
-
-    constructor(conf: unknown, address: string) {
-      constructed.push({ conf, address });
-      this.portal = { attest };
-    }
-  }
 
   return {
     wallet,
     clients,
-    attest,
+    simulateContract,
+    writeContract,
     waitForTransactionReceipt,
     getClient,
-    constructed,
-    VeraxSdk,
   };
 });
 
@@ -116,8 +104,9 @@ vi.mock('viem/actions', () => ({
   waitForTransactionReceipt: harness.waitForTransactionReceipt,
 }));
 
-vi.mock('@verax-attestation-registry/verax-sdk', () => ({
-  VeraxSdk: harness.VeraxSdk,
+vi.mock('@wagmi/core', () => ({
+  simulateContract: harness.simulateContract,
+  writeContract: harness.writeContract,
 }));
 
 vi.mock('./wagmiConfig.ts', () => ({
@@ -141,7 +130,7 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-let attestGate = deferred<SubmittedTx>();
+let attestGate = deferred<Hex>();
 let receiptGate = deferred<ConfirmedReceipt>();
 
 const registeredLog = (registry: Address, attestationId: Hex) => ({
@@ -213,13 +202,18 @@ describe('issue attestation receipt context', () => {
       };
     }
     resetWallet();
-    harness.constructed.length = 0;
-    attestGate = deferred<SubmittedTx>();
+    attestGate = deferred<Hex>();
     receiptGate = deferred<ConfirmedReceipt>();
-    harness.attest.mockReset();
+    harness.simulateContract.mockReset();
+    harness.writeContract.mockReset();
     harness.waitForTransactionReceipt.mockReset();
     harness.getClient.mockReset();
-    harness.attest.mockImplementation(() => attestGate.promise);
+    harness.simulateContract.mockImplementation(
+      async (_config: unknown, parameters: unknown) => ({
+        request: parameters,
+      }),
+    );
+    harness.writeContract.mockImplementation(() => attestGate.promise);
     harness.waitForTransactionReceipt.mockImplementation(
       () => receiptGate.promise,
     );
@@ -260,9 +254,9 @@ describe('issue attestation receipt context', () => {
     fireEvent.click(issueButton());
 
     await flushAttestCall();
-    expect(harness.attest).toHaveBeenCalledTimes(1);
+    expect(harness.writeContract).toHaveBeenCalledTimes(1);
 
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     receiptGate.resolve(
       successReceipt(LINEA_MAINNET_ATTESTATION_REGISTRY_ADDRESS),
     );
@@ -270,7 +264,7 @@ describe('issue attestation receipt context', () => {
     await waitFor(() => {
       expect(issueButton().disabled).toBe(false);
     });
-    expect(harness.attest).toHaveBeenCalledTimes(1);
+    expect(harness.writeContract).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
@@ -278,7 +272,7 @@ describe('issue attestation receipt context', () => {
     const { rerender } = renderApp();
     clickIssue();
     await flushAttestCall();
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     receiptGate.resolve(
       successReceipt(LINEA_MAINNET_ATTESTATION_REGISTRY_ADDRESS),
     );
@@ -325,28 +319,30 @@ describe('issue attestation receipt context', () => {
     expect(harness.getClient.mock.calls).toEqual([
       [{ chainId: lineaSepolia.id }],
     ]);
-    expect(harness.constructed).toEqual([
-      {
-        conf: harness.VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND,
-        address: ACCOUNT_A,
-      },
-    ]);
-    expect(harness.attest).toHaveBeenCalledWith(
-      TESTNET_PORTAL_ADDRESS,
+    expect(harness.simulateContract).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
-        schemaId: SCHEMA_ID,
-        subject: ACCOUNT_A,
-        attestationData: [{ contract: TESTNET_EFROGS_CONTRACT, balance: 3n }],
-      }),
-      [],
-      expect.objectContaining({
-        waitForConfirmation: false,
+        address: TESTNET_PORTAL_ADDRESS,
+        abi: EFROGS_PORTAL_ABI,
+        functionName: 'attest',
+        args: [
+          expect.objectContaining({
+            schemaId: SCHEMA_ID,
+            subject: ACCOUNT_A,
+            attestationData: encodeEfrogsAttestationData(
+              TESTNET_EFROGS_CONTRACT,
+              3n,
+            ),
+          }),
+          [],
+        ],
         value: TRANSACTION_VALUE,
-        customAbi: EFROGS_PORTAL_ABI,
+        chainId: lineaSepolia.id,
+        account: ACCOUNT_A,
       }),
     );
 
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     const txLink = await screen.findByRole('link', {
       name: /View transaction/,
     });
@@ -377,7 +373,7 @@ describe('issue attestation receipt context', () => {
     renderApp();
     clickIssue();
     await flushAttestCall();
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     receiptGate.resolve({
       status: 'reverted',
       transactionHash: TX_HASH,
@@ -402,7 +398,7 @@ describe('issue attestation receipt context', () => {
     renderApp();
     clickIssue();
     await flushAttestCall();
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     receiptGate.resolve({
       status: 'success',
       transactionHash: TX_HASH,
@@ -419,7 +415,7 @@ describe('issue attestation receipt context', () => {
     renderApp();
     clickIssue();
     await flushAttestCall();
-    attestGate.resolve({ transactionHash: TX_HASH });
+    attestGate.resolve(TX_HASH);
     receiptGate.resolve({
       status: 'success',
       transactionHash: TX_HASH,
@@ -462,23 +458,37 @@ describe('issue attestation receipt context', () => {
     clickIssue();
     await flushAttestCall();
 
-    expect(harness.attest).toHaveBeenCalledWith(
-      PORTAL_ADDRESS,
+    expect(harness.simulateContract).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
-        schemaId: SCHEMA_ID,
-        subject: ACCOUNT_A,
-        attestationData: [{ contract: EFROGS_CONTRACT, balance: 4n }],
-      }),
-      [],
-      expect.objectContaining({
+        address: PORTAL_ADDRESS,
+        args: [
+          expect.objectContaining({
+            schemaId: SCHEMA_ID,
+            subject: ACCOUNT_A,
+            attestationData: encodeEfrogsAttestationData(EFROGS_CONTRACT, 4n),
+          }),
+          [],
+        ],
         value: TRANSACTION_VALUE,
-        customAbi: EFROGS_PORTAL_ABI,
+        chainId: linea.id,
+        account: ACCOUNT_A,
       }),
     );
-    expect(harness.constructed[0]?.conf).toBe(
-      harness.VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
+    expect(harness.writeContract).toHaveBeenCalledWith(
+      expect.anything(),
+      harness.simulateContract.mock.calls[0]?.[1],
     );
-    attestGate.resolve({ transactionHash: undefined });
+  });
+
+  it('does not send when the simulation reverts', async () => {
+    harness.simulateContract.mockRejectedValueOnce(
+      new Error('execution reverted'),
+    );
+    renderApp();
+    clickIssue();
+
     expect(await screen.findByText('Attestation failed')).toBeTruthy();
+    expect(harness.writeContract).not.toHaveBeenCalled();
   });
 });

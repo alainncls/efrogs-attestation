@@ -1,12 +1,7 @@
 import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import './App.css';
-import type {
-  AttestationPayload,
-  TransactionOptions,
-} from '@verax-attestation-registry/verax-sdk';
-import type * as VeraxSdkModule from '@verax-attestation-registry/verax-sdk';
 import { useAccount, useReadContract } from 'wagmi';
-import type { Address, Hex, TransactionReceipt } from 'viem';
+import type { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import {
   EFROGS_CONTRACT,
@@ -51,8 +46,6 @@ const ChainMismatchBanner = lazy(
 const DetailsModal = lazy(() => import('./components/DetailsModal.tsx'));
 const TestnetRibbon = lazy(() => import('./components/TestnetRibbon.tsx'));
 
-type VeraxSdkConstructor = typeof VeraxSdkModule.VeraxSdk;
-
 const getEfrogsContractAddress = (chainId?: number) =>
   chainId === lineaSepolia.id ? TESTNET_EFROGS_CONTRACT : EFROGS_CONTRACT;
 
@@ -69,22 +62,6 @@ const getLineaReceiptClient = (chainId: number) => {
   if (chainId === lineaSepolia.id) {
     return wagmiAdapter.wagmiConfig.getClient({ chainId: lineaSepolia.id });
   }
-  return undefined;
-};
-
-const createVeraxSdk = (
-  VeraxSdk: VeraxSdkConstructor,
-  chainId: number,
-  address: Address,
-) => {
-  if (chainId === linea.id) {
-    return new VeraxSdk(VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND, address);
-  }
-
-  if (chainId === lineaSepolia.id) {
-    return new VeraxSdk(VeraxSdk.DEFAULT_LINEA_SEPOLIA_FRONTEND, address);
-  }
-
   return undefined;
 };
 
@@ -141,22 +118,17 @@ function App() {
       return;
     }
 
-    const attestationPayload: AttestationPayload = {
+    const attestationPayload = {
       schemaId: SCHEMA_ID,
-      expirationDate:
+      expirationDate: BigInt(
         Math.floor(Date.now() / 1000) + ATTESTATION_EXPIRATION_SECONDS,
+      ),
       subject: originatingAddress,
       attestationData: encodeEfrogsAttestationData(
         originatingNftContract,
         originatingBalance,
       ),
-    };
-    const validationPayload: string[] = [];
-    const options: TransactionOptions = {
-      waitForConfirmation: false,
-      value: fee,
-      customAbi: EFROGS_PORTAL_ABI,
-    };
+    } as const;
 
     setSubmission({ chainId: originatingChainId });
     setAttestationId(undefined);
@@ -169,38 +141,26 @@ function App() {
     }
 
     try {
-      const { VeraxSdk } =
-        await import('@verax-attestation-registry/verax-sdk');
+      const { simulateContract, writeContract } = await import('@wagmi/core');
 
       if (!isSupportedLineaChainId(originatingChainId)) {
         setMessage(UNSUPPORTED_ORIGIN_CHAIN_MESSAGE);
         return;
       }
 
-      const veraxSdk = createVeraxSdk(
-        VeraxSdk,
-        originatingChainId,
-        originatingAddress,
+      const { request } = await simulateContract(wagmiAdapter.wagmiConfig, {
+        address: originatingPortalAddress,
+        abi: EFROGS_PORTAL_ABI,
+        functionName: 'attest',
+        args: [attestationPayload, []],
+        value: fee,
+        chainId: originatingChainId,
+        account: originatingAddress,
+      });
+      const transactionHash = await writeContract(
+        wagmiAdapter.wagmiConfig,
+        request,
       );
-
-      if (!veraxSdk) {
-        setMessage(DEFAULT_ERROR_MESSAGE);
-        return;
-      }
-
-      const submitted: Partial<TransactionReceipt> =
-        await veraxSdk.portal.attest(
-          originatingPortalAddress,
-          attestationPayload,
-          validationPayload,
-          options,
-        );
-      const transactionHash = submitted.transactionHash;
-
-      if (!transactionHash) {
-        setMessage(DEFAULT_ERROR_MESSAGE);
-        return;
-      }
 
       setSubmission({
         chainId: originatingChainId,

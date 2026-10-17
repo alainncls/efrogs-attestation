@@ -1,10 +1,9 @@
-import type { Address } from 'viem';
+import { encodeAbiParameters, parseAbiParameters } from 'viem';
+import type { Address, Hex } from 'viem';
 
-/**
- * The deployed schema is the single tuple `(address contract, uint256 balance)`,
- * so the SDK expects exactly one value: the tuple object.
- */
+const EFROGS_SCHEMA = parseAbiParameters('(address contract, uint256 balance)');
+
 export const encodeEfrogsAttestationData = (
   contract: Address,
   balance: bigint,
-): object[] => [{ contract, balance }];
+): Hex => encodeAbiParameters(EFROGS_SCHEMA, [{ contract, balance }]);
