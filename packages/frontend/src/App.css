@@ -24,12 +24,45 @@ body {
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
-  --link-color: #007bff;
-  --success-color: #28a745;
-  --pending-color: #ffc107;
-  --error-color: #dc3545;
-  --message-text-color: #000000;
+  --cream: #f1d199;
+  --accent: #ee9f5e;
+  --wood: #5f382a;
+  --wood-shadow: #2b1f2e;
+  --ink: rgb(16 32 24 / 0.84);
+  --ink-hover: rgb(24 48 36 / 0.92);
+  --ink-solid: #102018;
+  --danger: #ff8a7a;
+  --testnet: #f2b84b;
+  --radius: 6px;
   --wui-color-gray-glass-005: #000000;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid rgb(241 209 153 / 0.7);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--cream);
+  cursor: pointer;
+  font:
+    20px/1 'Jersey 10',
+    sans-serif;
+  text-transform: uppercase;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--ink-hover);
+}
+
+.chip:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
 }
 
 .main-container {

@@ -169,7 +169,7 @@ function renderApp() {
 
 function issueButton(): HTMLButtonElement {
   return screen.getByRole('button', {
-    name: 'Issue attestation',
+    name: /^Attest/,
   }) as HTMLButtonElement;
 }
 
@@ -250,9 +250,9 @@ describe('issue attestation receipt context', () => {
     expect(await screen.findByRole('dialog')).toBeTruthy();
     expect(issueButton().disabled).toBe(true);
     expect(issueButton().getAttribute('aria-busy')).toBe('true');
-    expect(issueButton().textContent).toContain('Processing...');
+    expect(issueButton().textContent).toContain('Attesting…');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close modal' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(issueButton().disabled).toBe(true);
@@ -319,7 +319,7 @@ describe('issue attestation receipt context', () => {
     harness.wallet.balance = 9n;
     rerender(<App />);
 
-    expect(await screen.findByText('User validation pending...')).toBeTruthy();
+    expect(await screen.findByText('Confirm in wallet')).toBeTruthy();
     await flushAttestCall();
 
     expect(harness.getClient.mock.calls).toEqual([
@@ -479,6 +479,6 @@ describe('issue attestation receipt context', () => {
       harness.VeraxSdk.DEFAULT_LINEA_MAINNET_FRONTEND,
     );
     attestGate.resolve({ transactionHash: undefined });
-    expect(await screen.findByText('Oops, something went wrong!')).toBeTruthy();
+    expect(await screen.findByText('Attestation failed')).toBeTruthy();
   });
 });

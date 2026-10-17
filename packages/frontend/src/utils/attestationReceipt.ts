@@ -27,15 +27,11 @@ const ATTESTATION_REGISTERED_EVENT = {
   ],
 } as const;
 
-export const USER_REJECTED_MESSAGE = 'User denied transaction signature';
-export const RECEIPT_REVERTED_MESSAGE =
-  'Transaction reverted on the originating network. No attestation was registered.';
-export const ATTESTATION_EVENT_MISSING_MESSAGE =
-  'The transaction receipt did not include a Verax AttestationRegistered event from the originating registry. No attestation ID was recorded.';
-export const RECEIPT_CLIENT_MISSING_MESSAGE =
-  'Could not open a receipt client for the originating Linea network. The attestation was not submitted.';
-export const UNSUPPORTED_ORIGIN_CHAIN_MESSAGE =
-  'The originating network is not Linea mainnet or Linea Sepolia. The attestation was not submitted.';
+export const USER_REJECTED_MESSAGE = 'Rejected in wallet';
+export const RECEIPT_REVERTED_MESSAGE = 'Transaction reverted';
+export const ATTESTATION_EVENT_MISSING_MESSAGE = 'No attestation in receipt';
+export const RECEIPT_CLIENT_MISSING_MESSAGE = 'Network unavailable';
+export const UNSUPPORTED_ORIGIN_CHAIN_MESSAGE = 'Unsupported network';
 
 const REGISTRY_BY_CHAIN_ID: Record<number, Address> = {
   [linea.id]: LINEA_MAINNET_ATTESTATION_REGISTRY_ADDRESS,

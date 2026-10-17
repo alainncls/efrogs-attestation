@@ -51,20 +51,20 @@ const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
   }, [address, chainId, writeContract]);
 
   const buttonLabel = isPending
-    ? 'Confirming...'
+    ? 'Confirm in wallet'
     : isConfirming
-      ? 'Minting...'
+      ? 'Minting…'
       : isConfirmed
-        ? 'Test NFT Minted!'
-        : 'Mint a test eFrog NFT';
+        ? 'Minted'
+        : 'Mint test eFrog';
   const isMinting = isPending || isConfirming;
 
   return (
-    <div className="ribbon" role="status" aria-label="Testnet mode active">
-      <span>Testnet</span>
+    <div className="testnet">
+      <span className="testnet-tag">Testnet</span>
       <button
         type="button"
-        className="btn-mint"
+        className="chip"
         onClick={mintTestNft}
         disabled={isMinting || !address}
         aria-busy={isMinting}

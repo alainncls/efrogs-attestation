@@ -72,19 +72,14 @@ function Panel({
           onClick={handleClick}
           disabled={disabled || isLoading}
           aria-busy={isLoading}
-          aria-label={
-            disabled
-              ? 'Connect wallet to issue attestation'
-              : 'Issue attestation'
-          }
         >
           <span className={`button-label${disabled ? ' disabled' : ''}`}>
-            {isLoading ? 'Processing...' : 'Issue attestation'}
+            {isLoading ? 'Attesting…' : 'Attest'}
           </span>
         </button>
         {onRetry ? (
           <button type="button" className="panel-retry" onClick={onRetry}>
-            Retry balance
+            Retry
           </button>
         ) : null}
       </div>

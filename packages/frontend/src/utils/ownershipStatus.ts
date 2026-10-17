@@ -14,16 +14,17 @@ export const getOwnershipStatus = ({
   balance,
   isLoading,
   hasError,
-}: OwnershipStatusOptions): string | undefined => {
-  if (!address) return undefined;
+}: OwnershipStatusOptions): string => {
+  if (!address) return 'Connect a wallet';
   if (chainId !== linea.id && chainId !== lineaSepolia.id) {
-    return 'Switch to Linea to check eFrog ownership.';
+    return 'Switch to Linea';
   }
-  if (hasError) return 'Could not load eFrog balance. Retry.';
-  if (isLoading || balance === undefined) return 'Checking eFrog ownership...';
+  if (hasError) return 'Balance unavailable';
+  if (isLoading || balance === undefined) return 'Checking…';
 
   const count = Number(balance);
-  return `You have ${count} eFrog${count === 1 ? '' : 's'}`;
+  if (count === 0) return 'No eFrog found';
+  return `You own ${count} eFrog${count === 1 ? '' : 's'}`;
 };
 
 export const canIssueAttestation = ({

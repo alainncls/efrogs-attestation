@@ -37,7 +37,7 @@ import {
   getOwnershipStatus,
 } from './utils/ownershipStatus.ts';
 
-const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong!';
+const DEFAULT_ERROR_MESSAGE = 'Attestation failed';
 const ATTESTATION_EXPIRATION_SECONDS = 2_592_000;
 
 type OriginatingSubmission = {
@@ -232,15 +232,11 @@ function App() {
     } catch (e) {
       console.error(e);
       setAttestationId(undefined);
-      if (e instanceof Error) {
-        if (e.message.includes('User rejected the request')) {
-          setMessage(USER_REJECTED_MESSAGE);
-        } else {
-          setMessage(`${DEFAULT_ERROR_MESSAGE} - ${e.message}`);
-        }
-      } else {
-        setMessage(DEFAULT_ERROR_MESSAGE);
-      }
+      setMessage(
+        e instanceof Error && e.message.includes('User rejected the request')
+          ? USER_REJECTED_MESSAGE
+          : DEFAULT_ERROR_MESSAGE,
+      );
     }
   }, [address, balance, chainId]);
 
@@ -286,13 +282,9 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
           className="link"
-          aria-label="View eFrog #645 on Element Market"
+          aria-label="eFrog #645 on Element"
         >
-          <div
-            className="grooving-frog"
-            role="img"
-            aria-label="Dancing frog animation"
-          ></div>
+          <div className="grooving-frog" aria-hidden="true"></div>
         </a>
         <Panel
           title="Attest your eFrogs"

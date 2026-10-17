@@ -38,7 +38,7 @@
 }
 
 .panel-title {
-  color: #f1d199;
+  color: var(--cream);
   font-size: 38px;
   line-height: 0.9;
   text-transform: uppercase;
@@ -48,7 +48,7 @@
 }
 
 .panel-status {
-  color: #f1d199;
+  color: var(--cream);
   font-size: 22px;
   line-height: 1;
   text-transform: uppercase;
@@ -59,6 +59,8 @@
 
 .button-container {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -87,7 +89,7 @@
 }
 
 .button:focus-visible {
-  outline: 2px solid #f1d199;
+  outline: 2px solid var(--cream);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -100,7 +102,7 @@
 
 .button-label {
   position: relative;
-  color: #f1d199;
+  color: var(--cream);
   text-align: center;
   text-transform: uppercase;
   font-size: 24px;
@@ -118,19 +120,18 @@
 }
 
 .panel-retry {
-  position: absolute;
-  margin-top: 1rem;
-  transform: translateY(2.5rem);
-  color: #f1d199;
+  color: var(--cream);
   background: transparent;
   border: 0;
-  font: inherit;
+  font-family: inherit;
+  font-size: 22px;
   text-decoration: underline;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .panel-retry:focus-visible {
-  outline: 2px solid #f1d199;
+  outline: 2px solid var(--cream);
   outline-offset: 3px;
 }
 
