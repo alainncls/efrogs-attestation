@@ -45,7 +45,7 @@ packages/
 
 ## 📋 Prerequisites
 
-- **Node.js** >= 24.14.1 (see `.nvmrc`)
+- **Node.js** >= 24.22.1 (see `.nvmrc`)
 - **pnpm** >= 10
 
 ```bash
