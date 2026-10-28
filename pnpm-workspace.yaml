@@ -45,6 +45,10 @@ catalogs:
     viem: 2.57.7
 
 overrides:
+  # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 1.8.24 still pins
+  # Zod 3.x, which is affected. Zod 4.6.6 is the first patched release.
+  # Keep this explicit until Reown releases a compatible dependency graph.
+  zod: 4.6.6
   '@graphql-tools/utils': 12.0.3
   axios: 1.20.0
   '@fastify/busboy': 3.2.2
