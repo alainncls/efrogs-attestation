@@ -1,0 +1,5 @@
+[build]
+  # This pnpm workspace's frontend output depends on root-level manifests and
+  # pnpm-lock.yaml. Do not skip Git-triggered builds by looking only at this
+  # package directory.
+  ignore = "false"

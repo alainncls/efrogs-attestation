@@ -1,5 +1,13 @@
 # Dependency compatibility review
 
+## Netlify build trigger for workspace-level dependency changes
+
+Netlify's site base directory is the frontend package, while the production
+dependency graph is frozen in the workspace root. `packages/frontend/netlify.toml`
+therefore disables Netlify's path-only build skip. Git-triggered builds remain
+the deployment mechanism, but a root `pnpm-lock.yaml` or workspace manifest
+change can no longer be incorrectly treated as having no publishable change.
+
 ## 2026-10-28 Zod 4 security migration
 
 `GHSA-mrhx-c7xc-m3w5` (CVE-2023-54404) newly marks every Zod release before
