@@ -117,8 +117,9 @@ overrides:
   source-map-js: 1.2.2
   adm-zip@<0.6.1: 0.6.1
   brace-expansion@>=5.0.0 <5.0.12: 5.0.12
-  fast-uri@>=2.0.0 <2.4.7: 2.4.7
-  fast-uri@>=3.0.0 <3.1.8: 3.1.8
+  fast-uri@>=2.0.0 <2.4.8: 2.4.8
+  fast-uri@>=3.0.0 <3.1.9: 3.1.9
+  undici@7.30.0: 7.30.1
   viem>ws: 8.21.3
   '@base-org/account': 2.5.13
   '@walletconnect/ethereum-provider': 2.26.0
@@ -1038,28 +1039,24 @@ packages:
     engines: {node: '>= 22'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@nomicfoundation/edr-linux-arm64-musl@0.23.0':
     resolution: {integrity: sha512-MVyvWuuN93Le7Y4SuAhzhJJaHkP1cfdzIl/rIWR/iXwRc4TOaVY//wHJjW+a3vX7lOxPaKOawTL5N784KUHbKQ==}
     engines: {node: '>= 22'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@nomicfoundation/edr-linux-x64-gnu@0.23.0':
     resolution: {integrity: sha512-SABJqlOsEC/aLxxc6crBse5g09Ee1YtYfDGGGR7wEb36ZXMRpC+YQXWz5y8JnD8C0Xm6wkO40J/tQamaFvfWEA==}
     engines: {node: '>= 22'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@nomicfoundation/edr-linux-x64-musl@0.23.0':
     resolution: {integrity: sha512-TIgZjPrHhS+L1+CPv99QrGBpRXrazC3Iox3f6XvNEd2aZX1L9a6BLVG1XmS+3OyMb+Qd+vjMIhB3qi7HawbfUA==}
     engines: {node: '>= 22'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@nomicfoundation/edr-win32-x64-msvc@0.23.0':
     resolution: {integrity: sha512-vMEZMPk+GbvLHfbS3lCVr+ufJvKhOwtKM0UuZxjnAllBaiojh+v7LRoTc/RN50puzz3WpbyHuvgwqDkEIIj8Lg==}
@@ -1254,42 +1251,36 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-arm64-musl@1.2.13':
     resolution: {integrity: sha512-xU+Kvv9N2A3SY35zFh1FWWNjxbadE/BKeqnkXe7vScU4GZsw757BlVmDLITZEq8DPpk6m7uoDYkK7P+x/uU5Ow==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rolldown/binding-linux-ppc64-gnu@1.2.13':
     resolution: {integrity: sha512-XMk/hnhh25oQ756Lclb1Q11h4ll0xC0Esa5w4Vzp+mAE2S3AGJgeM0SonrIgY8fHhjarb6hcoTuwoFG0VVP2ig==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-s390x-gnu@1.2.13':
     resolution: {integrity: sha512-U1BoTHYmlywE2n3HUWjzZ+8EQsKr+OwpxYuDWaubx42tUL8QSL7nOqRz/NVHanibbFP3M1Rxuprz/wNcbMKjqw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-x64-gnu@1.2.13':
     resolution: {integrity: sha512-J4cm80Pc6wEwV5AZ42o62sIQgDk+Y7R2s646jIwuvO+4V46QB58N4vVuMPWCBaNgursXLpmUWJV//WQAkPvHBQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-x64-musl@1.2.13':
     resolution: {integrity: sha512-W0euZS40U4V6JkmEnVCIX9mcsL6cbXQ4X8c2w+MMOIjFg68TXUW+u3RT+2e1t1pv9mg/EP3pDtK3POXdQ7Rxyw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rolldown/binding-openharmony-arm64@1.2.13':
     resolution: {integrity: sha512-do/AF/4n9MRshia3a5aXoy8xM2c6mgfT6D7H/dY6my5z+hfCIR4ab7mk4IRj++nsEQpKy39kd0DQnDq+r692tw==}
@@ -2568,11 +2559,11 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
-  fast-uri@2.4.7:
-    resolution: {integrity: sha512-b8mggfg2R+m2OAb3Z+2HcJxUgU+2cY1JQondBDyXLdrEKNPxd96MvnB5yWKZdupsuX6GdBaAZHZo9msHX/Bb7A==}
+  fast-uri@2.4.8:
+    resolution: {integrity: sha512-knw8ym69bDOF980l2z0tDKh7XB9zfsUmpMmoQUx9KskazmddvnhNntiTzen4VsiW7qVWiVZkrcd5Pj2bziC3gA==}
 
-  fast-uri@3.1.8:
-    resolution: {integrity: sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==}
+  fast-uri@3.1.9:
+    resolution: {integrity: sha512-hS/0Wt3Ya043oKXs0sIxrMpKQITXhMLIrVAKKXi4gozGC9v7YRWVnXIZzjNPTO02M9BdxLCWqK1yRXgNziVyJQ==}
 
   fastestsmallesttextencoderdecoder@1.0.22:
     resolution: {integrity: sha512-Pb8d48e+oIuY4MaM64Cd7OW1gt4nxCHs7/ddPPZ/Ic3sg8yVGM7O9wDvZ7us6ScaUupzM+pfBolwtYhN1IxBIw==}
@@ -2970,28 +2961,24 @@ packages:
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.33.0:
     resolution: {integrity: sha512-yiO5ROMuYQgXbC60yjZU5CYSFZGKXL0HFATXt9mHJn1+zW55oCtMI9NfcVhYLMFDL7gV7oBPon/EmMMGg2OvtQ==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.33.0:
     resolution: {integrity: sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.33.0:
     resolution: {integrity: sha512-RYiYbkokw0trfKqqzfF55lginwEPrD3OJDfTuJzFs1MK6iFnDenaz1fqLLtX4ITG3OktJQXOeTaw1awrBAlZPw==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.33.0:
     resolution: {integrity: sha512-1K+MPfLSFVpphzpdbfkhlWk6wBrTObBzS2T6db10PNOZgR9GoVsAWzwNyuhUYYbTp23j+4RrncfujZ4uAzXvwA==}
@@ -3650,8 +3637,8 @@ packages:
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
+  undici@7.30.1:
+    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
   undici@8.12.2:
@@ -4970,7 +4957,7 @@ snapshots:
       json-stream-stringify: 3.1.7
       micro-eth-signer: 0.19.0
       rfdc: 1.4.1
-      undici: 7.30.0
+      undici: 7.30.1
 
   '@nomicfoundation/hardhat-utils@5.0.0':
     dependencies:
@@ -4981,7 +4968,7 @@ snapshots:
       json-stream-stringify: 3.1.7
       micro-eth-signer: 0.19.0
       rfdc: 1.4.1
-      undici: 7.30.0
+      undici: 7.30.1
 
   '@nomicfoundation/hardhat-vendored@3.0.4': {}
 
@@ -6632,7 +6619,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.8
+      fast-uri: 3.1.9
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -7113,15 +7100,15 @@ snapshots:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       fast-deep-equal: 3.1.3
-      fast-uri: 2.4.7
+      fast-uri: 2.4.8
       json-schema-ref-resolver: 1.0.1
       rfdc: 1.4.1
 
   fast-levenshtein@2.0.6: {}
 
-  fast-uri@2.4.7: {}
+  fast-uri@2.4.8: {}
 
-  fast-uri@3.1.8: {}
+  fast-uri@3.1.9: {}
 
   fastestsmallesttextencoderdecoder@1.0.22:
     optional: true
@@ -8145,7 +8132,7 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici@7.30.0: {}
+  undici@7.30.1: {}
 
   undici@8.12.2: {}
 
