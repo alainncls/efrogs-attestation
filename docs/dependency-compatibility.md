@@ -1,5 +1,22 @@
 # Dependency compatibility review
 
+## 2026-10-28 Zod 4 security migration
+
+`GHSA-mrhx-c7xc-m3w5` (CVE-2023-54404) newly marks every Zod release before
+4.6.6 as vulnerable to uncontrolled resource consumption. Reown AppKit 1.8.24
+is still its latest stable release and directly pins Zod 3.22.4; it also pulls
+Zod 3.25.76 through its wallet/provider graph. The root `pnpm-workspace.yaml`
+therefore applies the exact `zod: 4.6.6` override across the workspace.
+
+This is a deliberate cross-major transitive override, not a claim that Reown's
+declared Zod 3 range is semver-compatible. The frozen install, production audit
+(0 vulnerabilities), formatting, lint, typecheck, 9 Solidity tests, 11 frontend
+unit/integration tests, and 12 Chromium desktop/mobile E2E cases all pass with
+the resolved graph. A built Vite preview was also loaded successfully with
+non-secret local configuration; no browser runtime error occurred. The Netlify
+deployment must be smoke-tested after release before treating production as
+validated.
+
 ## 2026-10-12 resolution
 
 The historical findings below are superseded: the regenerated frozen lockfile
