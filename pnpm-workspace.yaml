@@ -55,6 +55,9 @@ overrides:
   '@graphql-tools/executor-legacy-ws': 1.1.37
   http-cache-semantics: 4.3.0
   source-map-js: 1.2.2
+  # GHSA-mrwp-f3q8-3g9p: axios' allowed range still resolves vulnerable
+  # follow-redirects 1.16.1 through the AppKit and Verax dependency graph.
+  follow-redirects: 1.16.2
   adm-zip@<0.6.1: 0.6.1
   brace-expansion@>=5.0.0 <5.0.12: 5.0.12
   fast-uri@>=2.0.0 <2.4.8: 2.4.8
