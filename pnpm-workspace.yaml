@@ -5,7 +5,7 @@ catalogs:
   eslint:
     '@eslint/js': 10.0.1
     eslint: 10.14.0
-    globals: 17.13.0
+    globals: 17.14.0
     typescript-eslint: 8.72.1
   eslint-react:
     eslint-plugin-react-hooks: 7.1.1
@@ -22,7 +22,7 @@ catalogs:
     prettier: 3.9.10
     prettier-plugin-solidity: 2.4.1
   react:
-    '@tanstack/react-query': 5.105.0
+    '@tanstack/react-query': 5.107.1
     '@types/react': 19.3.0
     '@types/react-dom': 19.3.0
     react: 19.3.1
@@ -34,15 +34,15 @@ catalogs:
     '@verax-attestation-registry/verax-contracts': 10.0.0
     '@verax-attestation-registry/verax-sdk': 5.4.0
   vite:
-    '@vitejs/plugin-react': 6.1.2
-    vite: 8.3.5
+    '@vitejs/plugin-react': 6.2.1
+    vite: 8.3.6
   wagmi:
     '@reown/appkit': 1.8.24
     '@reown/appkit-adapter-wagmi': 1.8.24
-    '@wagmi/core': 3.6.7
-    wagmi: 3.7.9
+    '@wagmi/core': 3.6.9
+    wagmi: 3.7.11
   web3:
-    viem: 2.57.14
+    viem: 2.57.16
 
 overrides:
   # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 1.8.24 still pins
