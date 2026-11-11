@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "catalog:eslint",
-    "@playwright/test": "1.64.1",
+    "@playwright/test": "1.65.0",
     "@testing-library/react": "16.3.3",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
@@ -38,6 +38,6 @@
     "typescript": "catalog:typescript",
     "typescript-eslint": "catalog:eslint",
     "vite": "catalog:vite",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   }
 }
