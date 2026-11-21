@@ -67,3 +67,7 @@ overrides:
   '@base-org/account': 2.5.13
   '@walletconnect/ethereum-provider': 2.26.0
   '@reown/appkit-adapter-wagmi>@wagmi/connectors': 8.2.0
+  # GHSA for glob <=14.0.1 (AbortSignal cancellation bypass): solhint 6.2.5
+  # is still its latest release and requests glob ^13. glob 14 keeps the
+  # CommonJS globSync API that solhint uses.
+  glob@>=9.0.0 <14.0.2: 14.0.6
