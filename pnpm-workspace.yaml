@@ -1,6 +1,13 @@
 packages:
   - packages/*
 
+# pnpm 10 skipped these scripts by default; keep them skipped.
+allowBuilds:
+  '@reown/appkit': false
+  bufferutil: false
+  esbuild: false
+  utf-8-validate: false
+
 catalogs:
   eslint:
     '@eslint/js': 10.0.1
@@ -43,6 +50,27 @@ catalogs:
     wagmi: 3.7.11
   web3:
     viem: 2.58.0
+
+minimumReleaseAge: 10080
+# Temporary: locked versions younger than minimumReleaseAge. Remove after 2026-11-24.
+minimumReleaseAgeExclude:
+  - '@tanstack/query-core@5.108.0'
+  - '@tanstack/react-query@5.108.0'
+  - '@tybys/wasm-util@0.10.5'
+  - '@typescript-eslint/eslint-plugin@8.73.0'
+  - '@typescript-eslint/parser@8.73.0'
+  - '@typescript-eslint/project-service@8.73.0'
+  - '@typescript-eslint/scope-manager@8.73.0'
+  - '@typescript-eslint/tsconfig-utils@8.73.0'
+  - '@typescript-eslint/type-utils@8.73.0'
+  - '@typescript-eslint/types@8.73.0'
+  - '@typescript-eslint/typescript-estree@8.73.0'
+  - '@typescript-eslint/utils@8.73.0'
+  - '@typescript-eslint/visitor-keys@8.73.0'
+  - 'eslint-plugin-react-refresh@0.5.8'
+  - 'minimatch@11.0.9'
+  - 'typescript-eslint@8.73.0'
+  - 'viem@2.58.0'
 
 overrides:
   # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 1.8.24 still pins
