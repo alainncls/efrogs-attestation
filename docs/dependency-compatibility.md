@@ -8,6 +8,23 @@ therefore disables Netlify's path-only build skip. Git-triggered builds remain
 the deployment mechanism, but a root `pnpm-lock.yaml` or workspace manifest
 change can no longer be incorrectly treated as having no publishable change.
 
+## 2026-11-21 glob / minimatch advisories
+
+Dependabot flagged `minimatch >=7.0.0 <11.0.1` (globparts amplification DoS)
+and `glob >=9.0.0 <=14.0.1` (AbortSignal cancellation bypass). ESLint 10.15.0
+and typescript-eslint 8.73.0 move to minimatch 11. Solhint 6.2.5 is still its
+latest release and requests glob ^13, so the scoped
+`glob@>=9.0.0 <14.0.2: 14.0.6` override applies. This is a cross-major
+override: glob 14 keeps the CommonJS `globSync(pattern, { nodir })` API that
+Solhint calls, and `solhint 'src/**/*.sol'` runs in the lint step.
+
+pnpm 10.26.2 dropped the `libc` selectors of the Linux native packages
+(Hardhat EDR, Rolldown, Lightning CSS) on regeneration. They were restored
+from the published package metadata, so the selector set matches the
+previous lockfile. All new versions satisfy the 72-hour minimum release age.
+Audit, formatting, lint, typecheck, 9 Solidity tests, 11 frontend tests,
+12 Playwright cases and the production build pass.
+
 ## 2026-10-28 Zod 4 security migration
 
 `GHSA-mrhx-c7xc-m3w5` (CVE-2023-54404) newly marks every Zod release before
