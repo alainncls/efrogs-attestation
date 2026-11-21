@@ -38,6 +38,6 @@
     "typescript": "catalog:typescript",
     "typescript-eslint": "catalog:eslint",
     "vite": "catalog:vite",
-    "vitest": "5.1.1"
+    "vitest": "5.1.0"
   }
 }

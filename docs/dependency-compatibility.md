@@ -12,11 +12,12 @@ change can no longer be incorrectly treated as having no publishable change.
 
 Dependabot flagged `minimatch >=7.0.0 <11.0.1` (globparts amplification DoS)
 and `glob >=9.0.0 <=14.0.1` (AbortSignal cancellation bypass). ESLint 10.15.0
-and typescript-eslint 8.73.0 move to minimatch 11. Solhint 6.2.5 is still its
-latest release and requests glob ^13, so the scoped
-`glob@>=9.0.0 <14.0.2: 14.0.6` override applies. This is a cross-major
-override: glob 14 keeps the CommonJS `globSync(pattern, { nodir })` API that
-Solhint calls, and `solhint 'src/**/*.sol'` runs in the lint step.
+and typescript-eslint 8.73.0 already use minimatch 11; the last minimatch 10
+instance came from glob 13. Solhint 6.2.5 is still its latest release and
+requests glob ^13, so the scoped `glob@>=9.0.0 <14.0.2: 14.0.6` override
+applies. This is a cross-major override: glob 14 keeps the CommonJS
+`globSync(pattern, { nodir })` API that Solhint calls, and
+`solhint 'src/**/*.sol'` runs in the lint step.
 
 pnpm 10.26.2 dropped the `libc` selectors of the Linux native packages
 (Hardhat EDR, Rolldown, Lightning CSS) on regeneration. They were restored
