@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import './Header.css';
 import { initializeAppKit } from '../appkit.ts';
 
@@ -7,7 +7,7 @@ const truncateAddress = (address: string) =>
   `${address.slice(0, 6)}…${address.slice(-4)}`;
 
 function Header() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useConnection();
   const [isWalletLoading, setIsWalletLoading] = useState(false);
 
   const openWallet = useCallback(async () => {
@@ -36,7 +36,9 @@ function Header() {
       <button
         type="button"
         className="chip wallet-button"
-        onClick={openWallet}
+        onClick={() => {
+          void openWallet();
+        }}
         disabled={isWalletLoading}
         aria-busy={isWalletLoading}
       >

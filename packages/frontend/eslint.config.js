@@ -1,31 +1,27 @@
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import { baseConfig } from '../../eslint.config.js';
+import { baseConfig, prettier } from '../../eslint.config.js';
 
-export default tseslint.config(
-  ...baseConfig,
+export default defineConfig(
+  baseConfig,
   {
-    ignores: ['public/**', 'dist/**'],
+    ignores: ['public', 'playwright-report', 'test-results'],
   },
   {
-    files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      parserOptions: { tsconfigRootDir: import.meta.dirname },
     },
   },
+  {
+    files: ['src/**/*.{ts,tsx}', 'e2e/modal-harness.tsx'],
+    extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
+    languageOptions: { globals: globals.browser },
+  },
+  {
+    files: ['*.config.{ts,js}', 'e2e/**/*.spec.ts'],
+    languageOptions: { globals: globals.node },
+  },
+  prettier,
 );

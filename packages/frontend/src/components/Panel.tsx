@@ -69,7 +69,9 @@ function Panel({
           ref={triggerRef}
           type="button"
           className={`button${disabled ? ' disabled' : ''}`}
-          onClick={handleClick}
+          onClick={() => {
+            void handleClick();
+          }}
           disabled={disabled || isLoading}
           aria-busy={isLoading}
         >

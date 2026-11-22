@@ -7,15 +7,14 @@ const PRIVATE_KEY_HEX_LENGTH = 66;
 
 function requireAddress(value: string | undefined, name: string): Address {
   if (!value || !isAddress(value)) {
-    throw new Error(`${name} must be a valid address, got: ${value}`);
+    throw new Error(`${name} must be a valid address, got: ${String(value)}`);
   }
   return value;
 }
 
 function requirePrivateKey(value: string | undefined): Hex {
   if (
-    !value ||
-    value.length !== PRIVATE_KEY_HEX_LENGTH ||
+    value?.length !== PRIVATE_KEY_HEX_LENGTH ||
     !isHex(value, { strict: true })
   ) {
     throw new Error('PRIVATE_KEY must be a valid 32-byte hex string');
@@ -38,7 +37,7 @@ async function main() {
 
   console.log('Deploying EFrogsPortal...');
 
-  const connection = await network.connect();
+  const connection = await network.create();
   const constructorArguments: [Address[], Address, Address] = [
     [],
     routerAddress,
@@ -71,6 +70,7 @@ async function main() {
 
   const networkName = connection.networkName;
   const [walletClient] = await connection.viem.getWalletClients();
+  if (!walletClient) throw new Error('No wallet client configured');
   const walletAddress = walletClient.account.address;
 
   const veraxSdk = new VeraxSdk(
@@ -95,7 +95,7 @@ async function main() {
   console.log(`END EFROGS SCRIPT`);
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error(error);
   process.exitCode = 1;
 });

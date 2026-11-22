@@ -24,7 +24,7 @@ export const getOwnershipStatus = ({
 
   const count = Number(balance);
   if (count === 0) return 'No eFrog found';
-  return `You own ${count} eFrog${count === 1 ? '' : 's'}`;
+  return `You own ${String(count)} eFrog${count === 1 ? '' : 's'}`;
 };
 
 export const canIssueAttestation = ({

@@ -12,34 +12,20 @@ import '../src/index.css';
 import '../src/App.css';
 
 const ADDRESS = '0x1111111111111111111111111111111111111111';
-const TX_HASH = `0x${'ab'.repeat(32)}` as Hex;
-const ATTESTATION_ID = `0x${'cd'.repeat(32)}` as Hex;
-
-type TestState = {
-  complete: (kind: 'success' | 'error') => void;
-  setBalance: (value: string | 'loading' | 'error') => void;
-  setIdentity: (address: string | undefined, chainId: number) => void;
-  hideTrigger: (hidden: boolean) => void;
-  retryCount: () => number;
-};
-
-declare global {
-  interface Window {
-    efrogTest: TestState;
-  }
-}
+const TX_HASH = `0x${'ab'.repeat(32)}` as const;
+const ATTESTATION_ID = `0x${'cd'.repeat(32)}` as const;
 
 export function ModalHarness() {
   const mainRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const resolverRef = useRef<(() => void) | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(ADDRESS);
-  const [chainId, setChainId] = useState(linea.id);
+  const [chainId, setChainId] = useState<number>(linea.id);
   const [balance, setBalance] = useState<bigint | undefined>(1n);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [submissionChainId, setSubmissionChainId] = useState(linea.id);
+  const [submissionChainId, setSubmissionChainId] = useState<number>(linea.id);
   const [txHash, setTxHash] = useState<Hex>();
   const [attestationId, setAttestationId] = useState<Hex>();
   const [message, setMessage] = useState<string>();
@@ -90,10 +76,20 @@ export function ModalHarness() {
       <h1>Ownership test</h1>
       <p role="status">{getOwnershipStatus(ownership)}</p>
       <p data-testid="issue-count">{issueCount}</p>
-      <button type="button" onClick={() => setRetryCount((count) => count + 1)}>
+      <button
+        type="button"
+        onClick={() => {
+          setRetryCount((count) => count + 1);
+        }}
+      >
         Retry
       </button>
-      <button type="button" onClick={() => setChainId(lineaSepolia.id)}>
+      <button
+        type="button"
+        onClick={() => {
+          setChainId(lineaSepolia.id);
+        }}
+      >
         Select Sepolia
       </button>
       {!hideTrigger ? (
@@ -103,7 +99,11 @@ export function ModalHarness() {
           disabled={disabled}
           triggerRef={triggerRef}
           onRetry={
-            balanceError ? () => setRetryCount((count) => count + 1) : undefined
+            balanceError
+              ? () => {
+                  setRetryCount((count) => count + 1);
+                }
+              : undefined
           }
           onClick={() => {
             setIssueCount((count) => count + 1);
@@ -125,7 +125,9 @@ export function ModalHarness() {
           txHash={txHash}
           attestationId={attestationId}
           message={message}
-          onClose={() => setModalOpen(false)}
+          onClose={() => {
+            setModalOpen(false);
+          }}
           returnFocusRef={triggerRef}
           fallbackFocusRef={mainRef}
         />
@@ -134,4 +136,7 @@ export function ModalHarness() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<ModalHarness />);
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
+
+createRoot(rootElement).render(<ModalHarness />);

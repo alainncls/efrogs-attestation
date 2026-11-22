@@ -31,21 +31,21 @@ import { encodeEfrogsAttestationData } from './utils/attestationPayload.ts';
 
 const ACCOUNT_A = '0x1111111111111111111111111111111111111111' as Address;
 const ACCOUNT_B = '0x2222222222222222222222222222222222222222' as Address;
-const TX_HASH = `0x${'ab'.repeat(32)}` as Hex;
-const ATTESTATION_ID = `0x${'cd'.repeat(32)}` as Hex;
-const UNRELATED_ID = `0x${'11'.repeat(32)}` as Hex;
-const WRONG_TOPIC = `0x${'22'.repeat(32)}` as Hex;
+const TX_HASH = `0x${'ab'.repeat(32)}` as const;
+const ATTESTATION_ID = `0x${'cd'.repeat(32)}` as const;
+const UNRELATED_ID = `0x${'11'.repeat(32)}` as const;
+const WRONG_TOPIC = `0x${'22'.repeat(32)}` as const;
 const WRONG_REGISTRY = '0x3333333333333333333333333333333333333333' as Address;
 
-type ConfirmedReceipt = {
+interface ConfirmedReceipt {
   status: 'success' | 'reverted';
   transactionHash: Hex;
-  logs: Array<{
+  logs: {
     address: Address;
     data: Hex;
     topics: readonly Hex[];
-  }>;
-};
+  }[];
+}
 
 const harness = vi.hoisted(() => {
   const wallet = {
@@ -61,7 +61,7 @@ const harness = vi.hoisted(() => {
   const simulateContract = vi.fn();
   const writeContract = vi.fn();
   const waitForTransactionReceipt = vi.fn();
-  const getClient = vi.fn();
+  const getClient = vi.fn<(parameters?: { chainId?: number }) => unknown>();
 
   return {
     wallet,
@@ -74,7 +74,7 @@ const harness = vi.hoisted(() => {
 });
 
 vi.mock('wagmi', () => ({
-  useAccount: () => ({
+  useConnection: () => ({
     address: harness.wallet.address,
     chainId: harness.wallet.chainId,
     isConnected: harness.wallet.isConnected,
@@ -85,13 +85,13 @@ vi.mock('wagmi', () => ({
     refetch: vi.fn(),
   }),
   useSwitchChain: () => ({
-    switchChain: vi.fn(),
+    mutate: vi.fn(),
     isPending: false,
   }),
   useWriteContract: () => ({
     data: undefined,
     isPending: false,
-    writeContract: vi.fn(),
+    mutate: vi.fn(),
     error: null,
   }),
   useWaitForTransactionReceipt: () => ({
@@ -121,8 +121,8 @@ vi.mock('./wagmiConfig.ts', () => ({
 }));
 
 function deferred<T>() {
-  let resolve: (value: T) => void = () => {};
-  let reject: (reason?: unknown) => void = () => {};
+  let resolve!: (value: T) => void;
+  let reject!: (reason?: unknown) => void;
   const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
@@ -157,9 +157,9 @@ function renderApp() {
 }
 
 function issueButton(): HTMLButtonElement {
-  return screen.getByRole('button', {
+  return screen.getByRole<HTMLButtonElement>('button', {
     name: /^Attest/,
-  }) as HTMLButtonElement;
+  });
 }
 
 function clickIssue() {
@@ -193,7 +193,10 @@ function successReceipt(
 
 describe('issue attestation receipt context', () => {
   beforeEach(() => {
-    if (!HTMLDialogElement.prototype.showModal) {
+    // jsdom may not implement HTMLDialogElement modal methods.
+    const dialogPrototype: Partial<HTMLDialogElement> =
+      HTMLDialogElement.prototype;
+    if (!dialogPrototype.showModal) {
       HTMLDialogElement.prototype.showModal = function showModal() {
         this.setAttribute('open', '');
       };
@@ -209,9 +212,8 @@ describe('issue attestation receipt context', () => {
     harness.waitForTransactionReceipt.mockReset();
     harness.getClient.mockReset();
     harness.simulateContract.mockImplementation(
-      async (_config: unknown, parameters: unknown) => ({
-        request: parameters,
-      }),
+      (_config: unknown, parameters: unknown) =>
+        Promise.resolve({ request: parameters }),
     );
     harness.writeContract.mockImplementation(() => attestGate.promise);
     harness.waitForTransactionReceipt.mockImplementation(
@@ -226,10 +228,10 @@ describe('issue attestation receipt context', () => {
         if (requestedChainId === lineaSepolia.id) {
           return harness.clients[59141];
         }
-        return { id: `live-${requestedChainId}` };
+        return { id: `live-${String(requestedChainId)}` };
       },
     );
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   afterEach(() => {

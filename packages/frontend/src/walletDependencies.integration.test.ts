@@ -2,6 +2,7 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { createConfig, http } from '@wagmi/core';
+import type { CreateConnectorFn } from '@wagmi/core';
 import { linea, lineaSepolia } from 'viem/chains';
 
 // Load exactly the connector module resolved by AppKit, not a test substitute.
@@ -12,10 +13,13 @@ const connectorEntry = adapterRequire.resolve('@wagmi/connectors');
 
 describe('AppKit connector compatibility', () => {
   it('constructs the Base, Coinbase and Safe connectors used by the real adapter on both Linea chains', async () => {
-    const connectors = await import(
+    const connectors = (await import(
       /* @vite-ignore */ pathToFileURL(connectorEntry).href
-    );
-    for (const name of ['baseAccount', 'coinbaseWallet', 'safe']) {
+    )) as Record<
+      'baseAccount' | 'coinbaseWallet' | 'safe',
+      (parameters?: Record<string, unknown>) => CreateConnectorFn
+    >;
+    for (const name of ['baseAccount', 'coinbaseWallet', 'safe'] as const) {
       expect(typeof connectors[name]).toBe('function');
     }
     const config = createConfig({

@@ -1,16 +1,14 @@
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
-import { baseConfig } from '../../eslint.config.js';
+import { baseConfig, prettier } from '../../eslint.config.js';
 
-export default tseslint.config(...baseConfig, {
-  files: ['**/*.ts'],
-  languageOptions: {
-    globals: {
-      ...globals.node,
+export default defineConfig(
+  baseConfig,
+  {
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: { tsconfigRootDir: import.meta.dirname },
     },
   },
-  rules: {
-    // Allow console.log in deployment scripts
-    'no-console': 'off',
-  },
-});
+  prettier,
+);

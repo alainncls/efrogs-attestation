@@ -1,5 +1,5 @@
 import {
-  useAccount,
+  useConnection,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
@@ -16,9 +16,14 @@ interface TestnetRibbonProps {
 }
 
 const TestnetRibbon = ({ onNftMinted }: TestnetRibbonProps) => {
-  const { address, chainId } = useAccount();
+  const { address, chainId } = useConnection();
 
-  const { data: hash, isPending, writeContract, error } = useWriteContract();
+  const {
+    data: hash,
+    isPending,
+    mutate: writeContract,
+    error,
+  } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({

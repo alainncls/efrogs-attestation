@@ -26,7 +26,7 @@ const requestIdleTask = (callback: () => void) => {
 };
 
 export const scheduleInsights = () => {
-  const loadScript = () =>
+  const loadScript = () => {
     requestIdleTask(() => {
       const existingScript = document.getElementById(INSIGHTS_SCRIPT_ID);
 
@@ -49,6 +49,7 @@ export const scheduleInsights = () => {
 
       document.head.append(script);
     });
+  };
 
   if (document.readyState === 'complete') {
     loadScript();

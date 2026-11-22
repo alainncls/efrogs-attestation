@@ -3,10 +3,8 @@ import { readFile, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import rootPackageJson from '../../../package.json' with { type: 'json' };
 
-const rootPackageJson = JSON.parse(
-  await readFile(new URL('../../../package.json', import.meta.url), 'utf8'),
-);
 const deployScript = await readFile(
   new URL('../scripts/deployEFrogsPortal.ts', import.meta.url),
   'utf8',
@@ -14,8 +12,8 @@ const deployScript = await readFile(
 const repositoryRoot = fileURLToPath(new URL('../../../', import.meta.url));
 
 assert.equal(
-  rootPackageJson.scripts.preinstall,
-  undefined,
+  Object.hasOwn(rootPackageJson.scripts, 'preinstall'),
+  false,
   'preinstall must not execute remote package-manager guard code',
 );
 
@@ -40,7 +38,7 @@ assert.doesNotMatch(
 const malformedSource = resolve(
   repositoryRoot,
   'packages/frontend/src',
-  `format-negative-control-${process.pid}.ts`,
+  `format-negative-control-${String(process.pid)}.ts`,
 );
 try {
   await writeFile(malformedSource, 'const formattingControl = {answer:42}\n');
@@ -49,7 +47,7 @@ try {
     encoding: 'utf8',
     timeout: 120_000,
   });
-  const output = `${formatRun.stdout ?? ''}\n${formatRun.stderr ?? ''}`;
+  const output = `${formatRun.stdout}\n${formatRun.stderr}`;
   assert.notEqual(
     formatRun.status,
     0,
