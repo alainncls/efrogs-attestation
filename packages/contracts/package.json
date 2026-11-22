@@ -21,6 +21,7 @@
     "@nomicfoundation/hardhat-verify": "catalog:hardhat",
     "@nomicfoundation/hardhat-viem": "catalog:hardhat",
     "@types/node": "catalog:typescript",
+    "@typescript/native": "catalog:typescript",
     "@verax-attestation-registry/verax-contracts": "catalog:verax",
     "@verax-attestation-registry/verax-sdk": "catalog:verax",
     "eslint": "catalog:eslint",

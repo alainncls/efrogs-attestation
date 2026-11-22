@@ -109,7 +109,7 @@ pnpm lint             # Run ESLint + Solhint on all packages
 pnpm lint:fix         # Auto-fix linting issues
 pnpm format           # Check Prettier formatting
 pnpm format:fix       # Auto-fix formatting
-pnpm typecheck        # TypeScript type checking
+pnpm typecheck        # Type checking with TypeScript 7 (tsc)
 pnpm test             # Run Hardhat tests
 ```
 

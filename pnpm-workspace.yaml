@@ -37,7 +37,9 @@ catalogs:
     react-dom: 19.3.1
   typescript:
     '@types/node': 24.19.2
-    typescript: 6.0.3
+    # TS 7 (native) has no compiler API: `tsc` is TS 7, `typescript` stays TS 6 for typescript-eslint.
+    '@typescript/native': npm:typescript@7.0.2
+    typescript: npm:@typescript/typescript6@6.0.2
   verax:
     '@verax-attestation-registry/verax-contracts': 10.0.0
     '@verax-attestation-registry/verax-sdk': 5.4.0
