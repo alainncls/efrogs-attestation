@@ -8,6 +8,24 @@ therefore disables Netlify's path-only build skip. Git-triggered builds remain
 the deployment mechanism, but a root `pnpm-lock.yaml` or workspace manifest
 change can no longer be incorrectly treated as having no publishable change.
 
+## 2026-11-22 TypeScript 7 type-checking
+
+TypeScript 7.0 (native) ships no compiler API, and typescript-eslint 8.73.0
+needs `typescript <6.1.0`. The `typescript` catalog therefore follows the
+official side-by-side setup: `@typescript/native` is `typescript@7.0.2` and
+provides the `tsc` bin used by `typecheck` and `tsc -b`; `typescript` is
+`@typescript/typescript6@6.0.2`, which re-exports the TypeScript 6.0.3 API
+for typescript-eslint and the optional `typescript` peers of other packages.
+The TypeScript 6 compiler stays available as `tsc6`.
+
+typescript-estree 8.73.0 declares an optional `@typescript/native` peer for
+its experimental tsgo backend (`>=7.1.0-dev`). That backend is opt-in and not
+enabled, so the unmet peer warning for 7.0.2 has no effect.
+
+Both compilers check the same file set for every project. TypeScript 7 keeps
+its default of 4 checkers, which is fixed, so results do not depend on the
+CPU count.
+
 ## 2026-11-21 glob / minimatch advisories
 
 Dependabot flagged `minimatch >=7.0.0 <11.0.1` (globparts amplification DoS)
