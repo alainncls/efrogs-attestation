@@ -32,8 +32,5 @@
       "version": "12.21.0",
       "onFail": "download"
     }
-  },
-  "engines": {
-    "node": ">=24.22.3"
   }
 }
