@@ -15,6 +15,7 @@
   "devDependencies": {
     "@eslint/js": "catalog:eslint",
     "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint",
     "globals": "catalog:eslint",
     "prettier": "catalog:prettier",
     "prettier-plugin-solidity": "catalog:prettier",
