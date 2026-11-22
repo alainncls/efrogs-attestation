@@ -6,7 +6,7 @@ async function main() {
 
   console.log('Deploying EFrogsNFT...');
 
-  const connection = await network.connect();
+  const connection = await network.create();
   const eFrogsNFT = await connection.viem.deployContract('EFrogsNFT');
   const eFrogsNFTAddress = eFrogsNFT.address;
 
@@ -28,7 +28,7 @@ async function main() {
   console.log(`END EFROGS SCRIPT`);
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error(error);
   process.exitCode = 1;
 });

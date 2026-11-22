@@ -7,7 +7,7 @@
     "compile": "hardhat compile",
     "deploy:nft": "hardhat run scripts/deployEFrogsNFT.ts --network",
     "deploy:portal": "hardhat run scripts/deployEFrogsPortal.ts --network",
-    "lint": "eslint . && solhint 'src/**/*.sol' -c .solhint.json",
+    "lint": "eslint . --max-warnings 0 && solhint 'src/**/*.sol' -c .solhint.json",
     "lint:fix": "eslint . --fix",
     "test": "hardhat test && node test/repositorySecurity.test.mjs",
     "typecheck": "tsc --noEmit"

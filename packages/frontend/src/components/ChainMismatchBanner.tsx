@@ -4,7 +4,7 @@ import { linea } from 'wagmi/chains';
 import './ChainMismatchBanner.css';
 
 function ChainMismatchBanner() {
-  const { switchChain, isPending } = useSwitchChain();
+  const { mutate: switchChain, isPending } = useSwitchChain();
 
   const handleSwitchChain = useCallback(() => {
     switchChain({ chainId: linea.id });

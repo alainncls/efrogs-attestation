@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import './App.css';
-import { useAccount, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 import type { Address, Hex } from 'viem';
 import Panel from './components/Panel.tsx';
 import {
@@ -35,10 +35,10 @@ import {
 const DEFAULT_ERROR_MESSAGE = 'Attestation failed';
 const ATTESTATION_EXPIRATION_SECONDS = 2_592_000;
 
-type OriginatingSubmission = {
+interface OriginatingSubmission {
   chainId: number;
   txHash?: Hex;
-};
+}
 
 const ChainMismatchBanner = lazy(
   () => import('./components/ChainMismatchBanner.tsx'),
@@ -73,7 +73,7 @@ function App() {
   const panelTriggerRef = useRef<HTMLButtonElement>(null);
   const mainRef = useRef<HTMLElement>(null);
 
-  const { address, chainId, isConnected } = useAccount();
+  const { address, chainId, isConnected } = useConnection();
 
   const isValidChain = isSupportedLineaChainId(chainId);
 
@@ -92,6 +92,10 @@ function App() {
       enabled: !!address && isValidChain,
     },
   });
+
+  const refetchBalance = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   const issueAttestation = useCallback(async () => {
     const originatingChainId = chainId;
@@ -234,7 +238,7 @@ function App() {
         ) : null}
         {chainId === lineaSepolia.id ? (
           <Suspense fallback={null}>
-            <TestnetRibbon onNftMinted={refetch} />
+            <TestnetRibbon onNftMinted={refetchBalance} />
           </Suspense>
         ) : null}
         <a
@@ -251,7 +255,7 @@ function App() {
           status={walletStatus}
           disabled={disabled}
           onClick={issueAttestation}
-          onRetry={balanceError ? () => void refetch() : undefined}
+          onRetry={balanceError ? refetchBalance : undefined}
           triggerRef={panelTriggerRef}
         />
         {isModalOpen && submission ? (

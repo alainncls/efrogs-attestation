@@ -58,7 +58,9 @@ test('keeps the dialog open for interior clicks and closes only from its backdro
   const dialog = page.getByRole('dialog');
   await dialog.locator('.modal').click();
   await expect(dialog).toBeVisible();
-  await page.evaluate(() => window.efrogTest.complete('success'));
+  await page.evaluate(() => {
+    window.efrogTest.complete('success');
+  });
 
   await dialog.click({ position: { x: 2, y: 2 } });
   await expect(dialog).not.toBeVisible();
@@ -85,16 +87,18 @@ test('keeps result links on the originating chain and exposes error recovery', a
   ).toHaveAttribute('href', /explorer\.ver\.ax\/linea\/attestations\//);
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.getByRole('main')).toBeFocused();
-  await page.evaluate(() =>
+  await page.evaluate(() => {
     window.efrogTest.setIdentity(
       '0x1111111111111111111111111111111111111111',
       59144,
-    ),
-  );
+    );
+  });
   await expect(openButton(page)).toBeEnabled();
 
   await openButton(page).click();
-  await page.evaluate(() => window.efrogTest.complete('error'));
+  await page.evaluate(() => {
+    window.efrogTest.complete('error');
+  });
   await expect(page.getByRole('alert')).toHaveText('Rejected in wallet');
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(openButton(page)).toBeEnabled();
@@ -105,7 +109,9 @@ test('returns focus to a stable fallback when the trigger disappears during a pe
 }) => {
   await openButton(page).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await page.evaluate(() => window.efrogTest.hideTrigger(true));
+  await page.evaluate(() => {
+    window.efrogTest.hideTrigger(true);
+  });
 
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
@@ -115,15 +121,21 @@ test('returns focus to a stable fallback when the trigger disappears during a pe
 test('does not report unresolved/error balance as zero and retries a failed read', async ({
   page,
 }) => {
-  await page.evaluate(() => window.efrogTest.setBalance('loading'));
+  await page.evaluate(() => {
+    window.efrogTest.setBalance('loading');
+  });
   await expect(page.getByRole('status').first()).toHaveText('Checking…');
   await expect(openButton(page)).toBeDisabled();
 
-  await page.evaluate(() => window.efrogTest.setBalance('0'));
+  await page.evaluate(() => {
+    window.efrogTest.setBalance('0');
+  });
   await expect(page.getByRole('status').first()).toHaveText('No eFrog found');
   await expect(openButton(page)).toBeDisabled();
 
-  await page.evaluate(() => window.efrogTest.setBalance('error'));
+  await page.evaluate(() => {
+    window.efrogTest.setBalance('error');
+  });
   await expect(page.getByRole('status').first()).toHaveText(
     'Balance unavailable',
   );
@@ -133,7 +145,9 @@ test('does not report unresolved/error balance as zero and retries a failed read
     .poll(() => page.evaluate(() => window.efrogTest.retryCount()))
     .toBe(1);
 
-  await page.evaluate(() => window.efrogTest.setBalance('2'));
+  await page.evaluate(() => {
+    window.efrogTest.setBalance('2');
+  });
   await expect(page.getByRole('status').first()).toHaveText('You own 2 eFrogs');
   await expect(openButton(page)).toBeEnabled();
 });
@@ -142,7 +156,9 @@ test('fits long result links at 390px and 200% text zoom', async ({ page }) => {
   // A 195px CSS viewport models 200% browser zoom from a 390px phone viewport.
   await page.setViewportSize({ width: 195, height: 422 });
   await openButton(page).click();
-  await page.evaluate(() => window.efrogTest.complete('success'));
+  await page.evaluate(() => {
+    window.efrogTest.complete('success');
+  });
   await page.evaluate(() => {
     document.documentElement.style.fontSize = '200%';
   });

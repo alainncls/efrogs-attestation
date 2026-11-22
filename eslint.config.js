@@ -1,30 +1,33 @@
 import js from '@eslint/js';
+import prettier from 'eslint-config-prettier';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 /**
  * Shared ESLint base configuration for all packages.
- * Each package extends this config and adds package-specific rules.
+ * Each package extends it, sets `tsconfigRootDir` and ends with `prettier`.
  */
-export const baseConfig = tseslint.config(
+export const baseConfig = defineConfig(
   {
-    ignores: [
-      'dist',
-      'node_modules',
-      'artifacts',
-      'cache',
-      'typechain-types',
-      '*.config.js',
-      '*.config.ts',
-    ],
+    ignores: ['dist', 'node_modules', 'artifacts', 'cache', 'typechain-types'],
   },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error',
+      reportUnusedInlineConfigs: 'error',
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx,js,mjs}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.strictTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+    ],
     languageOptions: {
-      ecmaVersion: 2022,
-      globals: {
-        ...globals.node,
+      parserOptions: {
+        projectService: true,
       },
     },
     rules: {
@@ -39,8 +42,17 @@ export const baseConfig = tseslint.config(
         'error',
         { prefer: 'type-imports' },
       ],
+      '@typescript-eslint/no-explicit-any': 'error',
     },
+  },
+  {
+    files: ['eslint.config.js'],
+    extends: [tseslint.configs.disableTypeChecked],
   },
 );
 
-export default baseConfig;
+export { prettier };
+
+export default defineConfig(baseConfig, prettier, {
+  languageOptions: { globals: globals.node },
+});

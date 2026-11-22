@@ -7,7 +7,7 @@
     "dev": "pnpm -r run dev",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint": "pnpm -r run lint",
+    "lint": "eslint --max-warnings 0 eslint.config.js && pnpm -r run lint",
     "lint:fix": "pnpm -r run lint:fix",
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck"

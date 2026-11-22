@@ -73,11 +73,11 @@ export const getAttestationExplorerUrl = (
   return undefined;
 };
 
-type ReceiptLog = {
+interface ReceiptLog {
   address: Address;
   data?: Hex;
   topics: readonly Hex[];
-};
+}
 
 export const extractAttestationIdFromReceipt = (
   chainId: number,
@@ -107,12 +107,7 @@ export const extractAttestationIdFromReceipt = (
         data: log.data ?? '0x',
         topics: [topic0, topic1],
       });
-      if (
-        decoded.eventName === 'AttestationRegistered' &&
-        decoded.args.attestationId
-      ) {
-        return decoded.args.attestationId;
-      }
+      return decoded.args.attestationId;
     } catch {
       continue;
     }
