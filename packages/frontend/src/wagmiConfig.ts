@@ -1,6 +1,6 @@
 import { linea, lineaSepolia, mainnet } from 'wagmi/chains';
 import type { AppKitNetwork } from '@reown/appkit/networks';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { EvmWagmiAdapter } from './evmWagmiAdapter.ts';
 import { http } from 'viem';
 
 const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
@@ -22,7 +22,7 @@ export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
   mainnet,
 ];
 
-export const wagmiAdapter = new WagmiAdapter({
+export const wagmiAdapter = new EvmWagmiAdapter({
   networks,
   projectId,
   transports: {

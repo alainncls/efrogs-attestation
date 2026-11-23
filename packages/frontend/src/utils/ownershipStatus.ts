@@ -1,9 +1,9 @@
 import { linea, lineaSepolia } from 'wagmi/chains';
 
 interface OwnershipStatusOptions {
-  address?: string;
-  chainId?: number;
-  balance?: bigint;
+  address?: string | undefined;
+  chainId?: number | undefined;
+  balance?: bigint | undefined;
   isLoading: boolean;
   hasError: boolean;
 }

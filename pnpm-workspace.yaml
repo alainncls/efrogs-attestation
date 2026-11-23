@@ -47,8 +47,9 @@ catalogs:
     '@vitejs/plugin-react': 6.3.0
     vite: 8.3.8
   wagmi:
-    '@reown/appkit': 1.8.24
-    '@reown/appkit-adapter-wagmi': 1.8.24
+    '@reown/appkit': 2.0.0
+    '@reown/appkit-adapter-wagmi': 2.0.0
+    '@wagmi/connectors': 8.2.4
     '@wagmi/core': 3.6.9
     wagmi: 3.7.11
   web3:
@@ -76,15 +77,12 @@ minimumReleaseAgeExclude:
   - 'viem@2.58.0'
 
 overrides:
-  # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 1.8.24 still pins
+  # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 2.0.0 (appkit-wallet) still pins
   # Zod 3.x, which is affected. Zod 4.6.6 is the first patched release.
   # Keep this explicit until Reown releases a compatible dependency graph.
   zod: 4.6.6
   '@graphql-tools/utils': 12.0.3
   viem>ws: 8.21.3
-  '@base-org/account': 2.5.13
-  '@walletconnect/ethereum-provider': 2.26.0
-  '@reown/appkit-adapter-wagmi>@wagmi/connectors': 8.2.0
   # GHSA for glob <=14.0.1 (AbortSignal cancellation bypass): solhint 6.2.5
   # is still its latest release and requests glob ^13. glob 14 keeps the
   # CommonJS globSync API that solhint uses.

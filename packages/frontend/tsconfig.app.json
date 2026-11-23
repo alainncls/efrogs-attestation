@@ -7,9 +7,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "jsx": "react-jsx",
-    // Reown AppKit 1.8 typings: WagmiAdapter is not assignable to ChainAdapter under this flag.
-    "exactOptionalPropertyTypes": false
+    "jsx": "react-jsx"
   },
   "include": ["src", "e2e/modal-harness.tsx", "e2e/testState.ts"]
 }

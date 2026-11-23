@@ -17,6 +17,7 @@
     "@reown/appkit": "catalog:wagmi",
     "@reown/appkit-adapter-wagmi": "catalog:wagmi",
     "@tanstack/react-query": "catalog:react",
+    "@wagmi/connectors": "catalog:wagmi",
     "@wagmi/core": "catalog:wagmi",
     "react": "catalog:react",
     "react-dom": "catalog:react",
