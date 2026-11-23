@@ -5,23 +5,27 @@ import { createConfig, http } from '@wagmi/core';
 import type { CreateConnectorFn } from '@wagmi/core';
 import { linea, lineaSepolia } from 'viem/chains';
 
-// Load exactly the connector module resolved by AppKit, not a test substitute.
+// Load exactly the connector modules resolved by AppKit, not test substitutes.
 const require = createRequire(import.meta.url);
 const adapterEntry = require.resolve('@reown/appkit-adapter-wagmi');
 const adapterRequire = createRequire(adapterEntry);
-const connectorEntry = adapterRequire.resolve('@wagmi/connectors');
+
+const loadConnector = async <Name extends string>(name: Name) => {
+  const entry = adapterRequire.resolve(`@wagmi/connectors/${name}`);
+  const module = (await import(
+    /* @vite-ignore */ pathToFileURL(entry).href
+  )) as Record<
+    Name,
+    (parameters?: Record<string, unknown>) => CreateConnectorFn
+  >;
+  return module[name];
+};
 
 describe('AppKit connector compatibility', () => {
   it('constructs the Base, Coinbase and Safe connectors used by the real adapter on both Linea chains', async () => {
-    const connectors = (await import(
-      /* @vite-ignore */ pathToFileURL(connectorEntry).href
-    )) as Record<
-      'baseAccount' | 'coinbaseWallet' | 'safe',
-      (parameters?: Record<string, unknown>) => CreateConnectorFn
-    >;
-    for (const name of ['baseAccount', 'coinbaseWallet', 'safe'] as const) {
-      expect(typeof connectors[name]).toBe('function');
-    }
+    const baseAccount = await loadConnector('baseAccount');
+    const coinbaseWallet = await loadConnector('coinbaseWallet');
+    const safe = await loadConnector('safe');
     const config = createConfig({
       chains: [linea, lineaSepolia],
       transports: {
@@ -31,9 +35,10 @@ describe('AppKit connector compatibility', () => {
       ssr: true,
       multiInjectedProviderDiscovery: false,
       connectors: [
-        connectors.baseAccount(),
-        connectors.coinbaseWallet({ preference: 'eoaOnly' }),
-        connectors.safe(),
+        baseAccount(),
+        // Same shape as AppKit 2.0 for `coinbasePreference: 'eoaOnly'`.
+        coinbaseWallet({ preference: { options: 'eoaOnly' } }),
+        safe(),
       ],
     });
     expect(config.chains.map((chain) => chain.id)).toEqual([59144, 59141]);

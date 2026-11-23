@@ -19,9 +19,9 @@ interface DetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   chainId: number;
-  txHash?: Hex;
-  attestationId?: Hex;
-  message?: string;
+  txHash?: Hex | undefined;
+  attestationId?: Hex | undefined;
+  message?: string | undefined;
   returnFocusRef?: RefObject<HTMLElement | null>;
   fallbackFocusRef?: RefObject<HTMLElement | null>;
 }

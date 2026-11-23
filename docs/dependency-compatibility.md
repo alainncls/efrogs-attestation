@@ -8,6 +8,21 @@ therefore disables Netlify's path-only build skip. Git-triggered builds remain
 the deployment mechanism, but a root `pnpm-lock.yaml` or workspace manifest
 change can no longer be incorrectly treated as having no publishable change.
 
+## 2026-11-23 Reown AppKit 2.0
+
+`@reown/appkit` and `@reown/appkit-adapter-wagmi` move to 2.0.0 (Wagmi v3 support).
+`@wagmi/connectors` is now a required peer of the adapter, so the frontend declares
+it. The adapter loads the Base, Coinbase and Safe connectors from `@wagmi/connectors/*`
+subpaths, which `walletDependencies.integration.test.ts` now resolves.
+
+The `@base-org/account`, `@walletconnect/ethereum-provider` and scoped
+`@wagmi/connectors` overrides are removed: the audit stays at zero without them.
+The `zod` override stays because `@reown/appkit-wallet@2.0.0` still pins Zod 3.
+
+`exactOptionalPropertyTypes` is enabled again for the frontend. Reown still types
+`namespace` and `adapterType` as `T | undefined`, so `EvmWagmiAdapter` narrows them to
+the values `WagmiAdapter` always sets.
+
 ## 2026-11-22 TypeScript 7 type-checking
 
 TypeScript 7.0 (native) ships no compiler API, and typescript-eslint 8.73.0

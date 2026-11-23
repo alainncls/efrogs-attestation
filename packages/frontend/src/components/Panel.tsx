@@ -7,7 +7,7 @@ interface PanelProps {
   status?: string;
   disabled: boolean;
   onClick: () => Promise<void>;
-  onRetry?: () => void;
+  onRetry?: (() => void) | undefined;
   triggerRef?: Ref<HTMLButtonElement>;
 }
 
