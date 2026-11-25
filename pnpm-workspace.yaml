@@ -56,25 +56,6 @@ catalogs:
     viem: 2.58.0
 
 minimumReleaseAge: 10080
-# Temporary: locked versions younger than minimumReleaseAge. Remove after 2026-11-24.
-minimumReleaseAgeExclude:
-  - '@tanstack/query-core@5.108.0'
-  - '@tanstack/react-query@5.108.0'
-  - '@tybys/wasm-util@0.10.5'
-  - '@typescript-eslint/eslint-plugin@8.73.0'
-  - '@typescript-eslint/parser@8.73.0'
-  - '@typescript-eslint/project-service@8.73.0'
-  - '@typescript-eslint/scope-manager@8.73.0'
-  - '@typescript-eslint/tsconfig-utils@8.73.0'
-  - '@typescript-eslint/type-utils@8.73.0'
-  - '@typescript-eslint/types@8.73.0'
-  - '@typescript-eslint/typescript-estree@8.73.0'
-  - '@typescript-eslint/utils@8.73.0'
-  - '@typescript-eslint/visitor-keys@8.73.0'
-  - 'eslint-plugin-react-refresh@0.5.8'
-  - 'minimatch@11.0.9'
-  - 'typescript-eslint@8.73.0'
-  - 'viem@2.58.0'
 
 overrides:
   # GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404: Reown AppKit 2.0.0 (appkit-wallet) still pins
